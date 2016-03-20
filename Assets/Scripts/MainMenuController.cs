@@ -8,6 +8,7 @@ public class MainMenuController : MonoBehaviour, IProfileRequestsHandler
     public ServerRequest serverRequest;
     public SetNameDialog setNameDialog;
     public MatchingDialog matchingDialog;
+    public MessageDialog messageDialog;
     public Image playerLogo;
     public Button playButton;
 
@@ -18,12 +19,10 @@ public class MainMenuController : MonoBehaviour, IProfileRequestsHandler
     {
         this.playerText = playerLogo.GetComponentInChildren<Text>();
         this.playButton.interactable = false;
+        this.playerLogo.gameObject.SetActive(false);
 
         Persistence.Load();
-        if (Persistence.gameConfig.playerID.Length == 0)
-            CreateProfile();
-        else
-            GetProfile();
+        SynchronizeWithServer();
 	}
 
     public void OnDestroy()
@@ -70,14 +69,29 @@ public class MainMenuController : MonoBehaviour, IProfileRequestsHandler
 
     public void OnProfileError(int code)
     {
-
+        messageDialog.Open("Server is unavailable (" + code + ")", () => { StartCoroutine(SynchronizeWithServerDeferred()); });
     }
 
 #endregion
 
+    IEnumerator SynchronizeWithServerDeferred()
+    {
+        yield return new WaitForSeconds(0.5f);
+        this.SynchronizeWithServer();
+    }
+
+    private void SynchronizeWithServer()
+    {
+        if (Persistence.gameConfig.playerID.Length == 0)
+            CreateProfile();
+        else
+            GetProfile();
+    }
+
     private void UpdatePlayerText()
     {
-        this.playerText.text = string.Format("{0}\nLevel {1}", profileData.name, profileData.level);
+        this.playerText.text = UIUtils.GetFormattedString(profileData);
+        this.playerLogo.gameObject.SetActive(true);
         this.playButton.interactable = true;
     }
 

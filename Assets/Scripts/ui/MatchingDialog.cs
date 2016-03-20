@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -8,6 +9,9 @@ public class MatchingDialog : MonoBehaviour, IMatchingRequestsHandler
     public ServerRequest serverRequest;
     public Text lookingForText;
     public MessageDialog messageDialog;
+    public Image player;
+    public Image opponent;
+    public Text versusText;
 
     public delegate void OnClose();
     private OnClose onCloseHandler;
@@ -25,6 +29,10 @@ public class MatchingDialog : MonoBehaviour, IMatchingRequestsHandler
     public void Start()
     {
         gameObject.SetActive(false);
+        player.gameObject.SetActive(false);
+        opponent.gameObject.SetActive(false);
+        versusText.gameObject.SetActive(false);
+        lookingForText.gameObject.SetActive(true);
 	}
 
     public void Update()
@@ -71,7 +79,15 @@ public class MatchingDialog : MonoBehaviour, IMatchingRequestsHandler
 
     public void OnMatchingSuccess(string matchId, ProfileData opponentData)
     {
-        //TODO
+        player.gameObject.SetActive(true);
+        opponent.gameObject.SetActive(true);
+        versusText.gameObject.SetActive(true);
+        lookingForText.gameObject.SetActive(false);
+
+        player.gameObject.GetComponentInChildren<Text>().text = UIUtils.GetFormattedString(profileData);
+        opponent.gameObject.GetComponentInChildren<Text>().text = UIUtils.GetFormattedString(opponentData);
+
+        StartCoroutine(LoadLevelDeferred());
     }
 
     public void OnLookingForOpponent()
@@ -87,6 +103,12 @@ public class MatchingDialog : MonoBehaviour, IMatchingRequestsHandler
     public void OnMatchingError(int code)
     {
         messageDialog.Open("Server is unavailable (" + code + ")", () => { this.Close(); });
+    }
+
+    private IEnumerator LoadLevelDeferred()
+    {
+        yield return new WaitForSeconds(3.0f);
+        SceneManager.LoadScene("CoreGame");
     }
 
     private IEnumerator StartRequesting(float delay)
