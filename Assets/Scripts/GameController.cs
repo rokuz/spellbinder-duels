@@ -22,6 +22,7 @@ public class GameController : MonoBehaviour
         Magic.EARTH, Magic.AIR, Magic.AIR, Magic.NATURE,
         Magic.WATER, Magic.DARKNESS, Magic.EARTH, Magic.EARTH };
 
+    private bool isBackShowing = true;
     private float swapRequestTime = 0.0f;
     private bool isSwapping = false;
 
@@ -33,7 +34,6 @@ public class GameController : MonoBehaviour
             SpriteRenderer renderer = (from r in cards[i].GetComponentsInChildren<SpriteRenderer>() where r.gameObject.name == "front" select r).Single();
             if (renderer != null)
                 renderer.sprite = GetSprite(gameField[i]);
-            //cards[i].transform.Rotate(new Vector3(0, 180, 0));
         }
 	}
 	
@@ -43,6 +43,23 @@ public class GameController : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
             SwapAllCards();
         
+        AnimateCardsSwapping();
+	}
+        
+    private void SwapAllCards()
+    {
+        if (!isSwapping)
+        {
+            swapRequestTime = Time.time;
+            isBackShowing = !isBackShowing;
+            for (int i = 0; i < cards.Length; i++)
+                cards[i].transform.rotation = Quaternion.AngleAxis(isBackShowing ? 180.0f : 0.0f, Vector3.up);
+            isSwapping = true;
+        }
+    }
+
+    private void AnimateCardsSwapping()
+    {
         if (isSwapping)
         {
             float kAnimationTimeSec = 1.0f;
@@ -54,17 +71,10 @@ public class GameController : MonoBehaviour
             }
             else
             {
+                for (int i = 0; i < cards.Length; i++)
+                    cards[i].transform.rotation = Quaternion.AngleAxis(isBackShowing ? 0.0f : 180.0f, Vector3.up);
                 isSwapping = false;
             }
-        }
-	}
-        
-    private void SwapAllCards()
-    {
-        if (!isSwapping)
-        {
-            swapRequestTime = Time.time;
-            isSwapping = true;
         }
     }
 
