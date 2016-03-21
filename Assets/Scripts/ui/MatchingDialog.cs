@@ -87,6 +87,8 @@ public class MatchingDialog : MonoBehaviour, IMatchingRequestsHandler
         player.gameObject.GetComponentInChildren<Text>().text = UIUtils.GetFormattedString(profileData);
         opponent.gameObject.GetComponentInChildren<Text>().text = UIUtils.GetFormattedString(opponentData);
 
+        SceneConnector.Instance.PushMatch(matchId, profileData, opponentData);
+
         StartCoroutine(LoadLevelDeferred());
     }
 

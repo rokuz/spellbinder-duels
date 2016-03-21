@@ -6,6 +6,7 @@ public class GameController : MonoBehaviour
 {
     private const int kCardsCount = 12;
 
+    public ServerRequest serverRequest;
     public GameObject[] cards;
     public Sprite fireSprite;
     public Sprite waterSprite;
@@ -29,11 +30,27 @@ public class GameController : MonoBehaviour
 	// Use this for initialization
     public void Start () 
     {
+        Vector3 cardSize = Vector3.zero;
         for (int i = 0; i < cards.Length; i++)
         {
             SpriteRenderer renderer = (from r in cards[i].GetComponentsInChildren<SpriteRenderer>() where r.gameObject.name == "front" select r).Single();
             if (renderer != null)
                 renderer.sprite = GetSprite(gameField[i]);
+
+            if (i == 0)
+                cardSize = renderer.bounds.size;
+        }
+
+        const float kGapSize = 2.0f;
+        Vector3 origin = new Vector3(-1.5f * cardSize.x - 1.5f * kGapSize, cardSize.y + kGapSize, 0.0f);
+        for (int i = 0; i < 3; i++)
+        {
+            float offsetY = (i == 0) ? 0.0f : kGapSize * i;
+            for (int j = 0; j < 4; j++)
+            {
+                float offsetX = (j == 0) ? 0.0f : kGapSize * j;
+                cards[4 * i + j].transform.position = origin + new Vector3(j * cardSize.x + offsetX, -i * cardSize.y - offsetY, 0.0f);
+            }
         }
 	}
 	
