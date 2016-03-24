@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Linq;
+using System.Collections.Generic;
 
-public class GameController : MonoBehaviour 
+public class GameController : MonoBehaviour, IGameRequestsHandler
 {
     private const int kCardsCount = 12;
 
@@ -18,28 +19,20 @@ public class GameController : MonoBehaviour
     public Sprite bloodSprite;
     public Sprite illusionSprite;
 
-    private Magic[] gameField = new Magic[kCardsCount] { 
-        Magic.WATER, Magic.EARTH, Magic.NATURE, Magic.DARKNESS,
-        Magic.EARTH, Magic.AIR, Magic.AIR, Magic.NATURE,
-        Magic.WATER, Magic.DARKNESS, Magic.EARTH, Magic.EARTH };
+    private SceneConnector.MatchData matchData = null;
+    private GameData gameData = null;
 
     private bool isBackShowing = true;
     private float swapRequestTime = 0.0f;
     private bool isSwapping = false;
 
 	// Use this for initialization
-    public void Start () 
+    public void Start()
     {
-        Vector3 cardSize = Vector3.zero;
-        for (int i = 0; i < cards.Length; i++)
-        {
-            SpriteRenderer renderer = (from r in cards[i].GetComponentsInChildren<SpriteRenderer>() where r.gameObject.name == "front" select r).Single();
-            if (renderer != null)
-                renderer.sprite = GetSprite(gameField[i]);
-
-            if (i == 0)
-                cardSize = renderer.bounds.size;
-        }
+        SpriteRenderer renderer = (from r in cards[0].GetComponentsInChildren<SpriteRenderer>()
+                                         where r.gameObject.name == "front"
+                                         select r).Single();
+        Vector3 cardSize = renderer.bounds.size;
 
         const float kGapSize = 2.0f;
         Vector3 origin = new Vector3(-1.5f * cardSize.x - 1.5f * kGapSize, cardSize.y + kGapSize, 0.0f);
@@ -52,6 +45,16 @@ public class GameController : MonoBehaviour
                 cards[4 * i + j].transform.position = origin + new Vector3(j * cardSize.x + offsetX, -i * cardSize.y - offsetY, 0.0f);
             }
         }
+
+        matchData = SceneConnector.Instance.PopMatch();
+        if (matchData != null)
+        {
+            Dictionary<string, string> p = new Dictionary<string, string>();
+            p["id"] = matchData.player.id;
+            p["match"] = matchData.matchId;
+            if (serverRequest != null)
+                serverRequest.Send(GameRequests.START_MATCH, p, (WWW response) => { GameRequests.OnStartMatchResponse(response, this); });
+        }
 	}
 	
 	// Update is called once per frame
@@ -62,6 +65,40 @@ public class GameController : MonoBehaviour
         
         AnimateCardsSwapping();
 	}
+
+    public void OnStartMatch(GameData gameData)
+    {
+        this.gameData = gameData;
+        SetupGameField();
+    }
+
+    public void OnYouDisconnected(RewardData rewardData)
+    {
+
+    }
+
+    public void OnOpponentDisconnected(RewardData rewardData)
+    {
+
+    }
+
+    public void OnError(int code)
+    {
+
+    }
+
+    private void SetupGameField()
+    {
+        if (gameData == null)
+            return;
+
+        for (int i = 0; i < cards.Length; i++)
+        {
+            SpriteRenderer renderer = (from r in cards[i].GetComponentsInChildren<SpriteRenderer>() where r.gameObject.name == "front" select r).Single();
+            if (renderer != null)
+                renderer.sprite = GetSprite(gameData.gameField[i]);
+        }
+    }
         
     private void SwapAllCards()
     {

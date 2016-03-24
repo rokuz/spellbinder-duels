@@ -15,28 +15,27 @@ public class SceneConnector
         }
     }
 
-    public struct MatchData
+    public class MatchData
     {
         public string matchId;
         public ProfileData player;
         public ProfileData opponent;
     }
 
-    private MatchData matchData;
+    private MatchData matchData = null;
 
     public void PushMatch(string matchId, ProfileData player, ProfileData opponent)
     {
+        matchData = new MatchData();
         matchData.matchId = matchId;
         matchData.player = player;
-        matchData.player = opponent;
+        matchData.opponent = opponent;
     }
 
     public MatchData PopMatch()
     {
         MatchData result = matchData;
-        matchData.matchId = null;
-        matchData.player = null;
-        matchData.player = null;
+        matchData = null;
         return result;
     }
 }
