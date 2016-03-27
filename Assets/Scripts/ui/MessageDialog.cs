@@ -26,13 +26,13 @@ public class MessageDialog : MonoBehaviour
         this.onCloseHandler = onCloseHandler;
 
         gameObject.SetActive(true);
-        if (!splash.IsActive())
+        if (splash != null && !splash.IsActive())
             splash.gameObject.SetActive(true);
     }
 
     public void Close()
     {
-        if (splash.IsActive())
+        if (splash != null && splash.IsActive())
             splash.gameObject.SetActive(false);
 
         gameObject.SetActive(false);

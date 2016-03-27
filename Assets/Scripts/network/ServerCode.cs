@@ -12,7 +12,7 @@
     public const int INVALID_MATCH_ID = 9;
     public const int INVALID_PLAYER_ID = 10;
     public const int WAIT_FOR_START = 11;
-    public const int START_GAME = 12;
+    public const int SHOW_CARDS = 12;
     public const int YOUR_TURN = 13;
     public const int OPPONENT_TURN = 14;
     public const int SPELL_MISCAST = 15;

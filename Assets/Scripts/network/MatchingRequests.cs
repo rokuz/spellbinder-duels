@@ -31,10 +31,6 @@ public static class MatchingRequests
                 if (handler != null)
                     handler.OnMatchingSuccess(matchId, data);
             }
-            else if (code == ServerCode.YOU_ARE_PLAYING)
-            {
-                //Do nothing
-            }
             else if (code == ServerCode.LOOKING_FOR_OPPONENT)
             {
                 if (handler != null)
@@ -45,7 +41,7 @@ public static class MatchingRequests
                 if (handler != null)
                     handler.OnOpponentNotFound();
             }
-            else if (code == ServerCode.BAD_SIGNATURE || code == ServerCode.UNKNOWN_PROFILE)
+            else if (code == ServerCode.BAD_SIGNATURE || code == ServerCode.UNKNOWN_PROFILE || code == ServerCode.YOU_ARE_PLAYING)
             {
                 Debug.Log("Error (" + code + "): Server request has finished with error");
                 if (handler != null)

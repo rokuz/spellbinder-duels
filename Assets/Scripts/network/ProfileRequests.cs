@@ -9,6 +9,8 @@ public class ProfileData
     public int experience;
     public int[] bonuses;
     public int[] resistance;
+    public int coins;
+    public string[] spells;
 }
 
 public interface IProfileRequestsHandler
@@ -90,6 +92,10 @@ public static class ProfileRequests
                 data.experience = (int)profile.GetField("experience").n;
                 data.bonuses = Utils.ToIntArray(profile.GetField("bonuses").list.ToArray());
                 data.resistance = Utils.ToIntArray(profile.GetField("resistance").list.ToArray());
+                data.coins = (int)profile.GetField("coins").n;
+                var spells = profile.GetField("spells").list.ToArray();
+                data.spells = new string[spells.Length];
+                for (int i = 0; i < spells.Length; i++) data.spells[i] = spells[i].str;
                 if (handler != null)
                     handler.OnGetProfile(data);
             }
