@@ -2,10 +2,12 @@
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
+using SmartLocalization;
 
 public class SetNameDialog : MonoBehaviour, ISetProfileNameRequestHandler
 {
     public ServerRequest serverRequest;
+    public Text headerText;
     public Text warningText;
     public InputField nameEditbox;
     public Button okButton;
@@ -20,6 +22,7 @@ public class SetNameDialog : MonoBehaviour, ISetProfileNameRequestHandler
 
 	public void Start()
     {
+        headerText.text = LanguageManager.Instance.GetTextValue("SetName.SetupName");
         gameObject.SetActive(false);
         warningText.gameObject.SetActive(false);
         okButton.interactable = true;
@@ -56,13 +59,13 @@ public class SetNameDialog : MonoBehaviour, ISetProfileNameRequestHandler
         string name = nameEditbox.text;
         if (name.Length == 0)
         {
-            warningText.text = "Name is empty";
+            warningText.text = LanguageManager.Instance.GetTextValue("SetName.NameEmpty");
             warningText.gameObject.SetActive(true);
             return;
         }
         else if (name.Length >= 15)
         {
-            warningText.text = "Name is very long";
+            warningText.text = LanguageManager.Instance.GetTextValue("SetName.NameLong");
             warningText.gameObject.SetActive(true);
             return;
         }
@@ -86,7 +89,7 @@ public class SetNameDialog : MonoBehaviour, ISetProfileNameRequestHandler
 
     public void OnDuplicateProfileName()
     {
-        warningText.text = "Name is already in use";
+        warningText.text = LanguageManager.Instance.GetTextValue("SetName.NameInUse");
         warningText.gameObject.SetActive(true);
         okButton.interactable = true;
         nameEditbox.interactable = true;
@@ -94,7 +97,7 @@ public class SetNameDialog : MonoBehaviour, ISetProfileNameRequestHandler
 
     public void OnProfileError(int code)
     {
-        warningText.text = "Server is unavailable (" + code + ")";
+        warningText.text = LanguageManager.Instance.GetTextValue("Message.ServerUnavailable") + " (" + code + ")";
         warningText.gameObject.SetActive(true);
         okButton.interactable = true;
         nameEditbox.interactable = true;

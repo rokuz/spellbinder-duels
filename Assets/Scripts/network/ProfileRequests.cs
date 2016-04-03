@@ -3,6 +3,10 @@ using System.Collections.Generic;
 
 public class ProfileData
 {
+    public const int kFireIndex = 0;
+    public const int kWaterIndex = 1;
+    public const int kAirIndex = 2;
+
     public string id = null;
     public string name;
     public int level;

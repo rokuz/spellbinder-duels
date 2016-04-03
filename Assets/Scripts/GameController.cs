@@ -5,13 +5,17 @@ using System.Collections;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text;
+using SmartLocalization;
 
 public class GameController : MonoBehaviour, IGameRequestsHandler
 {
     private const int kCardsCount = 12;
+    const float kAnimationTimeSec = 1.0f;
 
     public ServerRequest serverRequest;
     public MessageDialog messageDialog;
+    public Image player1Info;
+    public Image player2Info;
     public Text gameInfo;
     public GameObject[] cards;
     public Sprite fireSprite;
@@ -23,6 +27,9 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
     public Sprite darknessSprite;
     public Sprite bloodSprite;
     public Sprite illusionSprite;
+
+    private Text player1Text;
+    private Text player2Text;
 
     private SceneConnector.MatchData matchData = null;
     private GameData gameData = null;
@@ -45,6 +52,9 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
 
     public void Start()
     {
+        //TEMP
+        LanguageManager.Instance.ChangeLanguage("ru");
+
         SpriteRenderer renderer = (from r in cards[0].GetComponentsInChildren<SpriteRenderer>()
                                          where r.gameObject.name == "front"
                                          select r).Single();
@@ -73,9 +83,15 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
 
         gameInfo.gameObject.SetActive(false);
 
+        player1Text = player1Info.GetComponentInChildren<Text>();
+        player2Text = player2Info.GetComponentInChildren<Text>();
+
         matchData = SceneConnector.Instance.PopMatch();
         if (matchData != null)
         {
+            player1Text.text = GetPlayerInfo(matchData.player, null);
+            player2Text.text = GetPlayerInfo(matchData.opponent, null);
+
             Dictionary<string, string> p = new Dictionary<string, string>();
             p["id"] = matchData.player.id;
             p["match"] = matchData.matchId;
@@ -110,13 +126,13 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
     public void OnYouDisconnected(RewardData rewardData)
     {
         //TODO: show reward
-        messageDialog.Open("The connection was lost", () => { this.BackToMainMenu(); });
+        messageDialog.Open(LanguageManager.Instance.GetTextValue("Message.ConnectionLost"), () => { this.BackToMainMenu(); });
     }
 
     public void OnOpponentDisconnected(RewardData rewardData)
     {
         //TODO: show reward
-        messageDialog.Open("Opponent disconnected", () => { this.BackToMainMenu(); });
+        messageDialog.Open(LanguageManager.Instance.GetTextValue("Message.OpponentDisconnected"), () => { this.BackToMainMenu(); });
     }
 
     public void OnShowCards()
@@ -140,71 +156,126 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
         this.BackToMainMenu();
     }
 
-    public void OnLose(PlayerData player, PlayerData opponent, RewardData reward)
+    public void OnLose(PlayerData player, PlayerData opponent, RewardData reward, bool delay)
     {
         //TODO
         this.BackToMainMenu();
     }
 
-    public void OnYourTurn(PlayerData player, PlayerData opponent)
+    public void OnYourTurn(PlayerData player, PlayerData opponent, bool delay)
     {
+        StartCoroutine(ProcessYourTurn(player, opponent, delay ? 2.5f : 0.0f));
+    }
+
+    private IEnumerator ProcessYourTurn(PlayerData player, PlayerData opponent, float delaySec)
+    {
+        yield return new WaitForSeconds(delaySec);
         if (!youTurn)
         {
+            CloseAllOpenedCards();
             cardsOpened = false;
             cardIndices = null;
             youTurn = true;
-            StartCoroutine(ShowGameInfo("Your turn", 1.0f));
+            StartCoroutine(ShowGameInfo(LanguageManager.Instance.GetTextValue("Game.YourTurn"), 1.0f));
         }
+
+        player1Text.text = GetPlayerInfo(matchData.player, player);
+        player2Text.text = GetPlayerInfo(matchData.opponent, opponent);
+
         Ping();
     }
 
-    public void OnOpponentTurn(PlayerData player, PlayerData opponent)
+    public void OnOpponentTurn(PlayerData player, PlayerData opponent, bool delay)
     {
+        StartCoroutine(ProcessOpponentTurn(player, opponent, delay ? 2.5f : 0.0f));
+    }
+
+    private IEnumerator ProcessOpponentTurn(PlayerData player, PlayerData opponent, float delaySec)
+    {
+        yield return new WaitForSeconds(delaySec);
         if (youTurn)
         {
+            CloseAllOpenedCards();
             youTurn = false;
-            StartCoroutine(ShowGameInfo("Opponent's turn", 1.0f));
+            StartCoroutine(ShowGameInfo(LanguageManager.Instance.GetTextValue("Game.OpponentTurn"), 1.0f));
         }
+
+        player1Text.text = GetPlayerInfo(matchData.player, player);
+        player2Text.text = GetPlayerInfo(matchData.opponent, opponent);
+
         Ping();
     }
 
     public void OnSpellCasted(PlayerData player, PlayerData opponent, string spell, Dictionary<int, Magic> substitutes)
     {
         //TODO: show spell animation
-
         //TEMP
-        StartCoroutine(ShowGameInfo("You casted", 1.0f));
+        string spellName = LanguageManager.Instance.GetTextValue("Spell." + spell);
+        if (spellName.Length == 0) spellName = spell;
+        StartCoroutine(ShowGameInfo(LanguageManager.Instance.GetTextValue("Game.YouCasted") + " " + spellName, 1.0f));
 
-        //TODO: show cards substitution
+        player1Text.text = GetPlayerInfo(matchData.player, player);
+        player2Text.text = GetPlayerInfo(matchData.opponent, opponent);
 
-        StartCoroutine(StartPingRequesting(1.5f));
+        SubstituteCards(substitutes);
+        StartCoroutine(ProcessCardsAfterTurn());
+        StartCoroutine(StartPingRequesting(3 * kAnimationTimeSec));
     }
 
     public void OnSpellMiscasted()
     {
         //TODO: show spell animation
-
         //TEMP
-        StartCoroutine(ShowGameInfo("You miscasted", 1.0f));
+        StartCoroutine(ShowGameInfo(LanguageManager.Instance.GetTextValue("Game.YouMiscasted"), 1.0f));
 
-        //TODO: close cards
-
-        StartCoroutine(StartPingRequesting(1.5f)); 
+        StartCoroutine(ProcessCardsAfterTurn());
+        StartCoroutine(StartPingRequesting(3 * kAnimationTimeSec)); 
     }
 
     public void OnOpponentSpellCasted(int[] openedCards, string spell, Dictionary<int, Magic> substitutes)
     {
+        StartCoroutine(OpponentCastsSpell(openedCards, spell, substitutes));
+    }
 
+    private IEnumerator OpponentCastsSpell(int[] openedCards, string spell, Dictionary<int, Magic> substitutes)
+    {
+        for (int i = 0; i < openedCards.Length; i++)
+            SwapCard(openedCards[i]);
+
+        yield return new WaitForSeconds(kAnimationTimeSec);
+
+        //TODO: show spell animation
+        //TEMP
+        string spellName = LanguageManager.Instance.GetTextValue("Spell." + spell);
+        if (spellName.Length == 0) spellName = spell;
+        StartCoroutine(ShowGameInfo(LanguageManager.Instance.GetTextValue("Game.OpponentCasted") + " " + spellName, 1.0f));
+
+        SubstituteCards(substitutes);
+        StartCoroutine(ProcessCardsAfterTurn());
     }
 
     public void OnOpponentSpellMiscasted(int[] openedCards, string spell)
     {
-        
+        StartCoroutine(OpponentMiscastsSpell(openedCards, spell));
+    }
+
+    private IEnumerator OpponentMiscastsSpell(int[] openedCards, string spell)
+    {
+        for (int i = 0; i < openedCards.Length; i++)
+            SwapCard(openedCards[i]);
+
+        yield return new WaitForSeconds(kAnimationTimeSec);
+
+        //TODO: show spell animation
+        //TEMP
+        StartCoroutine(ShowGameInfo(LanguageManager.Instance.GetTextValue("Game.OpponentMiscasted"), 1.0f));
+
+        StartCoroutine(ProcessCardsAfterTurn());  
     }
 
     public void OnError(int code)
     {
-        messageDialog.Open("Server is unavailable (" + code + ")", () => { this.BackToMainMenu(); });
+        messageDialog.Open(LanguageManager.Instance.GetTextValue("Message.ServerUnavailable") + " (" + code + ")", () => { this.BackToMainMenu(); });
     }
 
     public void OnCardTapped(int cardIndex)
@@ -237,6 +308,12 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
     private void CastSpell(int[] indices)
     {
         cardsOpened = true;
+        StartCoroutine(CastSpellWithDelay(indices, kAnimationTimeSec));
+    }
+
+    private IEnumerator CastSpellWithDelay(int[] indices, float delay)
+    {
+        yield return new WaitForSeconds(delay);
         cardIndices = indices;
     }
 
@@ -249,6 +326,41 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
             if (i != indices.Length - 1) builder.Append(",");
         }
         return builder.ToString();
+    }
+
+    private void SubstituteCards(Dictionary<int, Magic> substitutes)
+    {
+        if (gameData == null)
+            return;
+
+        //TODO: substitute with animation
+        foreach(KeyValuePair<int, Magic> entry in substitutes)
+        {
+            gameData.gameField[entry.Key] = entry.Value;
+            SpriteRenderer renderer = (from r in cards[entry.Key].GetComponentsInChildren<SpriteRenderer>() where r.gameObject.name == "front" select r).Single();
+            if (renderer != null)
+                renderer.sprite = GetSprite(entry.Value);
+        }
+    }
+
+    private IEnumerator ProcessCardsAfterTurn()
+    {
+        for (int i = 0; i < openedCards.Length; i++)
+        {
+            if (openedCards[i].isBackShowing)
+                SwapCard(i);
+        }
+        yield return new WaitForSeconds(2 * kAnimationTimeSec);
+        CloseAllOpenedCards();
+    }
+
+    private void CloseAllOpenedCards()
+    {
+        for (int i = 0; i < openedCards.Length; i++)
+        {
+            if (!openedCards[i].isBackShowing)
+                SwapCard(i);
+        }
     }
 
     private void BackToMainMenu()
@@ -337,7 +449,6 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
 
     private void AnimateCardsSwapping()
     {
-        const float kAnimationTimeSec = 1.0f;
         if (allCardsSwapping.isSwapping)
         {
             float delta = Time.time - allCardsSwapping.swapRequestTime;
@@ -397,5 +508,82 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
                 return this.illusionSprite;
         }
         return null;
+    }
+
+    private string GetPlayerInfo(ProfileData profile, PlayerData player)
+    {
+        StringBuilder builder = new StringBuilder();
+        builder.Append(profile.name);
+        if (player != null)
+        {
+            builder.Append("\nHealth: ");
+            builder.Append(player.health);
+            builder.Append("\nDefense: ");
+            builder.Append(player.defence);
+
+            if (GetBonus(profile, ProfileData.kFireIndex) > 0)
+            {
+                builder.Append("\nFire damage: ");
+                builder.Append(player.blockedBonusTurns[ProfileData.kFireIndex] == 0 ? ("+" + GetBonus(profile, ProfileData.kFireIndex)) : "0");
+            }
+            if (GetBonus(profile, ProfileData.kWaterIndex) > 0)
+            {
+                builder.Append("\nWater damage: ");
+                builder.Append(player.blockedBonusTurns[ProfileData.kWaterIndex] == 0 ? ("+" + GetBonus(profile, ProfileData.kWaterIndex)) : "0");
+            }
+            if (GetBonus(profile, ProfileData.kAirIndex) > 0)
+            {
+                builder.Append("\nAir damage: ");
+                builder.Append(player.blockedBonusTurns[ProfileData.kAirIndex] == 0 ? ("+" + GetBonus(profile, ProfileData.kAirIndex)) : "0");
+            }
+
+            if (GetResistance(profile, ProfileData.kFireIndex) > 0)
+            {
+                builder.Append("\nFire resistance: ");
+                builder.Append(player.blockedResistanceTurns[ProfileData.kFireIndex] == 0 ? GetResistance(profile, ProfileData.kFireIndex) : 0);
+            }
+            if (GetResistance(profile, ProfileData.kWaterIndex) > 0)
+            {
+                builder.Append("\nWater resistance: ");
+                builder.Append(player.blockedResistanceTurns[ProfileData.kWaterIndex] == 0 ? GetResistance(profile, ProfileData.kWaterIndex) : 0);
+            }
+            if (GetResistance(profile, ProfileData.kAirIndex) > 0)
+            {
+                builder.Append("\nAir resistance: ");
+                builder.Append(player.blockedResistanceTurns[ProfileData.kAirIndex] == 0 ? GetResistance(profile, ProfileData.kAirIndex) : 0);
+            }
+
+            if (player.blockedDamageTurns > 0)
+                builder.Append("\nDamage blocked for " + player.blockedDamageTurns + " turns");
+            if (player.blockedHealingTurns > 0)
+                builder.Append("\nHealing blocked for " + player.blockedHealingTurns + " turns");
+            if (player.blockedDefenseTurns > 0)
+                builder.Append("\nDefense blocked for " + player.blockedDefenseTurns + " turns");
+
+            if (player.blockedBonusTurns[ProfileData.kFireIndex] > 0)
+                builder.Append("\nFire damage bonus blocked for " + player.blockedBonusTurns[ProfileData.kFireIndex] + " turns");
+            if (player.blockedBonusTurns[ProfileData.kWaterIndex] > 0)
+                builder.Append("\nWater damage bonus blocked for " + player.blockedBonusTurns[ProfileData.kWaterIndex] + " turns");
+            if (player.blockedBonusTurns[ProfileData.kAirIndex] > 0)
+                builder.Append("\nAir damage bonus blocked for " + player.blockedBonusTurns[ProfileData.kAirIndex] + " turns");
+
+            if (player.blockedResistanceTurns[ProfileData.kFireIndex] > 0)
+                builder.Append("\nFire resistance blocked for " + player.blockedResistanceTurns[ProfileData.kFireIndex] + " turns");
+            if (player.blockedResistanceTurns[ProfileData.kWaterIndex] > 0)
+                builder.Append("\nWater resistance blocked for " + player.blockedResistanceTurns[ProfileData.kWaterIndex] + " turns");
+            if (player.blockedResistanceTurns[ProfileData.kAirIndex] > 0)
+                builder.Append("\nAir resistance blocked for " + player.blockedResistanceTurns[ProfileData.kAirIndex] + " turns");
+        }
+        return builder.ToString();
+    }
+
+    int GetBonus(ProfileData profile, int index)
+    {
+        return profile.bonuses[index] / 1000;
+    }
+
+    int GetResistance(ProfileData profile, int index)
+    {
+        return profile.resistance[index] / 1000;
     }
 }

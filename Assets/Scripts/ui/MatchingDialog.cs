@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
+using SmartLocalization;
 
 public class MatchingDialog : MonoBehaviour, IMatchingRequestsHandler
 {
@@ -20,7 +21,7 @@ public class MatchingDialog : MonoBehaviour, IMatchingRequestsHandler
     private ProfileData opponentData;
 
     private bool isAnimating = false;
-    private string[] animatedText = new string[] { ".", "..", "..." };
+    private string[] animatedText = new string[] { "", ".", "..", "..." };
     private int textAnimationIndex = 0;
     private float animationStartTime;
 
@@ -28,6 +29,7 @@ public class MatchingDialog : MonoBehaviour, IMatchingRequestsHandler
 
     public void Start()
     {
+        lookingForText.text = LanguageManager.Instance.GetTextValue("Matching.LookingFor");
         gameObject.SetActive(false);
         player.gameObject.SetActive(false);
         opponent.gameObject.SetActive(false);
@@ -44,7 +46,7 @@ public class MatchingDialog : MonoBehaviour, IMatchingRequestsHandler
             if (textAnimationIndex != newIndex)
             {
                 textAnimationIndex = newIndex;
-                lookingForText.text = "Looking for" + animatedText[textAnimationIndex];
+                lookingForText.text = LanguageManager.Instance.GetTextValue("Matching.LookingFor") + animatedText[textAnimationIndex];
             }
         }
 
@@ -99,12 +101,12 @@ public class MatchingDialog : MonoBehaviour, IMatchingRequestsHandler
 
     public void OnOpponentNotFound()
     {
-        messageDialog.Open("Opponent is not found", () => { this.Close(); });
+        messageDialog.Open(LanguageManager.Instance.GetTextValue("Message.OpponentNotFound"), () => { this.Close(); });
     }
 
     public void OnMatchingError(int code)
     {
-        messageDialog.Open("Server is unavailable (" + code + ")", () => { this.Close(); });
+        messageDialog.Open(LanguageManager.Instance.GetTextValue("Message.ServerUnavailable") + " (" + code + ")", () => { this.Close(); });
     }
 
     private IEnumerator LoadLevelDeferred()

@@ -42,9 +42,9 @@ public interface IGameRequestsHandler
     void OnShowCards();
     void OnWaitForStart();
     void OnWin(PlayerData player, PlayerData opponent, string spell, RewardData reward);
-    void OnLose(PlayerData player, PlayerData opponent, RewardData reward);
-    void OnYourTurn(PlayerData player, PlayerData opponent);
-    void OnOpponentTurn(PlayerData player, PlayerData opponent);
+    void OnLose(PlayerData player, PlayerData opponent, RewardData reward, bool delay);
+    void OnYourTurn(PlayerData player, PlayerData opponent, bool delay);
+    void OnOpponentTurn(PlayerData player, PlayerData opponent, bool delay);
     void OnSpellCasted(PlayerData player, PlayerData opponent, string spell, Dictionary<int, Magic> substitutes);
     void OnSpellMiscasted();
     void OnOpponentSpellCasted(int[] openedCards, string spell, Dictionary<int, Magic> substitutes);
@@ -145,7 +145,7 @@ public static class GameRequests
             }
             else if (code == ServerCode.YOU_LOSE)
             {
-                ParseOpponentSpell(json, handler);
+                bool delay = ParseOpponentSpell(json, handler);
                 RewardData reward = new RewardData();
                 ParseReward(json.GetField("reward"), reward);
                 PlayerData player = new PlayerData();
@@ -153,27 +153,27 @@ public static class GameRequests
                 PlayerData opponent = new PlayerData();
                 ParsePlayerData(json.GetField("opponent"), opponent);
                 if (handler != null)
-                    handler.OnLose(player, opponent, reward);
+                    handler.OnLose(player, opponent, reward, delay);
             }
             else if (code == ServerCode.YOUR_TURN)
             {
-                ParseOpponentSpell(json, handler);
+                bool delay = ParseOpponentSpell(json, handler);
                 PlayerData player = new PlayerData();
                 ParsePlayerData(json.GetField("player"), player);
                 PlayerData opponent = new PlayerData();
                 ParsePlayerData(json.GetField("opponent"), opponent);
                 if (handler != null)
-                    handler.OnYourTurn(player, opponent);
+                    handler.OnYourTurn(player, opponent, delay);
             }
             else if (code == ServerCode.OPPONENT_TURN)
             {
-                ParseOpponentSpell(json, handler);
+                bool delay = ParseOpponentSpell(json, handler);
                 PlayerData player = new PlayerData();
                 ParsePlayerData(json.GetField("player"), player);
                 PlayerData opponent = new PlayerData();
                 ParsePlayerData(json.GetField("opponent"), opponent);
                 if (handler != null)
-                    handler.OnOpponentTurn(player, opponent);
+                    handler.OnOpponentTurn(player, opponent, delay);
             }
             else if (code == ServerCode.YOU_DISCONNECTED)
             {
@@ -249,7 +249,7 @@ public static class GameRequests
                 PlayerData opponent = new PlayerData();
                 ParsePlayerData(json.GetField("opponent"), opponent);
                 if (handler != null)
-                    handler.OnOpponentTurn(player, opponent);
+                    handler.OnOpponentTurn(player, opponent, false);
             }
             else if (code == ServerCode.YOU_DISCONNECTED)
             {
@@ -281,7 +281,7 @@ public static class GameRequests
         }
     }
 
-    private static void ParseOpponentSpell(JSONObject json, IGameRequestsHandler handler)
+    private static bool ParseOpponentSpell(JSONObject json, IGameRequestsHandler handler)
     {
         List<JSONObject> openedCardsLists = json.GetField("openCards").list;
         if (openedCardsLists.Count > 0)
@@ -299,7 +299,9 @@ public static class GameRequests
                 else
                     handler.OnOpponentSpellCasted(openedCards, opponentSpell, substitutes);
             }
+            return true;
         }
+        return false;
     }
 
     private static void ParsePlayerData(JSONObject playerObject, PlayerData player)
