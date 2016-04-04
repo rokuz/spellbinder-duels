@@ -221,6 +221,108 @@
 	<data name="Spell.WILDFIRE" xml:space="preserve">
 		<value>Wildfire</value>
 	</data>
+	<data name="SpellDesc.BlockAB" xml:space="preserve">
+		<value>Blocks air damage bonus for a turn</value>
+	</data>
+	<data name="SpellDesc.BlockAB2" xml:space="preserve">
+		<value>Blocks air damage bonus for several turns</value>
+	</data>
+	<data name="SpellDesc.BlockAR" xml:space="preserve">
+		<value>Blocks air resistance bonus for a turn</value>
+	</data>
+	<data name="SpellDesc.BlockAR2" xml:space="preserve">
+		<value>Blocks air resistance bonus for several turns</value>
+	</data>
+	<data name="SpellDesc.BlockDef" xml:space="preserve">
+		<value>Blocks defense for a turn</value>
+	</data>
+	<data name="SpellDesc.BlockDef2" xml:space="preserve">
+		<value>Blocks defense for several turns</value>
+	</data>
+	<data name="SpellDesc.BlockDmg" xml:space="preserve">
+		<value>Blocks damage for a turn</value>
+	</data>
+	<data name="SpellDesc.BlockDmg2" xml:space="preserve">
+		<value>Blocks damage for several turns</value>
+	</data>
+	<data name="SpellDesc.BlockFB" xml:space="preserve">
+		<value>Blocks fire damage bonus for a turn</value>
+	</data>
+	<data name="SpellDesc.BlockFB2" xml:space="preserve">
+		<value>Blocks fire damage bonus for several turns</value>
+	</data>
+	<data name="SpellDesc.BlockFR" xml:space="preserve">
+		<value>Blocks fire resistance bonus for a turn</value>
+	</data>
+	<data name="SpellDesc.BlockFR2" xml:space="preserve">
+		<value>Blocks fire resistance bonus for several turns</value>
+	</data>
+	<data name="SpellDesc.BlockHeal" xml:space="preserve">
+		<value>Blocks healing for a turn</value>
+	</data>
+	<data name="SpellDesc.BlockHeal2" xml:space="preserve">
+		<value>Blocks healing for several turns</value>
+	</data>
+	<data name="SpellDesc.BlockWB" xml:space="preserve">
+		<value>Blocks water damage bonus for a turn</value>
+	</data>
+	<data name="SpellDesc.BlockWB2" xml:space="preserve">
+		<value>Blocks water damage bonus for several turns</value>
+	</data>
+	<data name="SpellDesc.BlockWR" xml:space="preserve">
+		<value>Blocks water resistance bonus for a turn</value>
+	</data>
+	<data name="SpellDesc.BlockWR2" xml:space="preserve">
+		<value>Blocks water resistance bonus for several turns</value>
+	</data>
+	<data name="SpellDesc.ClearAB" xml:space="preserve">
+		<value>Removes air damage bonus curse from the caster</value>
+	</data>
+	<data name="SpellDesc.ClearAR" xml:space="preserve">
+		<value>Removes air resistance curse from the caster</value>
+	</data>
+	<data name="SpellDesc.ClearDef" xml:space="preserve">
+		<value>Removes defense curse from the caster</value>
+	</data>
+	<data name="SpellDesc.ClearDmg" xml:space="preserve">
+		<value>Removes damage curse from the caster</value>
+	</data>
+	<data name="SpellDesc.ClearFB" xml:space="preserve">
+		<value>Removes fire damage bonus curse from the caster</value>
+	</data>
+	<data name="SpellDesc.ClearFR" xml:space="preserve">
+		<value>Removes fire resistance curse from the caster</value>
+	</data>
+	<data name="SpellDesc.ClearHeal" xml:space="preserve">
+		<value>Removes healing curse from the caster</value>
+	</data>
+	<data name="SpellDesc.ClearWB" xml:space="preserve">
+		<value>Removes water damage bonus curse from the caster</value>
+	</data>
+	<data name="SpellDesc.ClearWR" xml:space="preserve">
+		<value>Removes water resistance curse from the caster</value>
+	</data>
+	<data name="SpellDesc.ConsiderDef" xml:space="preserve">
+		<value>Does not consider opponent's defense</value>
+	</data>
+	<data name="SpellDesc.ConsiderRes" xml:space="preserve">
+		<value>Does not consider opponent's resistance</value>
+	</data>
+	<data name="SpellDesc.Damage" xml:space="preserve">
+		<value>Damage</value>
+	</data>
+	<data name="SpellDesc.Defense" xml:space="preserve">
+		<value>Defense</value>
+	</data>
+	<data name="SpellDesc.Health" xml:space="preserve">
+		<value>Health</value>
+	</data>
+	<data name="SpellDesc.Level" xml:space="preserve">
+		<value>level</value>
+	</data>
+	<data name="SpellDesc.RemoveDef" xml:space="preserve">
+		<value>Resets opponent's defense</value>
+	</data>
 	<data name="Temp.Shop" xml:space="preserve">
 		<value>Tournament will be available soon</value>
 	</data>

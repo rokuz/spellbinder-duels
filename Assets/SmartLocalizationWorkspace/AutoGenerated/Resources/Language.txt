@@ -221,10 +221,112 @@
 	<data name="Spell.WILDFIRE" xml:space="preserve">
 		<value />
 	</data>
+	<data name="SpellDesc.BlockAB" xml:space="preserve">
+		<value />
+	</data>
+	<data name="SpellDesc.BlockAB2" xml:space="preserve">
+		<value />
+	</data>
+	<data name="SpellDesc.BlockAR" xml:space="preserve">
+		<value />
+	</data>
+	<data name="SpellDesc.BlockAR2" xml:space="preserve">
+		<value />
+	</data>
+	<data name="SpellDesc.BlockDef" xml:space="preserve">
+		<value />
+	</data>
+	<data name="SpellDesc.BlockDef2" xml:space="preserve">
+		<value />
+	</data>
+	<data name="SpellDesc.BlockDmg" xml:space="preserve">
+		<value />
+	</data>
+	<data name="SpellDesc.BlockDmg2" xml:space="preserve">
+		<value />
+	</data>
+	<data name="SpellDesc.BlockFB" xml:space="preserve">
+		<value />
+	</data>
+	<data name="SpellDesc.BlockFB2" xml:space="preserve">
+		<value />
+	</data>
+	<data name="SpellDesc.BlockFR" xml:space="preserve">
+		<value />
+	</data>
+	<data name="SpellDesc.BlockFR2" xml:space="preserve">
+		<value />
+	</data>
+	<data name="SpellDesc.BlockHeal" xml:space="preserve">
+		<value />
+	</data>
+	<data name="SpellDesc.BlockHeal2" xml:space="preserve">
+		<value />
+	</data>
+	<data name="SpellDesc.BlockWB" xml:space="preserve">
+		<value />
+	</data>
+	<data name="SpellDesc.BlockWB2" xml:space="preserve">
+		<value />
+	</data>
+	<data name="SpellDesc.BlockWR" xml:space="preserve">
+		<value />
+	</data>
+	<data name="SpellDesc.BlockWR2" xml:space="preserve">
+		<value />
+	</data>
+	<data name="SpellDesc.ConsiderDef" xml:space="preserve">
+		<value />
+	</data>
+	<data name="SpellDesc.ConsiderRes" xml:space="preserve">
+		<value />
+	</data>
+	<data name="SpellDesc.Damage" xml:space="preserve">
+		<value />
+	</data>
+	<data name="SpellDesc.Defense" xml:space="preserve">
+		<value />
+	</data>
+	<data name="SpellDesc.Health" xml:space="preserve">
+		<value />
+	</data>
+	<data name="SpellDesc.Level" xml:space="preserve">
+		<value />
+	</data>
+	<data name="SpellDesc.RemoveDef" xml:space="preserve">
+		<value />
+	</data>
 	<data name="Temp.Shop" xml:space="preserve">
 		<value />
 	</data>
 	<data name="Temp.Tournament" xml:space="preserve">
+		<value />
+	</data>
+	<data name="SpellDesc.ClearDmg" xml:space="preserve">
+		<value />
+	</data>
+	<data name="SpellDesc.ClearHeal" xml:space="preserve">
+		<value />
+	</data>
+	<data name="SpellDesc.ClearDef" xml:space="preserve">
+		<value />
+	</data>
+	<data name="SpellDesc.ClearFB" xml:space="preserve">
+		<value />
+	</data>
+	<data name="SpellDesc.ClearWB" xml:space="preserve">
+		<value />
+	</data>
+	<data name="SpellDesc.ClearAB" xml:space="preserve">
+		<value />
+	</data>
+	<data name="SpellDesc.ClearFR" xml:space="preserve">
+		<value />
+	</data>
+	<data name="SpellDesc.ClearWR" xml:space="preserve">
+		<value />
+	</data>
+	<data name="SpellDesc.ClearAR" xml:space="preserve">
 		<value />
 	</data>
 </root>

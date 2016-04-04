@@ -6,113 +6,116 @@ public static class UIUtils
 {
     public static string GetFormattedString(ProfileData profileData)
     {
-        return string.Format("{0}\n{1} {2}", profileData.name, LanguageManager.Instance.GetTextValue("Player.Level"), profileData.level);
+        return string.Format("{0}\n{1} {2}", profileData.name, i18n("Player.Level"), profileData.level);
     }
-
-	/*
-	// Number of turns in which opponent's damage bonuses are blocked
-	public int[] blockBonusTurns = new int[] { 0, 0, 0 };
-
-	// Number of turns in which opponent's resistance bonuses are blocked
-	public int[] blockResistanceTurns = new int[] { 0, 0, 0 };
-
-	// If a spell consider opponent's resistance
-	public boolean considerResistance = true;
-
-	// If a spell consider opponent's defense
-	public boolean considerDefense = true;
-
-	// If a spell remove opponent's defense
-	public boolean removeDefense = false;
-
-	// If a spell clear player's damage curse
-	public boolean clearDamageCurse = false;
-
-	// If a spell clear player's healing curse
-	public boolean clearHealingCurse = false;
-
-	// If a spell clear player's defense curse
-	public boolean clearDefenseCurse = false;
-
-	// If a spell clear player's bonus curse
-	public boolean[] clearBonusCurse = new boolean[] { false, false, false };
-
-	// If a spell clear player's resistance curse
-	public boolean[] clearResistanceCurse = new boolean[] { false, false, false };
-	*/
-
+       
 	public static string GetSpellDescription(JSONObject spellObject)
-	{
-		StringBuilder builder = new StringBuilder();
-		JSONObject obj = spellObject.GetField("damage");
-		if (obj != null)
-		{
-			builder.Append("Damage" + " ");
-			builder.Append(obj.i);
-			builder.Append("\n");
-		}
+    {
+        StringBuilder builder = new StringBuilder();
+        JSONObject obj = spellObject.GetField("damage");
+        if (obj != null)
+        {
+            builder.Append(i18n("SpellDesc.Damage") + " ");
+            builder.Append(obj.i);
+            builder.Append("\n");
+        }
 
-		obj = spellObject.GetField("defense");
-		if (obj != null)
-		{
-			builder.Append("Defense" + " +");
-			builder.Append(obj.i);
-			builder.Append("\n");
-		}
+        obj = spellObject.GetField("defense");
+        if (obj != null)
+        {
+            builder.Append(i18n("SpellDesc.Defense") + " +");
+            builder.Append(obj.i);
+            builder.Append("\n");
+        }
 			
-		obj = spellObject.GetField("healing");
-		if (obj != null)
-		{
-			builder.Append("Health" + " +");
-			builder.Append(obj.i);
-			builder.Append("\n");
-		}
+        obj = spellObject.GetField("healing");
+        if (obj != null)
+        {
+            builder.Append(i18n("SpellDesc.Health") + " +");
+            builder.Append(obj.i);
+            builder.Append("\n");
+        }
 
-		obj = spellObject.GetField("blockDamageTurns");
-		if (obj != null)
-		{
-			if (obj.i == 1)
-			{
-				builder.Append ("Blocks damage for a turn\n");
-			}
-			else
-			{
-				builder.Append ("Blocks damage for several turn (");
-				builder.Append (obj.i);
-				builder.Append (")\n");
-			}
-		}
+        FillBlockProperty(builder, spellObject, "blockDamageTurns", i18n("SpellDesc.BlockDmg"), i18n("SpellDesc.BlockDmg2"));
+        FillBlockProperty(builder, spellObject, "blockHealingTurns", i18n("SpellDesc.BlockHeal"), i18n("SpellDesc.BlockHeal2"));
+        FillBlockProperty(builder, spellObject, "blockDefenseTurns", i18n("SpellDesc.BlockDef"), i18n("SpellDesc.BlockDef2"));
 
-		obj = spellObject.GetField("blockHealingTurns");
-		if (obj != null)
-		{
-			if (obj.i == 1)
-			{
-				builder.Append ("Blocks healing for a turn\n");
-			}
-			else
-			{
-				builder.Append ("Blocks healing for several turn (");
-				builder.Append (obj.i);
-				builder.Append (")\n");
-			}
-		}
+        FillBlockProperty(builder, spellObject, "blockFireBonusTurns", i18n("SpellDesc.BlockFB"), i18n("SpellDesc.BlockFB2"));
+        FillBlockProperty(builder, spellObject, "blockWaterBonusTurns", i18n("SpellDesc.BlockWB"), i18n("SpellDesc.BlockWB2"));
+        FillBlockProperty(builder, spellObject, "blockAirBonusTurns", i18n("SpellDesc.BlockAB"), i18n("SpellDesc.BlockAB2"));
 
-		obj = spellObject.GetField("blockDefenseTurns");
-		if (obj != null)
-		{
-			if (obj.i == 1)
-			{
-				builder.Append ("Blocks defense for a turn\n");
-			}
-			else
-			{
-				builder.Append ("Blocks defense for several turn (");
-				builder.Append (obj.i);
-				builder.Append (")\n");
-			}
-		}
-			
+        FillBlockProperty(builder, spellObject, "blockFireResistanceTurns", i18n("SpellDesc.BlockFR"), i18n("SpellDesc.BlockFR2"));
+        FillBlockProperty(builder, spellObject, "blockWaterResistanceTurns", i18n("SpellDesc.BlockWR"), i18n("SpellDesc.BlockWR2"));
+        FillBlockProperty(builder, spellObject, "blockAirResistanceTurns", i18n("SpellDesc.BlockAR"), i18n("SpellDesc.BlockAR2"));
+
+        obj = spellObject.GetField("considerResistance");
+        if (obj != null && !obj.b)
+        {
+            builder.Append(i18n("SpellDesc.ConsiderRes"));
+            builder.Append("\n");
+        }
+
+        obj = spellObject.GetField("considerDefense");
+        if (obj != null && !obj.b)
+        {
+            builder.Append(i18n("SpellDesc.ConsiderDef"));
+            builder.Append("\n");
+        }
+
+        obj = spellObject.GetField("removeDefense");
+        if (obj != null && obj.b)
+        {
+            builder.Append(i18n("SpellDesc.RemoveDef"));
+            builder.Append("\n");
+        }
+
+        FillClearProperty(builder, spellObject, "clearDamageCurse", i18n("SpellDesc.ClearDmg"));
+        FillClearProperty(builder, spellObject, "clearHealingCurse", i18n("SpellDesc.ClearHeal"));
+        FillClearProperty(builder, spellObject, "clearDefenseCurse", i18n("SpellDesc.ClearDef"));
+
+        FillClearProperty(builder, spellObject, "clearFireBonusCurse", i18n("SpellDesc.ClearFB"));
+        FillClearProperty(builder, spellObject, "clearWaterBonusCurse", i18n("SpellDesc.ClearWB"));
+        FillClearProperty(builder, spellObject, "clearAirBonusCurse", i18n("SpellDesc.ClearAB"));
+
+        FillClearProperty(builder, spellObject, "clearFireResistanceCurse", i18n("SpellDesc.ClearFR"));
+        FillClearProperty(builder, spellObject, "clearWaterResistanceCurse", i18n("SpellDesc.ClearWR"));
+        FillClearProperty(builder, spellObject, "clearAirResistanceCurse", i18n("SpellDesc.ClearAR"));
+
 		return builder.ToString();
 	}
+
+    private static string i18n(string s)
+    {
+        return LanguageManager.Instance.GetTextValue(s);
+    }
+
+    private static void FillBlockProperty(StringBuilder builder, JSONObject spellObject, string field, string s1, string s2)
+    {
+        JSONObject obj = spellObject.GetField(field);
+        if (obj != null)
+        {
+            if (obj.i == 1)
+            {
+                builder.Append(s1);
+                builder.Append("\n");
+            }
+            else
+            {
+                builder.Append(s2);
+                builder.Append(" (");
+                builder.Append(obj.i);
+                builder.Append(")\n");
+            }
+        }
+    }
+
+    private static void FillClearProperty(StringBuilder builder, JSONObject spellObject, string field, string s)
+    {
+        JSONObject obj = spellObject.GetField(field);
+        if (obj != null && obj.b)
+        {
+            builder.Append(s);
+            builder.Append("\n");
+        }
+    }
 }

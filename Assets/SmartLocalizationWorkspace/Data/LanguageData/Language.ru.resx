@@ -221,6 +221,108 @@
 	<data name="Spell.WILDFIRE" xml:space="preserve">
 		<value>Лесной пожар</value>
 	</data>
+	<data name="SpellDesc.BlockAB" xml:space="preserve">
+		<value>Блокирует бонус к урону воздухом на 1 ход</value>
+	</data>
+	<data name="SpellDesc.BlockAB2" xml:space="preserve">
+		<value>Блокирует бонус к урону воздухом на несколько ходов</value>
+	</data>
+	<data name="SpellDesc.BlockAR" xml:space="preserve">
+		<value>Блокирует сопротивление магии воздуха на 1 ход</value>
+	</data>
+	<data name="SpellDesc.BlockAR2" xml:space="preserve">
+		<value>Блокирует сопротивление магии воздуха на несколько ходов</value>
+	</data>
+	<data name="SpellDesc.BlockDef" xml:space="preserve">
+		<value>Блокирует защиту на 1 ход</value>
+	</data>
+	<data name="SpellDesc.BlockDef2" xml:space="preserve">
+		<value>Блокирует защиту на несколько ходов</value>
+	</data>
+	<data name="SpellDesc.BlockDmg" xml:space="preserve">
+		<value>Блокирует урон на 1 ход</value>
+	</data>
+	<data name="SpellDesc.BlockDmg2" xml:space="preserve">
+		<value>Блокирует урон на несколько ходов</value>
+	</data>
+	<data name="SpellDesc.BlockFB" xml:space="preserve">
+		<value>Блокирует бонус к урону огнем на 1 ход</value>
+	</data>
+	<data name="SpellDesc.BlockFB2" xml:space="preserve">
+		<value>Блокирует бонус к урону огнем на несколько ходов</value>
+	</data>
+	<data name="SpellDesc.BlockFR" xml:space="preserve">
+		<value>Блокирует сопротивление магии огня на 1 ход</value>
+	</data>
+	<data name="SpellDesc.BlockFR2" xml:space="preserve">
+		<value>Блокирует сопротивление магии огня на несколько ходов</value>
+	</data>
+	<data name="SpellDesc.BlockHeal" xml:space="preserve">
+		<value>Блокирует лечение на 1 ход</value>
+	</data>
+	<data name="SpellDesc.BlockHeal2" xml:space="preserve">
+		<value>Блокирует лечение на несколько ходов</value>
+	</data>
+	<data name="SpellDesc.BlockWB" xml:space="preserve">
+		<value>Блокирует бонус к урону водой на 1 ход</value>
+	</data>
+	<data name="SpellDesc.BlockWB2" xml:space="preserve">
+		<value>Блокирует бонус к урону водой на несколько ходов</value>
+	</data>
+	<data name="SpellDesc.BlockWR" xml:space="preserve">
+		<value>Блокирует сопротивление магии воды на 1 ход</value>
+	</data>
+	<data name="SpellDesc.BlockWR2" xml:space="preserve">
+		<value>Блокирует сопротивление магии воды на несколько ходов</value>
+	</data>
+	<data name="SpellDesc.ClearAB" xml:space="preserve">
+		<value>Снимает проклятье с бонуса урона воздухом</value>
+	</data>
+	<data name="SpellDesc.ClearAR" xml:space="preserve">
+		<value>Снимает проклятье с сопротивления магии воздуха</value>
+	</data>
+	<data name="SpellDesc.ClearDef" xml:space="preserve">
+		<value>Снимает проклятье с защиты</value>
+	</data>
+	<data name="SpellDesc.ClearDmg" xml:space="preserve">
+		<value>Снимает проклятье с урона</value>
+	</data>
+	<data name="SpellDesc.ClearFB" xml:space="preserve">
+		<value>Снимает проклятье с бонуса урона огнем</value>
+	</data>
+	<data name="SpellDesc.ClearFR" xml:space="preserve">
+		<value>Снимает проклятье с сопротивления магии огня</value>
+	</data>
+	<data name="SpellDesc.ClearHeal" xml:space="preserve">
+		<value>Снимает проклятье с восстановления здоровья</value>
+	</data>
+	<data name="SpellDesc.ClearWB" xml:space="preserve">
+		<value>Снимает проклятье с бонуса урона водой</value>
+	</data>
+	<data name="SpellDesc.ClearWR" xml:space="preserve">
+		<value>Снимает проклятье с сопротивления магии воды</value>
+	</data>
+	<data name="SpellDesc.ConsiderDef" xml:space="preserve">
+		<value>Без учета защиты противника</value>
+	</data>
+	<data name="SpellDesc.ConsiderRes" xml:space="preserve">
+		<value>Без учета сопротивления магии противника</value>
+	</data>
+	<data name="SpellDesc.Damage" xml:space="preserve">
+		<value>Урон</value>
+	</data>
+	<data name="SpellDesc.Defense" xml:space="preserve">
+		<value>Защита</value>
+	</data>
+	<data name="SpellDesc.Health" xml:space="preserve">
+		<value>Здоровье</value>
+	</data>
+	<data name="SpellDesc.Level" xml:space="preserve">
+		<value>ур.</value>
+	</data>
+	<data name="SpellDesc.RemoveDef" xml:space="preserve">
+		<value>Снимает защиту с противника</value>
+	</data>
 	<data name="Temp.Shop" xml:space="preserve">
 		<value>Магазин временно недоступен</value>
 	</data>
