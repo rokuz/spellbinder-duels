@@ -27,4 +27,12 @@ public static class MagicUtils
         else if (str == "ILLUSION") return Magic.ILLUSION;
         throw new UnityException("Unknown magic");
     }
+
+	public static Magic[] MagicFromStrings(string[] array)
+	{
+		Magic[] a = new Magic[array.Length];
+		for (int i = 0; i < array.Length; i++)
+			a[i] = MagicFromString(array[i]);
+		return a;
+	}
 }

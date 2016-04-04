@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class SceneConnector
 {
@@ -23,6 +24,13 @@ public class SceneConnector
     }
 
     private MatchData matchData = null;
+	private List<SpellData> spells;
+
+	public List<SpellData> Spells
+	{
+		get { return spells; }
+		set { spells = value; }
+	}
 
     public void PushMatch(string matchId, ProfileData player, ProfileData opponent)
     {

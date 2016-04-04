@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using SmartLocalization;
 
-public class MainMenuController : MonoBehaviour, IProfileRequestsHandler
+public class MainMenuController : MonoBehaviour, IProfileRequestsHandler, ISpellRequestsHandler
 {
     public ServerRequest serverRequest;
     public SetNameDialog setNameDialog;
@@ -49,8 +49,7 @@ public class MainMenuController : MonoBehaviour, IProfileRequestsHandler
     }
 	
     public void Update()
-    {
-	    
+    {  
 	}
 
     public void OnPlayButtonClicked()
@@ -115,12 +114,39 @@ public class MainMenuController : MonoBehaviour, IProfileRequestsHandler
 
 #endregion
 
-    IEnumerator SynchronizeWithServerDeferred()
+#region ISpellRequestsHandler
+
+	public void OnGetAllSpells(List<SpellData> spells)
+	{
+		SceneConnector.Instance.Spells = spells;
+		spellbookDialog.Setup(spells);
+
+		this.spellbookButton.interactable = true;
+		this.playButton.interactable = true;
+		this.tournamentButton.interactable = true;
+		this.shopButton.interactable = true;
+	}
+
+	public void OnSpellError(int code)
+	{
+		messageDialog.Open(LanguageManager.Instance.GetTextValue("Message.ServerUnavailable") + " (" + code + ")",
+						   () => { StartCoroutine(GetAllSpellsDeferred()); });
+	}
+
+#endregion
+
+	private IEnumerator SynchronizeWithServerDeferred()
     {
         yield return new WaitForSeconds(0.5f);
         this.SynchronizeWithServer();
     }
 
+	private IEnumerator GetAllSpellsDeferred()
+	{
+		yield return new WaitForSeconds(0.3f);
+		this.SynchronizeWithServer();
+	}
+		
     private void SynchronizeWithServer()
     {
         if (Persistence.gameConfig.playerID.Length == 0)
@@ -133,12 +159,15 @@ public class MainMenuController : MonoBehaviour, IProfileRequestsHandler
     {
         this.playerText.text = UIUtils.GetFormattedString(profileData);
         this.playerLogo.gameObject.SetActive(true);
-        this.playButton.interactable = true;
-        this.tournamentButton.interactable = true;
-        this.spellbookButton.interactable = true;
-        this.shopButton.interactable = true;
         this.settingsButton.interactable = true;
+
+		GetAllSpells();
     }
+
+	private void GetAllSpells()
+	{
+		Request(SpellRequests.GET_ALL, null, (WWW response) => { SpellRequests.OnGetAllResponse(response, this); });
+	}
 
     private void CreateProfile()
     {
