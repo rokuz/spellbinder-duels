@@ -15,19 +15,16 @@ public class SetNameDialog : MonoBehaviour, ISetProfileNameRequestHandler
 
     public delegate void OnClose();
 
+    private bool splashWasActive;
     private ProfileData profileData;
     private OnClose onCloseHandler;
 
-    //private Image panel;
-
 	public void Start()
     {
-        headerText.text = LanguageManager.Instance.GetTextValue("SetName.SetupName");
         gameObject.SetActive(false);
         warningText.gameObject.SetActive(false);
         okButton.interactable = true;
         nameEditbox.interactable = true;
-        //panel = gameObject.GetComponent<Image>();
 	}
 
 	public void Update()
@@ -36,22 +33,33 @@ public class SetNameDialog : MonoBehaviour, ISetProfileNameRequestHandler
 
     public void Open(ProfileData profileData, OnClose onCloseHandler)
     {
+        headerText.text = LanguageManager.Instance.GetTextValue("SetName.SetupName");
+        warningText.gameObject.SetActive(false);
+        okButton.interactable = true;
+        nameEditbox.interactable = true;
+
         this.profileData = profileData;
         this.onCloseHandler = onCloseHandler;
 
+        this.nameEditbox.text = profileData.name;
+
         gameObject.SetActive(true);
-        if (!splash.IsActive())
+        splashWasActive = splash.IsActive();
+        if (!splashWasActive)
             splash.gameObject.SetActive(true);
     }
 
     public void Close()
     {
-        if (splash.IsActive())
+        if (!splashWasActive && splash.IsActive())
             splash.gameObject.SetActive(false);
 
         okButton.interactable = true;
         nameEditbox.interactable = true;
         gameObject.SetActive(false);
+
+        if (onCloseHandler != null)
+            onCloseHandler();
     }
 
     public void OnOkButtonClicked()
@@ -70,6 +78,12 @@ public class SetNameDialog : MonoBehaviour, ISetProfileNameRequestHandler
             return;
         }
 
+        if (this.profileData.name == name)
+        {
+            Close();
+            return;
+        }
+
         nameEditbox.interactable = false;
         okButton.interactable = false;
         Dictionary<string, string> p = new Dictionary<string, string>();
@@ -83,8 +97,6 @@ public class SetNameDialog : MonoBehaviour, ISetProfileNameRequestHandler
     {
         this.profileData.name = nameEditbox.text;
         Close();
-        if (onCloseHandler != null)
-            onCloseHandler();
     }
 
     public void OnDuplicateProfileName()

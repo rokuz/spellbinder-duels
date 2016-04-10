@@ -22,6 +22,9 @@ public class SpellbookDialog : MonoBehaviour
     public Sprite illusionIconSprite;
 
 	private SpellData[] allSpells;
+    private GameObject[] spellInfos;
+
+    private ProfileData profileData;
 
     public delegate void OnClose();
     private OnClose onCloseHandler;
@@ -44,6 +47,7 @@ public class SpellbookDialog : MonoBehaviour
 		const float kSpacing = 10.0f;
 		float startOffsetY = -kSpacing;
 		float height = 0;
+        spellInfos = new GameObject[allSpells.Length];
 		for (int i = 0; i < allSpells.Length; i++)
 		{
 			GameObject spellInfo = Instantiate(spellInfoPrefab);
@@ -52,6 +56,8 @@ public class SpellbookDialog : MonoBehaviour
 			float h = r.height + kSpacing;
 			spellInfo.transform.GetComponent<RectTransform>().anchoredPosition = new Vector3(kSpacing, -i * h + startOffsetY, 0.0f);
 			height += h;
+
+            spellInfos[i] = spellInfo;
 
 			SpellData data = allSpells[i];
 
@@ -102,8 +108,18 @@ public class SpellbookDialog : MonoBehaviour
         CloseIfClickedOutside(this.gameObject);
     }
 
-    public void Open(OnClose onCloseHandler)
+    public void Open(ProfileData profileData, OnClose onCloseHandler)
     {
+        this.profileData = profileData;
+        if (this.profileData != null)
+        {
+            for (int i = 0; i < allSpells.Length; i++)
+            {
+                bool hasSpell = ((from s in this.profileData.spells where s == allSpells[i].type select s).Count() > 0);
+                var lockImage = (from t in spellInfos[i].GetComponentsInChildren<Image>(true) where t.gameObject.name == "Lock" select t).Single();
+                lockImage.gameObject.SetActive(!hasSpell);
+            }
+        }
         this.onCloseHandler = onCloseHandler;
 
         ScrollRect scroll = gameObject.GetComponentInChildren<ScrollRect>();

@@ -14,8 +14,8 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
 
     public ServerRequest serverRequest;
     public MessageDialog messageDialog;
-    public Image player1Info;
-    public Image player2Info;
+    public GameObject player1Info;
+    public GameObject player2Info;
     public Text gameInfo;
     public GameObject[] cards;
     public Sprite fireSprite;

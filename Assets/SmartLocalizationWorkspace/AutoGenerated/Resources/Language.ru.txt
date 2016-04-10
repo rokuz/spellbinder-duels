@@ -116,6 +116,27 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+	<data name="Char.ADB" xml:space="preserve">
+		<value>Бонус к урону магией воздуха</value>
+	</data>
+	<data name="Char.ARB" xml:space="preserve">
+		<value>Сопротивление магии воздуха</value>
+	</data>
+	<data name="Char.Experience" xml:space="preserve">
+		<value>Опыт</value>
+	</data>
+	<data name="Char.FDB" xml:space="preserve">
+		<value>Бонус к урону магией огня</value>
+	</data>
+	<data name="Char.FRB" xml:space="preserve">
+		<value>Сопротивление магии огня</value>
+	</data>
+	<data name="Char.WDB" xml:space="preserve">
+		<value>Бонус к урону магией воды</value>
+	</data>
+	<data name="Char.WRB" xml:space="preserve">
+		<value>Сопротивление магии воды</value>
+	</data>
 	<data name="Game.OpponentCasted" xml:space="preserve">
 		<value>Противник наколдовал</value>
 	</data>
@@ -143,6 +164,9 @@
 	<data name="Matching.LookingFor" xml:space="preserve">
 		<value>Поиск противника</value>
 	</data>
+	<data name="Matching.Versus" xml:space="preserve">
+		<value>против</value>
+	</data>
 	<data name="Message.ConnectionLost" xml:space="preserve">
 		<value>Сетевое соединение потеряно</value>
 	</data>
@@ -169,6 +193,27 @@
 	</data>
 	<data name="SetName.SetupName" xml:space="preserve">
 		<value>Выберите себе имя</value>
+	</data>
+	<data name="Settings.ChangeName" xml:space="preserve">
+		<value>Изменить ваше имя:</value>
+	</data>
+	<data name="Settings.ChangeNameButton" xml:space="preserve">
+		<value>Изменить</value>
+	</data>
+	<data name="Settings.GameServer" xml:space="preserve">
+		<value>Адрес игрового сервера</value>
+	</data>
+	<data name="Settings.Login" xml:space="preserve">
+		<value>Логин в Facebook</value>
+	</data>
+	<data name="Settings.LoginDesc" xml:space="preserve">
+		<value>Это откроет вам специальные игровые возможности и поможет нам восстановить ваш игровой профиль в случае переустановки игры или смены устройства.</value>
+	</data>
+	<data name="Settings.MusicVolume" xml:space="preserve">
+		<value>Громкость музыки</value>
+	</data>
+	<data name="Settings.Title" xml:space="preserve">
+		<value>Настройки</value>
 	</data>
 	<data name="Spell.BLEEDING" xml:space="preserve">
 		<value>Кровотечение</value>

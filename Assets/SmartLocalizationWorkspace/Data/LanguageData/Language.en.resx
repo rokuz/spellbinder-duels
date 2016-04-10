@@ -116,6 +116,27 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+	<data name="Char.ADB" xml:space="preserve">
+		<value>Air damage bonus</value>
+	</data>
+	<data name="Char.ARB" xml:space="preserve">
+		<value>Air resistance bonus</value>
+	</data>
+	<data name="Char.Experience" xml:space="preserve">
+		<value>Experience</value>
+	</data>
+	<data name="Char.FDB" xml:space="preserve">
+		<value>Fire damage bonus</value>
+	</data>
+	<data name="Char.FRB" xml:space="preserve">
+		<value>Fire resistance bonus</value>
+	</data>
+	<data name="Char.WDB" xml:space="preserve">
+		<value>Water damage bonus</value>
+	</data>
+	<data name="Char.WRB" xml:space="preserve">
+		<value>Water resistance bonus</value>
+	</data>
 	<data name="Game.OpponentCasted" xml:space="preserve">
 		<value>Opponent casted</value>
 	</data>
@@ -143,6 +164,9 @@
 	<data name="Matching.LookingFor" xml:space="preserve">
 		<value>Looking for</value>
 	</data>
+	<data name="Matching.Versus" xml:space="preserve">
+		<value>vs</value>
+	</data>
 	<data name="Message.ConnectionLost" xml:space="preserve">
 		<value>The connection was lost</value>
 	</data>
@@ -169,6 +193,27 @@
 	</data>
 	<data name="SetName.SetupName" xml:space="preserve">
 		<value>Set up your name</value>
+	</data>
+	<data name="Settings.ChangeName" xml:space="preserve">
+		<value>Change your name:</value>
+	</data>
+	<data name="Settings.ChangeNameButton" xml:space="preserve">
+		<value>Change</value>
+	</data>
+	<data name="Settings.GameServer" xml:space="preserve">
+		<value>Game server address</value>
+	</data>
+	<data name="Settings.Login" xml:space="preserve">
+		<value>Log into Facebook</value>
+	</data>
+	<data name="Settings.LoginDesc" xml:space="preserve">
+		<value>It opens special game options for you and helps us recover your profile in case of game reinstallation and device changing.</value>
+	</data>
+	<data name="Settings.MusicVolume" xml:space="preserve">
+		<value>Music volume</value>
+	</data>
+	<data name="Settings.Title" xml:space="preserve">
+		<value>Settings</value>
 	</data>
 	<data name="Spell.BLEEDING" xml:space="preserve">
 		<value>Bleeding</value>

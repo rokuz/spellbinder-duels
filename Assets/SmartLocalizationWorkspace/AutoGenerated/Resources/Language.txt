@@ -143,6 +143,9 @@
 	<data name="Matching.LookingFor" xml:space="preserve">
 		<value />
 	</data>
+	<data name="Matching.Versus" xml:space="preserve">
+		<value />
+	</data>
 	<data name="Message.ConnectionLost" xml:space="preserve">
 		<value />
 	</data>
@@ -168,6 +171,27 @@
 		<value />
 	</data>
 	<data name="SetName.SetupName" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Settings.ChangeName" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Settings.ChangeNameButton" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Settings.GameServer" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Settings.Login" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Settings.LoginDesc" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Settings.MusicVolume" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Settings.Title" xml:space="preserve">
 		<value />
 	</data>
 	<data name="Spell.BLEEDING" xml:space="preserve">
@@ -275,6 +299,33 @@
 	<data name="SpellDesc.BlockWR2" xml:space="preserve">
 		<value />
 	</data>
+	<data name="SpellDesc.ClearAB" xml:space="preserve">
+		<value />
+	</data>
+	<data name="SpellDesc.ClearAR" xml:space="preserve">
+		<value />
+	</data>
+	<data name="SpellDesc.ClearDef" xml:space="preserve">
+		<value />
+	</data>
+	<data name="SpellDesc.ClearDmg" xml:space="preserve">
+		<value />
+	</data>
+	<data name="SpellDesc.ClearFB" xml:space="preserve">
+		<value />
+	</data>
+	<data name="SpellDesc.ClearFR" xml:space="preserve">
+		<value />
+	</data>
+	<data name="SpellDesc.ClearHeal" xml:space="preserve">
+		<value />
+	</data>
+	<data name="SpellDesc.ClearWB" xml:space="preserve">
+		<value />
+	</data>
+	<data name="SpellDesc.ClearWR" xml:space="preserve">
+		<value />
+	</data>
 	<data name="SpellDesc.ConsiderDef" xml:space="preserve">
 		<value />
 	</data>
@@ -302,31 +353,25 @@
 	<data name="Temp.Tournament" xml:space="preserve">
 		<value />
 	</data>
-	<data name="SpellDesc.ClearDmg" xml:space="preserve">
+	<data name="Char.Experience" xml:space="preserve">
 		<value />
 	</data>
-	<data name="SpellDesc.ClearHeal" xml:space="preserve">
+	<data name="Char.FDB" xml:space="preserve">
 		<value />
 	</data>
-	<data name="SpellDesc.ClearDef" xml:space="preserve">
+	<data name="Char.WDB" xml:space="preserve">
 		<value />
 	</data>
-	<data name="SpellDesc.ClearFB" xml:space="preserve">
+	<data name="Char.ADB" xml:space="preserve">
 		<value />
 	</data>
-	<data name="SpellDesc.ClearWB" xml:space="preserve">
+	<data name="Char.FRB" xml:space="preserve">
 		<value />
 	</data>
-	<data name="SpellDesc.ClearAB" xml:space="preserve">
+	<data name="Char.WRB" xml:space="preserve">
 		<value />
 	</data>
-	<data name="SpellDesc.ClearFR" xml:space="preserve">
-		<value />
-	</data>
-	<data name="SpellDesc.ClearWR" xml:space="preserve">
-		<value />
-	</data>
-	<data name="SpellDesc.ClearAR" xml:space="preserve">
+	<data name="Char.ARB" xml:space="preserve">
 		<value />
 	</data>
 </root>

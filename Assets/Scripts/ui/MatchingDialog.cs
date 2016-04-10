@@ -10,8 +10,8 @@ public class MatchingDialog : MonoBehaviour, IMatchingRequestsHandler
     public ServerRequest serverRequest;
     public Text lookingForText;
     public MessageDialog messageDialog;
-    public Image player;
-    public Image opponent;
+    public GameObject player;
+    public GameObject opponent;
     public Text versusText;
 
     public delegate void OnClose();
@@ -30,6 +30,12 @@ public class MatchingDialog : MonoBehaviour, IMatchingRequestsHandler
     public void Start()
     {
         lookingForText.text = LanguageManager.Instance.GetTextValue("Matching.LookingFor");
+        if (LanguageManager.Instance.GetSystemLanguageEnglishName() == "Russian")
+        {
+            RectTransform t = lookingForText.GetComponent<RectTransform>();
+            t.anchoredPosition = new Vector2(t.anchoredPosition.x - 30.0f, t.anchoredPosition.y);
+        }
+        versusText.text = LanguageManager.Instance.GetTextValue("Matching.Versus");
         gameObject.SetActive(false);
         player.gameObject.SetActive(false);
         opponent.gameObject.SetActive(false);

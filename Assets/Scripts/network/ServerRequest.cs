@@ -5,14 +5,17 @@ using System.Text;
 
 public class ServerRequest : MonoBehaviour
 {
-    private const string kServerUrl = "http://127.0.0.1:8080/api/";
+    private const string kServerUrlStart = "http://";
+    private const string kServerUrlEnd = ":8080/api/";
 
     public delegate void OnResponse(WWW www);
 
     public void Send(string command, Dictionary<string, string> parameters, OnResponse onResponseHandler)
     {
         StringBuilder builder = new StringBuilder();
-        builder.Append(kServerUrl);
+        builder.Append(kServerUrlStart);
+        builder.Append(Persistence.gameConfig.serverAddress);
+        builder.Append(kServerUrlEnd);
         builder.Append(command);
         builder.Append("?");
         if (parameters != null)
@@ -39,7 +42,8 @@ public class ServerRequest : MonoBehaviour
             onResponseHandler(www);
     }
 
-    private string CalculateSignature() {
+    private string CalculateSignature()
+    {
         return "123";
     }
 }

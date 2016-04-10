@@ -11,6 +11,8 @@ public class ProfileData
     public string name;
     public int level;
     public int experience;
+    public int experienceToNextLevel;
+    public int experienceProgress;
     public int[] bonuses;
     public int[] resistance;
     public int coins;
@@ -80,7 +82,7 @@ public static class ProfileRequests
 
     private static void OnResponse(WWW response, IProfileRequestsHandler handler)
     {
-        if (response.error == null)
+        if (response.error == null && response.text.Length != 0)
         {
             JSONObject json = JSONObject.Create(response.text);
             int code = (int)json.GetField("code").i;
@@ -94,6 +96,8 @@ public static class ProfileRequests
                 data.name = profile.GetField("name").str;
                 data.level = (int)profile.GetField("level").n;
                 data.experience = (int)profile.GetField("experience").n;
+                data.experienceToNextLevel = (int)profile.GetField("experienceToNextLevel").n;
+                data.experienceProgress = (int)profile.GetField("experienceProgress").n;
                 data.bonuses = Utils.ToIntArray(profile.GetField("bonuses").list.ToArray());
                 data.resistance = Utils.ToIntArray(profile.GetField("resistance").list.ToArray());
                 data.coins = (int)profile.GetField("coins").n;

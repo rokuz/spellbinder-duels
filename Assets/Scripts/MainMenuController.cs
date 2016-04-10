@@ -11,7 +11,9 @@ public class MainMenuController : MonoBehaviour, IProfileRequestsHandler, ISpell
     public MatchingDialog matchingDialog;
     public MessageDialog messageDialog;
     public SpellbookDialog spellbookDialog;
-    public Image playerLogo;
+    public SettingsDialog settingsDialog;
+    public CharacterDialog characterDialog;
+    public GameObject playerLogo;
     public Button playButton;
     public Button tournamentButton;
     public Button spellbookButton;
@@ -26,8 +28,11 @@ public class MainMenuController : MonoBehaviour, IProfileRequestsHandler, ISpell
         //TEMP
         LanguageManager.Instance.ChangeLanguage("ru");
 
+        Persistence.Load();
+
         this.playerText = playerLogo.GetComponentInChildren<Text>();
         this.playerLogo.gameObject.SetActive(false);
+        playerLogo.GetComponent<PlayerInfoCollider>().Setup(OnPlayerInfoClicked);
 
         this.playButton.interactable = false;
         this.playButton.GetComponentInChildren<Text>().text = LanguageManager.Instance.GetTextValue("MainMenu.Play");
@@ -37,9 +42,11 @@ public class MainMenuController : MonoBehaviour, IProfileRequestsHandler, ISpell
 
         this.spellbookButton.interactable = false;
         this.shopButton.interactable = false;
-        this.settingsButton.interactable = false;
+        this.settingsButton.interactable = true;
 
-        Persistence.Load();
+        settingsDialog.Setup();
+        characterDialog.Setup();
+
         SynchronizeWithServer();
 	}
 
@@ -67,17 +74,31 @@ public class MainMenuController : MonoBehaviour, IProfileRequestsHandler, ISpell
     public void OnSpellbookButtonClicked()
     {
         this.spellbookButton.interactable = false;
-        spellbookDialog.Open(() => { this.spellbookButton.interactable = true; });
+        spellbookDialog.Open(profileData, () => { this.spellbookButton.interactable = true; });
     }
 
     public void OnSettingsButtonClicked()
     {
+        this.settingsButton.interactable = false;
+        settingsDialog.Open(this.profileData, () => 
+        {
+            this.settingsButton.interactable = true;
+            SynchronizeWithServer();
+        });
     }
 
     public void OnShopButtonClicked()
     {
         this.shopButton.interactable = false;
         messageDialog.Open(LanguageManager.Instance.GetTextValue("Temp.Shop"), () => { this.shopButton.interactable = true; });
+    }
+
+    public void OnPlayerInfoClicked()
+    {
+        if (characterDialog.IsOpened())
+            return;
+
+        characterDialog.Open(profileData, () => {});
     }
 
 #region IProfileRequestsHandler
@@ -108,6 +129,8 @@ public class MainMenuController : MonoBehaviour, IProfileRequestsHandler, ISpell
 
     public void OnProfileError(int code)
     {
+        if (settingsDialog.IsOpened())
+            return;
         messageDialog.Open(LanguageManager.Instance.GetTextValue("Message.ServerUnavailable") + " (" + code + ")",
                            () => { StartCoroutine(SynchronizeWithServerDeferred()); });
     }
@@ -137,7 +160,7 @@ public class MainMenuController : MonoBehaviour, IProfileRequestsHandler, ISpell
 
 	private IEnumerator SynchronizeWithServerDeferred()
     {
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(5.0f);
         this.SynchronizeWithServer();
     }
 
@@ -159,7 +182,6 @@ public class MainMenuController : MonoBehaviour, IProfileRequestsHandler, ISpell
     {
         this.playerText.text = UIUtils.GetFormattedString(profileData);
         this.playerLogo.gameObject.SetActive(true);
-        this.settingsButton.interactable = true;
 
 		GetAllSpells();
     }
