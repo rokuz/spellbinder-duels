@@ -100,6 +100,12 @@ public class MatchingDialog : MonoBehaviour, IMatchingRequestsHandler
         StartCoroutine(LoadLevelDeferred());
     }
 
+    public void OnRecoverMatch(string matchId, ProfileData opponentData)
+    {
+        SceneConnector.Instance.PushMatch(matchId, profileData, opponentData);
+        SceneManager.LoadScene("CoreGame");
+    }
+
     public void OnLookingForOpponent()
     {
         StartCoroutine(StartRequesting(0.3f));

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 public interface IMatchingRequestsHandler
 {
     void OnMatchingSuccess(string matchId, ProfileData opponentData);
+    void OnRecoverMatch(string matchId, ProfileData opponentData);
     void OnOpponentNotFound();
     void OnLookingForOpponent();
     void OnMatchingError(int code);
@@ -19,7 +20,7 @@ public static class MatchingRequests
         {
             JSONObject json = JSONObject.Create(response.text);
             int code = (int)json.GetField("code").i;
-            if (code == ServerCode.OK)
+            if (code == ServerCode.OK || code == ServerCode.YOU_ARE_PLAYING)
             {
                 string matchId = json.GetField("matchId").str;
                 JSONObject profile = json.GetField("profile");
@@ -29,7 +30,12 @@ public static class MatchingRequests
                 data.bonuses = Utils.ToIntArray(profile.GetField("bonuses").list.ToArray());
                 data.resistance = Utils.ToIntArray(profile.GetField("resistance").list.ToArray());
                 if (handler != null)
-                    handler.OnMatchingSuccess(matchId, data);
+                {
+                    if (code == ServerCode.OK)
+                        handler.OnMatchingSuccess(matchId, data);
+                    else
+                        handler.OnRecoverMatch(matchId, data);
+                }
             }
             else if (code == ServerCode.LOOKING_FOR_OPPONENT)
             {
@@ -41,7 +47,7 @@ public static class MatchingRequests
                 if (handler != null)
                     handler.OnOpponentNotFound();
             }
-            else if (code == ServerCode.BAD_SIGNATURE || code == ServerCode.UNKNOWN_PROFILE || code == ServerCode.YOU_ARE_PLAYING)
+            else if (code == ServerCode.BAD_SIGNATURE || code == ServerCode.UNKNOWN_PROFILE)
             {
                 Debug.Log("Error (" + code + "): Server request has finished with error");
                 if (handler != null)
