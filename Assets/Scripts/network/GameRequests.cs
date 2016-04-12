@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 public class PlayerData
 {
+    public int mana;
     public int health;
     public int defence;
     public int blockedDamageTurns;
@@ -29,6 +30,8 @@ public class GameData
     public float showTime;
     public float turnTime;
     public float showSubstitutesTime;
+    public int maxMana;
+    public int opponentMaxMana;
     public PlayerData player;
     public PlayerData opponent;
     public RewardData reward;
@@ -79,6 +82,8 @@ public static class GameRequests
                 {
                     gameData.gameField[i] = MagicUtils.MagicFromString(cards[i].str);
                 }
+                gameData.maxMana = (int)json.GetField("maxMana").i;
+                gameData.opponentMaxMana = (int)json.GetField("opponentMaxMana").i;
                 gameData.firstTurn = json.GetField("firstTurn").b;
                 gameData.showTime = json.GetField("showTime").i / 1000.0f;
                 gameData.turnTime = json.GetField("turnTime").i / 1000.0f;
@@ -306,6 +311,7 @@ public static class GameRequests
 
     private static void ParsePlayerData(JSONObject playerObject, PlayerData player)
     {
+        player.mana = (int)playerObject.GetField("mana").i;
         player.health = (int)playerObject.GetField("health").i;
         player.defence = (int)playerObject.GetField("defence").i;
         player.blockedDamageTurns = (int)playerObject.GetField("blockedDamageTurns").i;

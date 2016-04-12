@@ -6,6 +6,7 @@ public class SpellData
 	public string type;
 	public Magic[] combination;
 	public int minLevel;
+    public int manaCost;
 	public string desc;
 }
 
@@ -35,6 +36,7 @@ public static class SpellRequests
 					data.type = spellObj.GetField("type").str;
 					data.combination = MagicUtils.MagicFromStrings(Utils.ToStringArray(spellObj.GetField("combination").list.ToArray()));
 					data.minLevel = (int)spellObj.GetField("minLevel").i;
+                    data.manaCost = (int)spellObj.GetField("manaCost").i;
 					data.desc = UIUtils.GetSpellDescription(spellObj);
 					result.Add(data);
 				}

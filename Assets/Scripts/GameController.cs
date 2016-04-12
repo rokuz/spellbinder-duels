@@ -16,6 +16,8 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
     public MessageDialog messageDialog;
     public GameObject player1Info;
     public GameObject player2Info;
+    public GameObject crystals1;
+    public GameObject crystals2;
     public Text gameInfo;
     public GameObject[] cards;
     public Sprite fireSprite;
@@ -86,6 +88,9 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
         player1Text = player1Info.GetComponentInChildren<Text>();
         player2Text = player2Info.GetComponentInChildren<Text>();
 
+        crystals1.SetActive(false);
+        crystals2.SetActive(false);
+
         matchData = SceneConnector.Instance.PopMatch();
         if (matchData != null)
         {
@@ -120,6 +125,10 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
         this.gameData = gameData;
         youTurn = !this.gameData.firstTurn;
         SetupGameField();
+        crystals1.SetActive(true);
+        crystals2.SetActive(true);
+        SetMana(crystals1, gameData.player, gameData.maxMana);
+        SetMana(crystals2, gameData.opponent, gameData.opponentMaxMana);
         Ping();
     }
 
@@ -181,6 +190,7 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
 
         player1Text.text = GetPlayerInfo(matchData.player, player);
         player2Text.text = GetPlayerInfo(matchData.opponent, opponent);
+        UpdateMana(player, opponent);
 
         Ping();
     }
@@ -202,6 +212,7 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
 
         player1Text.text = GetPlayerInfo(matchData.player, player);
         player2Text.text = GetPlayerInfo(matchData.opponent, opponent);
+        UpdateMana(player, opponent);
 
         Ping();
     }
@@ -216,6 +227,7 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
 
         player1Text.text = GetPlayerInfo(matchData.player, player);
         player2Text.text = GetPlayerInfo(matchData.opponent, opponent);
+        UpdateMana(player, opponent);
 
         SubstituteCards(substitutes);
         StartCoroutine(ProcessCardsAfterTurn());
@@ -577,13 +589,33 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
         return builder.ToString();
     }
 
-    int GetBonus(ProfileData profile, int index)
+    private int GetBonus(ProfileData profile, int index)
     {
         return profile.bonuses[index] / 1000;
     }
 
-    int GetResistance(ProfileData profile, int index)
+    private int GetResistance(ProfileData profile, int index)
     {
         return profile.resistance[index] / 1000;
+    }
+
+    private void UpdateMana(PlayerData player, PlayerData opponent)
+    {
+        SetMana(crystals1, player, gameData.maxMana);
+        SetMana(crystals2, opponent, gameData.opponentMaxMana);
+    }
+
+    private void SetMana(GameObject crystals, PlayerData data, int maxMana)
+    {
+        int kMaxOverallMana = 5;
+        for (int i = 1; i <= kMaxOverallMana; i++)
+        {
+            Image img = (from r in crystals.GetComponentsInChildren<Image>(true) where r.gameObject.name == ("crystal" + i) select r).Single();
+            img.gameObject.SetActive(i <= maxMana);
+            if (i <= data.mana)
+            {
+                img.color = new Color(47.0f / 255.0f, 61.0f / 255.0f, 128.0f / 255.0f);
+            }
+        }
     }
 }

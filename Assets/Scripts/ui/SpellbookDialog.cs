@@ -72,6 +72,9 @@ public class SpellbookDialog : MonoBehaviour
 			Text desc = (from t in spellInfo.GetComponentsInChildren<Text>() where t.gameObject.name == "SpellDesc" select t).Single();
 			desc.text = data.desc;
 
+            Text manaCost = (from t in spellInfo.GetComponentsInChildren<Text>() where t.gameObject.name == "ManaCost" select t).Single();
+            manaCost.text = "" + data.manaCost;
+
             if (data.combination.Length == 2)
             {
                 var obj = (from t in spellInfo.GetComponentsInChildren<Image>() where t.gameObject.name == "Icon1" select t).Single();
