@@ -30,6 +30,9 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
     public Sprite bloodSprite;
     public Sprite illusionSprite;
 
+    public GameObject fireballPrefab;
+    public GameObject iceSpearPrefab;
+
     private Text player1Text;
     private Text player2Text;
 
@@ -41,6 +44,12 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
     private bool youTurn = false;
     private bool cardsOpened = false;
     private int[] cardIndices = null;
+
+    private int currentMana = 0;
+    private int currentOpponentMana = 0;
+
+    private PlayerData lastPlayerData;
+    private PlayerData lastOpponentData;
 
     class SwappingInfo
     {
@@ -103,6 +112,14 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
             if (serverRequest != null)
                 serverRequest.Send(GameRequests.START_MATCH, p, (WWW response) => { GameRequests.OnStartMatchResponse(response, this); });
         }
+
+        //Vector3 pos = player2Info.transform.position;
+        //GameObject obj = Instantiate(iceSpearPrefab);
+        //Vector3 dir = pos - obj.transform.position;
+        //dir.z = 0;
+        //dir.Normalize();
+        //obj.transform.forward = dir;
+        //obj.transform.Rotate(0.0f, 0.0f, 90.0f);
 	}
 
     public void Update()
@@ -127,8 +144,10 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
         SetupGameField();
         crystals1.SetActive(true);
         crystals2.SetActive(true);
-        SetMana(crystals1, gameData.player, gameData.maxMana);
-        SetMana(crystals2, gameData.opponent, gameData.opponentMaxMana);
+        currentMana = 0;
+        currentOpponentMana = 0;
+        SetMana(crystals1, gameData.player, currentMana, gameData.maxMana);
+        SetMana(crystals2, gameData.opponent, currentOpponentMana, gameData.opponentMaxMana);
         Ping();
     }
 
@@ -159,14 +178,20 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
         Ping();
     }
 
-    public void OnWin(PlayerData player, PlayerData opponent, string spell, RewardData reward)
+    public void OnWin(PlayerData player, PlayerData opponent, string spell, int spellCost, RewardData reward)
     {
+        lastPlayerData = player;
+        lastOpponentData = opponent;
+
         //TODO
         this.BackToMainMenu();
     }
 
     public void OnLose(PlayerData player, PlayerData opponent, RewardData reward, bool delay)
     {
+        lastPlayerData = player;
+        lastOpponentData = opponent;
+
         //TODO
         this.BackToMainMenu();
     }
@@ -179,19 +204,23 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
     private IEnumerator ProcessYourTurn(PlayerData player, PlayerData opponent, float delaySec)
     {
         yield return new WaitForSeconds(delaySec);
+
+        lastPlayerData = player;
+        lastOpponentData = opponent;
+
         if (!youTurn)
         {
             CloseAllOpenedCards();
             cardsOpened = false;
             cardIndices = null;
             youTurn = true;
+            UpdateManaBeforeTurn(player, opponent);
             StartCoroutine(ShowGameInfo(LanguageManager.Instance.GetTextValue("Game.YourTurn"), 1.0f));
         }
 
         player1Text.text = GetPlayerInfo(matchData.player, player);
         player2Text.text = GetPlayerInfo(matchData.opponent, opponent);
-        UpdateMana(player, opponent);
-
+        
         Ping();
     }
 
@@ -203,53 +232,64 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
     private IEnumerator ProcessOpponentTurn(PlayerData player, PlayerData opponent, float delaySec)
     {
         yield return new WaitForSeconds(delaySec);
+
+        lastPlayerData = player;
+        lastOpponentData = opponent;
+
         if (youTurn)
         {
             CloseAllOpenedCards();
             youTurn = false;
+            UpdateManaBeforeTurn(player, opponent);
             StartCoroutine(ShowGameInfo(LanguageManager.Instance.GetTextValue("Game.OpponentTurn"), 1.0f));
         }
 
         player1Text.text = GetPlayerInfo(matchData.player, player);
         player2Text.text = GetPlayerInfo(matchData.opponent, opponent);
-        UpdateMana(player, opponent);
 
         Ping();
     }
 
-    public void OnSpellCasted(PlayerData player, PlayerData opponent, string spell, Dictionary<int, Magic> substitutes)
+    public void OnSpellCasted(PlayerData player, PlayerData opponent, string spell, int spellCost, Dictionary<int, Magic> substitutes)
     {
         //TODO: show spell animation
         //TEMP
+
+        UpdateManaAfterSpellCast(true, lastPlayerData, spellCost);
+
+        lastPlayerData = player;
+        lastOpponentData = opponent;
+
         string spellName = LanguageManager.Instance.GetTextValue("Spell." + spell);
         if (spellName.Length == 0) spellName = spell;
         StartCoroutine(ShowGameInfo(LanguageManager.Instance.GetTextValue("Game.YouCasted") + " " + spellName, 1.0f));
 
         player1Text.text = GetPlayerInfo(matchData.player, player);
         player2Text.text = GetPlayerInfo(matchData.opponent, opponent);
-        UpdateMana(player, opponent);
 
         SubstituteCards(substitutes);
         StartCoroutine(ProcessCardsAfterTurn());
         StartCoroutine(StartPingRequesting(3 * kAnimationTimeSec));
     }
 
-    public void OnSpellMiscasted()
+    public void OnSpellMiscasted(int spellCost)
     {
         //TODO: show spell animation
         //TEMP
         StartCoroutine(ShowGameInfo(LanguageManager.Instance.GetTextValue("Game.YouMiscasted"), 1.0f));
 
+        UpdateManaAfterSpellCast(true, lastPlayerData, spellCost);
+
         StartCoroutine(ProcessCardsAfterTurn());
         StartCoroutine(StartPingRequesting(3 * kAnimationTimeSec)); 
     }
 
-    public void OnOpponentSpellCasted(int[] openedCards, string spell, Dictionary<int, Magic> substitutes)
+    public void OnOpponentSpellCasted(int[] openedCards, string spell, int spellCost, Dictionary<int, Magic> substitutes)
     {
-        StartCoroutine(OpponentCastsSpell(openedCards, spell, substitutes));
+        StartCoroutine(OpponentCastsSpell(openedCards, spell, spellCost, substitutes));
     }
 
-    private IEnumerator OpponentCastsSpell(int[] openedCards, string spell, Dictionary<int, Magic> substitutes)
+    private IEnumerator OpponentCastsSpell(int[] openedCards, string spell, int spellCost, Dictionary<int, Magic> substitutes)
     {
         for (int i = 0; i < openedCards.Length; i++)
             SwapCard(openedCards[i]);
@@ -262,16 +302,18 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
         if (spellName.Length == 0) spellName = spell;
         StartCoroutine(ShowGameInfo(LanguageManager.Instance.GetTextValue("Game.OpponentCasted") + " " + spellName, 1.0f));
 
+        UpdateManaAfterSpellCast(false, lastOpponentData, spellCost);
+
         SubstituteCards(substitutes);
         StartCoroutine(ProcessCardsAfterTurn());
     }
 
-    public void OnOpponentSpellMiscasted(int[] openedCards, string spell)
+    public void OnOpponentSpellMiscasted(int[] openedCards, string spell, int spellCost)
     {
-        StartCoroutine(OpponentMiscastsSpell(openedCards, spell));
+        StartCoroutine(OpponentMiscastsSpell(openedCards, spell, spellCost));
     }
 
-    private IEnumerator OpponentMiscastsSpell(int[] openedCards, string spell)
+    private IEnumerator OpponentMiscastsSpell(int[] openedCards, string spell, int spellCost)
     {
         for (int i = 0; i < openedCards.Length; i++)
             SwapCard(openedCards[i]);
@@ -281,6 +323,8 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
         //TODO: show spell animation
         //TEMP
         StartCoroutine(ShowGameInfo(LanguageManager.Instance.GetTextValue("Game.OpponentMiscasted"), 1.0f));
+
+        UpdateManaAfterSpellCast(false, lastOpponentData, spellCost);
 
         StartCoroutine(ProcessCardsAfterTurn());  
     }
@@ -364,6 +408,7 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
         }
         yield return new WaitForSeconds(2 * kAnimationTimeSec);
         CloseAllOpenedCards();
+        cardsOpened = false;
     }
 
     private void CloseAllOpenedCards()
@@ -599,13 +644,29 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
         return profile.resistance[index] / 1000;
     }
 
-    private void UpdateMana(PlayerData player, PlayerData opponent)
+    private void UpdateManaBeforeTurn(PlayerData player, PlayerData opponent)
     {
-        SetMana(crystals1, player, gameData.maxMana);
-        SetMana(crystals2, opponent, gameData.opponentMaxMana);
+        currentMana = player.mana;
+        currentOpponentMana = opponent.mana;
+        SetMana(crystals1, player, currentMana, gameData.maxMana);
+        SetMana(crystals2, opponent, currentOpponentMana, gameData.opponentMaxMana);
     }
 
-    private void SetMana(GameObject crystals, PlayerData data, int maxMana)
+    private void UpdateManaAfterSpellCast(bool isPlayer, PlayerData data, int spellCost)
+    {
+        if (isPlayer) 
+        {
+            currentMana -= spellCost;
+            SetMana(crystals1, data, currentMana, gameData.maxMana);
+        }
+        else 
+        {
+            currentOpponentMana -= spellCost;
+            SetMana(crystals2, data, currentOpponentMana, gameData.opponentMaxMana);  
+        }
+    }
+
+    private void SetMana(GameObject crystals, PlayerData data, int curMana, int maxMana)
     {
         int kMaxOverallMana = 5;
         for (int i = 1; i <= kMaxOverallMana; i++)
@@ -614,7 +675,10 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
             img.gameObject.SetActive(i <= maxMana);
             if (i <= data.mana)
             {
-                img.color = new Color(47.0f / 255.0f, 61.0f / 255.0f, 128.0f / 255.0f);
+                if (i <= curMana)
+                    img.color = new Color(47.0f / 255.0f, 61.0f / 255.0f, 128.0f / 255.0f);
+                else
+                    img.color = new Color(21.0f / 255.0f, 27.0f / 255.0f, 57.0f / 255.0f);
             }
         }
     }

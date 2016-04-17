@@ -44,14 +44,14 @@ public interface IGameRequestsHandler
     void OnOpponentDisconnected(RewardData rewardData);
     void OnShowCards();
     void OnWaitForStart();
-    void OnWin(PlayerData player, PlayerData opponent, string spell, RewardData reward);
+    void OnWin(PlayerData player, PlayerData opponent, string spell, int spellCost, RewardData reward);
     void OnLose(PlayerData player, PlayerData opponent, RewardData reward, bool delay);
     void OnYourTurn(PlayerData player, PlayerData opponent, bool delay);
     void OnOpponentTurn(PlayerData player, PlayerData opponent, bool delay);
-    void OnSpellCasted(PlayerData player, PlayerData opponent, string spell, Dictionary<int, Magic> substitutes);
-    void OnSpellMiscasted();
-    void OnOpponentSpellCasted(int[] openedCards, string spell, Dictionary<int, Magic> substitutes);
-    void OnOpponentSpellMiscasted(int[] openedCards, string spell);
+    void OnSpellCasted(PlayerData player, PlayerData opponent, string spell, int spellCost, Dictionary<int, Magic> substitutes);
+    void OnSpellMiscasted(int spellCost);
+    void OnOpponentSpellCasted(int[] openedCards, string spell, int spellCost, Dictionary<int, Magic> substitutes);
+    void OnOpponentSpellMiscasted(int[] openedCards, string spell, int spellCost);
     void OnError(int code);
 }
 
@@ -223,17 +223,20 @@ public static class GameRequests
                 PlayerData opponent = new PlayerData();
                 ParsePlayerData(json.GetField("opponent"), opponent);
                 string spell = json.GetField("spell").str;
+                int spellCost = (int)json.GetField("spellCost").i;
                 var subs = json.GetField("substitutes").ToDictionary();
                 Dictionary<int, Magic> substitutes = new Dictionary<int, Magic>();
                 foreach (var key in subs.Keys)
                     substitutes.Add(System.Int32.Parse(key), MagicUtils.MagicFromString(subs[key]));
                 if (handler != null)
-                    handler.OnSpellCasted(player, opponent, spell, substitutes);
+                    handler.OnSpellCasted(player, opponent, spell, spellCost, substitutes);
             }
             else if (code == ServerCode.SPELL_MISCAST)
             {
+                JSONObject obj = json.GetField("spellCost");
+                int spellCost = (obj != null ? (int)obj.i : 0);
                 if (handler != null)
-                    handler.OnSpellMiscasted();
+                    handler.OnSpellMiscasted(spellCost);
             }
             else if (code == ServerCode.YOU_WIN)
             {
@@ -242,10 +245,11 @@ public static class GameRequests
                 PlayerData opponent = new PlayerData();
                 ParsePlayerData(json.GetField("opponent"), opponent);
                 string spell = json.GetField("spell").str;
+                int spellCost = (int)json.GetField("spellCost").i;
                 RewardData reward = new RewardData();
                 ParseReward(json.GetField("reward"), reward);
                 if (handler != null)
-                    handler.OnWin(player, opponent, spell, reward);
+                    handler.OnWin(player, opponent, spell, spellCost, reward);
             }
             else if (code == ServerCode.OPPONENT_TURN)
             {
@@ -293,6 +297,7 @@ public static class GameRequests
         {
             int[] openedCards = Utils.ToIntArray(openedCardsLists.ToArray());
             string opponentSpell = json.GetField("opponentSpell").str;
+            int spellCost = (int)json.GetField("opponentSpellCost").i;
             var subs = json.GetField("substitutes").ToDictionary();
             Dictionary<int, Magic> substitutes = new Dictionary<int, Magic>();
             foreach (var key in subs.Keys)
@@ -300,9 +305,9 @@ public static class GameRequests
             if (handler != null)
             {
                 if (substitutes.Count == 0)
-                    handler.OnOpponentSpellMiscasted(openedCards, opponentSpell);
+                    handler.OnOpponentSpellMiscasted(openedCards, opponentSpell, spellCost);
                 else
-                    handler.OnOpponentSpellCasted(openedCards, opponentSpell, substitutes);
+                    handler.OnOpponentSpellCasted(openedCards, opponentSpell, spellCost, substitutes);
             }
             return true;
         }
