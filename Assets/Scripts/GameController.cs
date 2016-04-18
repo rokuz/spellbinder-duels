@@ -11,6 +11,7 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
 {
     private const int kCardsCount = 12;
     const float kAnimationTimeSec = 1.0f;
+    const float kShiverDuration = 0.5f;
 
     public ServerRequest serverRequest;
     public MessageDialog messageDialog;
@@ -48,6 +49,11 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
     private int currentMana = 0;
     private int currentOpponentMana = 0;
 
+    private Vector3 playerInfo1Pos;
+    private Vector3 playerInfo2Pos;
+    private float startShiverTime1 = -1.0f;
+    private float startShiverTime2 = -1.0f;
+
     private PlayerData lastPlayerData;
     private PlayerData lastOpponentData;
 
@@ -60,6 +66,20 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
 
     private SwappingInfo allCardsSwapping = new SwappingInfo();
     private SwappingInfo[] openedCards = new SwappingInfo[kCardsCount];
+
+    public delegate void OnSpellAnimationFinished();
+    public class CastedSpell
+    {
+        public GameObject spellObject;
+        public OnSpellAnimationFinished onFinished;
+        public CastedSpell(GameObject spellObject, OnSpellAnimationFinished onFinished)
+        {
+            this.spellObject = spellObject;
+            this.onFinished = onFinished;
+        }
+    }
+
+    private List<CastedSpell> projectileSpells = new List<CastedSpell>();
 
     public void Start()
     {
@@ -113,17 +133,16 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
                 serverRequest.Send(GameRequests.START_MATCH, p, (WWW response) => { GameRequests.OnStartMatchResponse(response, this); });
         }
 
-        //Vector3 pos = player2Info.transform.position;
-        //GameObject obj = Instantiate(iceSpearPrefab);
-        //Vector3 dir = pos - obj.transform.position;
-        //dir.z = 0;
-        //dir.Normalize();
-        //obj.transform.forward = dir;
-        //obj.transform.Rotate(0.0f, 0.0f, 90.0f);
+        playerInfo1Pos = player1Info.transform.position;
+        playerInfo2Pos = player2Info.transform.position;
 	}
-
+    
     public void Update()
     {
+        UpdateShiver(player1Info, playerInfo1Pos, startShiverTime1);
+        UpdateShiver(player2Info, playerInfo2Pos, startShiverTime2);
+        UpdateCastedSpell();
+
         AnimateCardsSwapping();
 
         if (needRequest && matchData != null)
@@ -218,9 +237,7 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
             StartCoroutine(ShowGameInfo(LanguageManager.Instance.GetTextValue("Game.YourTurn"), 1.0f));
         }
 
-        player1Text.text = GetPlayerInfo(matchData.player, player);
-        player2Text.text = GetPlayerInfo(matchData.opponent, opponent);
-        
+        UpdatePlayersStats();
         Ping();
     }
 
@@ -244,28 +261,21 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
             StartCoroutine(ShowGameInfo(LanguageManager.Instance.GetTextValue("Game.OpponentTurn"), 1.0f));
         }
 
-        player1Text.text = GetPlayerInfo(matchData.player, player);
-        player2Text.text = GetPlayerInfo(matchData.opponent, opponent);
-
+        UpdatePlayersStats();
         Ping();
     }
 
     public void OnSpellCasted(PlayerData player, PlayerData opponent, string spell, int spellCost, Dictionary<int, Magic> substitutes)
     {
-        //TODO: show spell animation
-        //TEMP
-
         UpdateManaAfterSpellCast(true, lastPlayerData, spellCost);
 
         lastPlayerData = player;
         lastOpponentData = opponent;
+        AnimateCastedSpell(spell, true, () => { UpdatePlayersStats(); });
 
         string spellName = LanguageManager.Instance.GetTextValue("Spell." + spell);
         if (spellName.Length == 0) spellName = spell;
         StartCoroutine(ShowGameInfo(LanguageManager.Instance.GetTextValue("Game.YouCasted") + " " + spellName, 1.0f));
-
-        player1Text.text = GetPlayerInfo(matchData.player, player);
-        player2Text.text = GetPlayerInfo(matchData.opponent, opponent);
 
         SubstituteCards(substitutes);
         StartCoroutine(ProcessCardsAfterTurn());
@@ -296,8 +306,7 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
 
         yield return new WaitForSeconds(kAnimationTimeSec);
 
-        //TODO: show spell animation
-        //TEMP
+        AnimateCastedSpell(spell, false, () => { UpdatePlayersStats(); });
         string spellName = LanguageManager.Instance.GetTextValue("Spell." + spell);
         if (spellName.Length == 0) spellName = spell;
         StartCoroutine(ShowGameInfo(LanguageManager.Instance.GetTextValue("Game.OpponentCasted") + " " + spellName, 1.0f));
@@ -681,5 +690,92 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
                     img.color = new Color(21.0f / 255.0f, 27.0f / 255.0f, 57.0f / 255.0f);
             }
         }
+    }
+
+    private void CastProjectileSpell(GameObject projectilePrefab, Vector3 targetPos, OnSpellAnimationFinished onFinished)
+    {
+        GameObject projectileSpellObject = Instantiate(projectilePrefab);
+        Vector3 dir = targetPos - projectileSpellObject.transform.position;
+        dir.z = 0;
+        dir.Normalize();
+        projectileSpellObject.transform.forward = dir;
+        projectileSpellObject.transform.Rotate(0.0f, 0.0f, 90.0f);
+        projectileSpells.Add(new CastedSpell(projectileSpellObject, onFinished));
+    }
+
+    private void ShiverPlayer(bool isPlayer)
+    {
+        if (isPlayer)
+            startShiverTime1 = Time.time;
+        else
+            startShiverTime2 = Time.time;
+    }
+
+    private void UpdateShiver(GameObject playerInfo, Vector3 playerInfoPos, float startShiverTime)
+    {
+        if (startShiverTime >= 0.0f)
+        {
+            float delta = Time.time - startShiverTime;
+            if (delta >= kShiverDuration)
+            {
+                playerInfo.transform.position = playerInfoPos;
+                startShiverTime = -1.0f;
+            }
+            else
+            {
+                playerInfo.transform.position = playerInfoPos + new Vector3(Mathf.Sin(50.0f * Time.time), 0.0f, 0.0f);
+            }
+        }
+    }
+
+    private void UpdateCastedSpell()
+    {
+        projectileSpells.RemoveAll(s => UpdateProjectileSpell(player1Info, true, s));
+        projectileSpells.RemoveAll(s => UpdateProjectileSpell(player2Info, false, s));
+    }
+
+    private bool UpdateProjectileSpell(GameObject playerInfo, bool isPlayer, CastedSpell spell)
+    {
+        if (spell.spellObject != null)
+        {
+            Bounds b = playerInfo.GetComponent<CircleCollider2D>().bounds;
+            b.center = new Vector3(b.center.x, b.center.y, 0.0f);
+            Vector3 pos = spell.spellObject.transform.position;
+            pos.z = 0.0f;
+            if (b.Intersects(new Bounds(pos, Vector3.one)))
+            {
+                ShiverPlayer(isPlayer);
+                Destroy(spell.spellObject);
+                if (spell.onFinished != null) spell.onFinished();
+                return true;
+            }
+        }
+        else
+        {
+            if (spell.onFinished != null) spell.onFinished();
+        }
+        return false;
+    }
+
+    private void AnimateCastedSpell(string spell, bool toOpponent, OnSpellAnimationFinished onFinished)
+    {
+        if (spell == "FIREBALL")
+        {
+            CastProjectileSpell(fireballPrefab, toOpponent ? playerInfo2Pos : playerInfo1Pos, onFinished);
+        }
+        else if (spell == "ICE_SPEAR")
+        {
+            CastProjectileSpell(iceSpearPrefab, toOpponent ? playerInfo2Pos : playerInfo1Pos, onFinished);
+        }
+        else
+        {
+            if (onFinished != null) onFinished();
+        }
+    }
+
+    private void UpdatePlayersStats()
+    {
+        player1Text.text = GetPlayerInfo(matchData.player, lastPlayerData);
+        player2Text.text = GetPlayerInfo(matchData.opponent, lastOpponentData);
     }
 }
