@@ -170,6 +170,9 @@
 	<data name="Message.ConnectionLost" xml:space="preserve">
 		<value>Сетевое соединение потеряно</value>
 	</data>
+	<data name="Message.Lose" xml:space="preserve">
+		<value>Победа за противником</value>
+	</data>
 	<data name="Message.OpponentDisconnected" xml:space="preserve">
 		<value>Противник вышел из игры</value>
 	</data>
@@ -178,6 +181,9 @@
 	</data>
 	<data name="Message.ServerUnavailable" xml:space="preserve">
 		<value>Сервер недоступен</value>
+	</data>
+	<data name="Message.Win" xml:space="preserve">
+		<value>Вы победили!</value>
 	</data>
 	<data name="Player.Level" xml:space="preserve">
 		<value>Уровень</value>

@@ -116,6 +116,27 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+	<data name="Char.ADB" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Char.ARB" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Char.Experience" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Char.FDB" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Char.FRB" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Char.WDB" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Char.WRB" xml:space="preserve">
+		<value />
+	</data>
 	<data name="Game.OpponentCasted" xml:space="preserve">
 		<value />
 	</data>
@@ -353,25 +374,10 @@
 	<data name="Temp.Tournament" xml:space="preserve">
 		<value />
 	</data>
-	<data name="Char.Experience" xml:space="preserve">
+	<data name="Message.Win" xml:space="preserve">
 		<value />
 	</data>
-	<data name="Char.FDB" xml:space="preserve">
-		<value />
-	</data>
-	<data name="Char.WDB" xml:space="preserve">
-		<value />
-	</data>
-	<data name="Char.ADB" xml:space="preserve">
-		<value />
-	</data>
-	<data name="Char.FRB" xml:space="preserve">
-		<value />
-	</data>
-	<data name="Char.WRB" xml:space="preserve">
-		<value />
-	</data>
-	<data name="Char.ARB" xml:space="preserve">
+	<data name="Message.Lose" xml:space="preserve">
 		<value />
 	</data>
 </root>

@@ -170,6 +170,9 @@
 	<data name="Message.ConnectionLost" xml:space="preserve">
 		<value>The connection was lost</value>
 	</data>
+	<data name="Message.Lose" xml:space="preserve">
+		<value>Opponent wins</value>
+	</data>
 	<data name="Message.OpponentDisconnected" xml:space="preserve">
 		<value>Opponent disconnected</value>
 	</data>
@@ -178,6 +181,9 @@
 	</data>
 	<data name="Message.ServerUnavailable" xml:space="preserve">
 		<value>Server is unavailable</value>
+	</data>
+	<data name="Message.Win" xml:space="preserve">
+		<value>You win!</value>
 	</data>
 	<data name="Player.Level" xml:space="preserve">
 		<value>Level</value>

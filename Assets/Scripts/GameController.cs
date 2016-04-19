@@ -15,6 +15,7 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
 
     public ServerRequest serverRequest;
     public MessageDialog messageDialog;
+    public RewardDialog rewardDialog;
     public GameObject player1Info;
     public GameObject player2Info;
     public GameObject crystals1;
@@ -33,6 +34,11 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
 
     public GameObject fireballPrefab;
     public GameObject iceSpearPrefab;
+    public GameObject miscastPrefab;
+
+    public Button settingsButton;
+    public Button finishTurnButton;
+    public Button surrenderButton;
 
     private Text player1Text;
     private Text player2Text;
@@ -72,14 +78,17 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
     {
         public GameObject spellObject;
         public OnSpellAnimationFinished onFinished;
+        public float castTime;
         public CastedSpell(GameObject spellObject, OnSpellAnimationFinished onFinished)
         {
             this.spellObject = spellObject;
             this.onFinished = onFinished;
+            this.castTime = Time.time;
         }
     }
 
     private List<CastedSpell> projectileSpells = new List<CastedSpell>();
+    private CastedSpell miscastedSpell;
 
     public void Start()
     {
@@ -116,6 +125,8 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
 
         player1Text = player1Info.GetComponentInChildren<Text>();
         player2Text = player2Info.GetComponentInChildren<Text>();
+        playerInfo1Pos = player1Info.transform.position;
+        playerInfo2Pos = player2Info.transform.position;
 
         crystals1.SetActive(false);
         crystals2.SetActive(false);
@@ -133,8 +144,8 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
                 serverRequest.Send(GameRequests.START_MATCH, p, (WWW response) => { GameRequests.OnStartMatchResponse(response, this); });
         }
 
-        playerInfo1Pos = player1Info.transform.position;
-        playerInfo2Pos = player2Info.transform.position;
+        finishTurnButton.gameObject.SetActive(false);
+        surrenderButton.gameObject.SetActive(false);
 	}
     
     public void Update()
@@ -142,6 +153,7 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
         UpdateShiver(player1Info, playerInfo1Pos, startShiverTime1);
         UpdateShiver(player2Info, playerInfo2Pos, startShiverTime2);
         UpdateCastedSpell();
+        UpdateMiscastedSpell();
 
         AnimateCardsSwapping();
 
@@ -172,14 +184,12 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
 
     public void OnYouDisconnected(RewardData rewardData)
     {
-        //TODO: show reward
-        messageDialog.Open(LanguageManager.Instance.GetTextValue("Message.ConnectionLost"), () => { this.BackToMainMenu(); });
+        rewardDialog.Open(LanguageManager.Instance.GetTextValue("Message.ConnectionLost"), false, () => { this.BackToMainMenu(); });
     }
 
     public void OnOpponentDisconnected(RewardData rewardData)
     {
-        //TODO: show reward
-        messageDialog.Open(LanguageManager.Instance.GetTextValue("Message.OpponentDisconnected"), () => { this.BackToMainMenu(); });
+        rewardDialog.Open(LanguageManager.Instance.GetTextValue("Message.OpponentDisconnected"), true, () => { this.BackToMainMenu(); });
     }
 
     public void OnShowCards()
@@ -199,20 +209,34 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
 
     public void OnWin(PlayerData player, PlayerData opponent, string spell, int spellCost, RewardData reward)
     {
+        UpdateManaAfterSpellCast(true, lastPlayerData, spellCost);
+
         lastPlayerData = player;
         lastOpponentData = opponent;
+        AnimateCastedSpell(spell, true, () => 
+        { 
+            UpdatePlayersStats();
+            rewardDialog.Open(LanguageManager.Instance.GetTextValue("Message.Win"), true, () => { this.BackToMainMenu(); });
+        });
 
-        //TODO
-        this.BackToMainMenu();
+        string spellName = LanguageManager.Instance.GetTextValue("Spell." + spell);
+        if (spellName.Length == 0) spellName = spell;
+        StartCoroutine(ShowGameInfo(LanguageManager.Instance.GetTextValue("Game.YouCasted") + " " + spellName, 1.0f));
     }
 
     public void OnLose(PlayerData player, PlayerData opponent, RewardData reward, bool delay)
     {
+        StartCoroutine(ProcessLose(player, opponent, delay ? 2.5f : 0.0f));
+    }
+
+    private IEnumerator ProcessLose(PlayerData player, PlayerData opponent, float delaySec)
+    {
+        yield return new WaitForSeconds(delaySec);
+
         lastPlayerData = player;
         lastOpponentData = opponent;
 
-        //TODO
-        this.BackToMainMenu();
+        rewardDialog.Open(LanguageManager.Instance.GetTextValue("Message.Lose"), false, () => { this.BackToMainMenu(); });
     }
 
     public void OnYourTurn(PlayerData player, PlayerData opponent, bool delay)
@@ -284,8 +308,7 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
 
     public void OnSpellMiscasted(int spellCost)
     {
-        //TODO: show spell animation
-        //TEMP
+        MiscastSpell(() => {});
         StartCoroutine(ShowGameInfo(LanguageManager.Instance.GetTextValue("Game.YouMiscasted"), 1.0f));
 
         UpdateManaAfterSpellCast(true, lastPlayerData, spellCost);
@@ -329,8 +352,7 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
 
         yield return new WaitForSeconds(kAnimationTimeSec);
 
-        //TODO: show spell animation
-        //TEMP
+        MiscastSpell(() => {});
         StartCoroutine(ShowGameInfo(LanguageManager.Instance.GetTextValue("Game.OpponentMiscasted"), 1.0f));
 
         UpdateManaAfterSpellCast(false, lastOpponentData, spellCost);
@@ -703,6 +725,12 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
         projectileSpells.Add(new CastedSpell(projectileSpellObject, onFinished));
     }
 
+    private void MiscastSpell(OnSpellAnimationFinished onFinished)
+    {
+        GameObject spellObject = Instantiate(miscastPrefab);
+        miscastedSpell = new CastedSpell(spellObject, onFinished);
+    }
+
     private void ShiverPlayer(bool isPlayer)
     {
         if (isPlayer)
@@ -757,6 +785,21 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
         return false;
     }
 
+    private void UpdateMiscastedSpell()
+    {
+        if (miscastedSpell != null)
+        {
+            float delta = Time.time - miscastedSpell.castTime;
+            if (delta >= 1.0f)
+            {
+                if (miscastedSpell.spellObject != null)
+                    Destroy(miscastedSpell.spellObject);
+                if (miscastedSpell.onFinished != null) miscastedSpell.onFinished();
+                miscastedSpell = null;
+            }
+        }
+    }
+
     private void AnimateCastedSpell(string spell, bool toOpponent, OnSpellAnimationFinished onFinished)
     {
         if (spell == "FIREBALL")
@@ -777,5 +820,24 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
     {
         player1Text.text = GetPlayerInfo(matchData.player, lastPlayerData);
         player2Text.text = GetPlayerInfo(matchData.opponent, lastOpponentData);
+    }
+
+    public void OnSettingsClicked()
+    {
+        bool active = finishTurnButton.gameObject.activeSelf;
+        finishTurnButton.gameObject.SetActive(!active);
+        surrenderButton.gameObject.SetActive(!active);
+    }
+
+    public void OnFinishTurnClicked()
+    {
+        finishTurnButton.gameObject.SetActive(false);
+        surrenderButton.gameObject.SetActive(false);
+    }
+
+    public void OnSurrenderClicked()
+    {
+        finishTurnButton.gameObject.SetActive(false);
+        surrenderButton.gameObject.SetActive(false);
     }
 }

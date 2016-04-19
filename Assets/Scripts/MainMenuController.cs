@@ -28,6 +28,7 @@ public class MainMenuController : MonoBehaviour, IProfileRequestsHandler, ISpell
         //TEMP
         LanguageManager.Instance.ChangeLanguage("ru");
 
+        Application.runInBackground = true;
         Persistence.Load();
 
         this.playerText = playerLogo.GetComponentInChildren<Text>();
