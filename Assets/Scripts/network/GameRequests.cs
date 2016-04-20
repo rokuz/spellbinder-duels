@@ -46,6 +46,8 @@ public interface IGameRequestsHandler
     void OnWaitForStart();
     void OnWin(PlayerData player, PlayerData opponent, string spell, int spellCost, RewardData reward);
     void OnLose(PlayerData player, PlayerData opponent, RewardData reward, bool delay);
+    void OnSurrender(RewardData reward);
+    void OnOpponentSurrender(RewardData reward);
     void OnYourTurn(PlayerData player, PlayerData opponent, bool delay);
     void OnOpponentTurn(PlayerData player, PlayerData opponent, bool delay);
     void OnSpellCasted(PlayerData player, PlayerData opponent, string spell, int spellCost, Dictionary<int, Magic> substitutes);
@@ -60,6 +62,8 @@ public static class GameRequests
     public const string START_MATCH = "start_match";
     public const string PING = "ping";
     public const string TURN = "turn";
+    public const string SURRENDER = "surrender";
+    public const string FINISH_TURN = "finish_turn";
 
     public static void OnStartMatchResponse(WWW response, IGameRequestsHandler handler)
     {
@@ -116,6 +120,13 @@ public static class GameRequests
                 if (handler != null)
                     handler.OnOpponentDisconnected(reward);
             }
+            else if (code == ServerCode.OPPONENT_SURRENDERED)
+            {
+                RewardData reward = new RewardData();
+                ParseReward(json.GetField("reward"), reward);
+                if (handler != null)
+                    handler.OnOpponentSurrender(reward);
+            }
             else if (code == ServerCode.BAD_SIGNATURE || code == ServerCode.UNKNOWN_PROFILE ||
                      code == ServerCode.INVALID_MATCH_ID || code == ServerCode.INVALID_PLAYER_ID)
             {
@@ -150,9 +161,17 @@ public static class GameRequests
             }
             else if (code == ServerCode.YOU_LOSE)
             {
-                bool delay = ParseOpponentSpell(json, handler);
                 RewardData reward = new RewardData();
                 ParseReward(json.GetField("reward"), reward);
+
+                bool surrender = json.GetField("surrender").b;
+                if (surrender && handler != null)
+                {
+                    handler.OnSurrender(reward);
+                    return;
+                }
+
+                bool delay = ParseOpponentSpell(json, handler);
                 PlayerData player = new PlayerData();
                 ParsePlayerData(json.GetField("player"), player);
                 PlayerData opponent = new PlayerData();
@@ -193,6 +212,107 @@ public static class GameRequests
                 ParseReward(json.GetField("reward"), reward);
                 if (handler != null)
                     handler.OnOpponentDisconnected(reward);
+            }
+            else if (code == ServerCode.OPPONENT_SURRENDERED)
+            {
+                RewardData reward = new RewardData();
+                ParseReward(json.GetField("reward"), reward);
+                if (handler != null)
+                    handler.OnOpponentSurrender(reward);
+            }
+            else if (code == ServerCode.BAD_SIGNATURE || code == ServerCode.UNKNOWN_PROFILE ||
+                     code == ServerCode.INVALID_MATCH_ID || code == ServerCode.INVALID_PLAYER_ID)
+            {
+                Debug.Log("Error (" + code + "): Server request has finished with error");
+                if (handler != null)
+                    handler.OnError(code);
+            }
+        }
+        else
+        {
+            Debug.Log("" + response.error);
+            if (handler != null)
+                handler.OnError(400);
+        }
+    }
+
+    public static void OnSurrenderResponse(WWW response, IGameRequestsHandler handler)
+    {
+        if (response.error == null)
+        {
+            JSONObject json = JSONObject.Create(response.text);
+            int code = (int)json.GetField("code").i;
+            if (code == ServerCode.OK)
+            {
+                // Do nothing
+            }
+            else if (code == ServerCode.YOU_DISCONNECTED)
+            {
+                RewardData reward = new RewardData();
+                ParseReward(json.GetField("reward"), reward);
+                if (handler != null)
+                    handler.OnYouDisconnected(reward);
+            }
+            else if (code == ServerCode.OPPONENT_DISCONNECTED)
+            {
+                RewardData reward = new RewardData();
+                ParseReward(json.GetField("reward"), reward);
+                if (handler != null)
+                    handler.OnOpponentDisconnected(reward);
+            }
+            else if (code == ServerCode.OPPONENT_SURRENDERED)
+            {
+                RewardData reward = new RewardData();
+                ParseReward(json.GetField("reward"), reward);
+                if (handler != null)
+                    handler.OnOpponentSurrender(reward);
+            }
+            else if (code == ServerCode.BAD_SIGNATURE || code == ServerCode.UNKNOWN_PROFILE ||
+                     code == ServerCode.INVALID_MATCH_ID || code == ServerCode.INVALID_PLAYER_ID)
+            {
+                Debug.Log("Error (" + code + "): Server request has finished with error");
+                if (handler != null)
+                    handler.OnError(code);
+            }
+        }
+        else
+        {
+            Debug.Log("" + response.error);
+            if (handler != null)
+                handler.OnError(400);
+        }
+    }
+
+    public static void OnFinishTurnResponse(WWW response, IGameRequestsHandler handler)
+    {
+        if (response.error == null)
+        {
+            JSONObject json = JSONObject.Create(response.text);
+            int code = (int)json.GetField("code").i;
+            if (code == ServerCode.OK)
+            {
+                //Do nothing
+            }
+            else if (code == ServerCode.YOU_DISCONNECTED)
+            {
+                RewardData reward = new RewardData();
+                ParseReward(json.GetField("reward"), reward);
+                if (handler != null)
+                    handler.OnYouDisconnected(reward);
+            }
+            else if (code == ServerCode.OPPONENT_DISCONNECTED)
+            {
+                RewardData reward = new RewardData();
+                ParseReward(json.GetField("reward"), reward);
+                if (handler != null)
+                    handler.OnOpponentDisconnected(reward);
+            }
+            else if (code == ServerCode.OPPONENT_SURRENDERED)
+            {
+                RewardData reward = new RewardData();
+                ParseReward(json.GetField("reward"), reward);
+                if (handler != null)
+                    handler.OnOpponentSurrender(reward);
             }
             else if (code == ServerCode.BAD_SIGNATURE || code == ServerCode.UNKNOWN_PROFILE ||
                      code == ServerCode.INVALID_MATCH_ID || code == ServerCode.INVALID_PLAYER_ID)
@@ -273,6 +393,13 @@ public static class GameRequests
                 ParseReward(json.GetField("reward"), reward);
                 if (handler != null)
                     handler.OnOpponentDisconnected(reward);
+            }
+            else if (code == ServerCode.OPPONENT_SURRENDERED)
+            {
+                RewardData reward = new RewardData();
+                ParseReward(json.GetField("reward"), reward);
+                if (handler != null)
+                    handler.OnOpponentSurrender(reward);
             }
             else if (code == ServerCode.BAD_SIGNATURE || code == ServerCode.UNKNOWN_PROFILE ||
                      code == ServerCode.INVALID_MATCH_ID || code == ServerCode.INVALID_PLAYER_ID)

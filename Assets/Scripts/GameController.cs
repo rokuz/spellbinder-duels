@@ -146,6 +146,8 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
 
         finishTurnButton.gameObject.SetActive(false);
         surrenderButton.gameObject.SetActive(false);
+        finishTurnButton.interactable = false;
+        surrenderButton.interactable = false;
 	}
     
     public void Update()
@@ -239,6 +241,16 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
         rewardDialog.Open(LanguageManager.Instance.GetTextValue("Message.Lose"), false, () => { this.BackToMainMenu(); });
     }
 
+    public void OnSurrender(RewardData reward)
+    {
+        rewardDialog.Open(LanguageManager.Instance.GetTextValue("Message.YouSurrender"), false, () => { this.BackToMainMenu(); });
+    }
+
+    public void OnOpponentSurrender(RewardData reward)
+    {
+        rewardDialog.Open(LanguageManager.Instance.GetTextValue("Message.OpponentSurrender"), true, () => { this.BackToMainMenu(); });
+    }
+
     public void OnYourTurn(PlayerData player, PlayerData opponent, bool delay)
     {
         StartCoroutine(ProcessYourTurn(player, opponent, delay ? 2.5f : 0.0f));
@@ -247,6 +259,8 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
     private IEnumerator ProcessYourTurn(PlayerData player, PlayerData opponent, float delaySec)
     {
         yield return new WaitForSeconds(delaySec);
+        surrenderButton.interactable = true;
+        finishTurnButton.interactable = true;
 
         lastPlayerData = player;
         lastOpponentData = opponent;
@@ -273,6 +287,8 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
     private IEnumerator ProcessOpponentTurn(PlayerData player, PlayerData opponent, float delaySec)
     {
         yield return new WaitForSeconds(delaySec);
+        surrenderButton.interactable = true;
+        finishTurnButton.interactable = false;
 
         lastPlayerData = player;
         lastOpponentData = opponent;
@@ -831,13 +847,31 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
 
     public void OnFinishTurnClicked()
     {
+        if (matchData != null)
+        {
+            Dictionary<string, string> p = new Dictionary<string, string>();
+            p["id"] = matchData.player.id;
+            p["match"] = matchData.matchId;
+            if (serverRequest != null)
+                serverRequest.Send(GameRequests.FINISH_TURN, p, (WWW response) => { GameRequests.OnFinishTurnResponse(response, this); });
+        }
         finishTurnButton.gameObject.SetActive(false);
         surrenderButton.gameObject.SetActive(false);
+        finishTurnButton.interactable = false;
     }
 
     public void OnSurrenderClicked()
     {
+        if (matchData != null)
+        {
+            Dictionary<string, string> p = new Dictionary<string, string>();
+            p["id"] = matchData.player.id;
+            p["match"] = matchData.matchId;
+            if (serverRequest != null)
+                serverRequest.Send(GameRequests.SURRENDER, p, (WWW response) => { GameRequests.OnSurrenderResponse(response, this); });
+        }
         finishTurnButton.gameObject.SetActive(false);
         surrenderButton.gameObject.SetActive(false);
+        surrenderButton.interactable = false;
     }
 }

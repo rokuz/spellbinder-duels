@@ -179,11 +179,17 @@
 	<data name="Message.OpponentNotFound" xml:space="preserve">
 		<value>Противник не найден</value>
 	</data>
+	<data name="Message.OpponentSurrender" xml:space="preserve">
+		<value>Противник сдался</value>
+	</data>
 	<data name="Message.ServerUnavailable" xml:space="preserve">
 		<value>Сервер недоступен</value>
 	</data>
 	<data name="Message.Win" xml:space="preserve">
 		<value>Вы победили!</value>
+	</data>
+	<data name="Message.YouSurrender" xml:space="preserve">
+		<value>Вы признали поражение</value>
 	</data>
 	<data name="Player.Level" xml:space="preserve">
 		<value>Уровень</value>

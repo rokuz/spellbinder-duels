@@ -18,4 +18,5 @@
     public const int SPELL_MISCAST = 15;
     public const int YOU_WIN = 16;
     public const int YOU_LOSE = 17;
+    public const int OPPONENT_SURRENDERED = 18;
 }

@@ -9,6 +9,6 @@ public class GameConfig
     public GameConfig()
     {
         this.playerID = "";
-        this.serverAddress = "127.0.0.1"; //TODO: change to default gameserver
+        this.serverAddress = "83.220.170.252";
     }
 }

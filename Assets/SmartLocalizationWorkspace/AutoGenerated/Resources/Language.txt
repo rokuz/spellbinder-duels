@@ -170,6 +170,9 @@
 	<data name="Message.ConnectionLost" xml:space="preserve">
 		<value />
 	</data>
+	<data name="Message.Lose" xml:space="preserve">
+		<value />
+	</data>
 	<data name="Message.OpponentDisconnected" xml:space="preserve">
 		<value />
 	</data>
@@ -177,6 +180,9 @@
 		<value />
 	</data>
 	<data name="Message.ServerUnavailable" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Message.Win" xml:space="preserve">
 		<value />
 	</data>
 	<data name="Player.Level" xml:space="preserve">
@@ -374,10 +380,10 @@
 	<data name="Temp.Tournament" xml:space="preserve">
 		<value />
 	</data>
-	<data name="Message.Win" xml:space="preserve">
+	<data name="Message.YouSurrender" xml:space="preserve">
 		<value />
 	</data>
-	<data name="Message.Lose" xml:space="preserve">
+	<data name="Message.OpponentSurrender" xml:space="preserve">
 		<value />
 	</data>
 </root>
