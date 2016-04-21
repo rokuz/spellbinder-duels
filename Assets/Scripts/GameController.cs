@@ -92,8 +92,9 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
 
     public void Start()
     {
-        //TEMP
-        LanguageManager.Instance.ChangeLanguage("ru");
+        #if UNITY_EDITOR
+            LanguageManager.Instance.ChangeLanguage("ru");
+        #endif
 
         SpriteRenderer renderer = (from r in cards[0].GetComponentsInChildren<SpriteRenderer>()
                                          where r.gameObject.name == "front"
@@ -123,8 +124,8 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
 
         gameInfo.gameObject.SetActive(false);
 
-        player1Text = player1Info.GetComponentInChildren<Text>();
-        player2Text = player2Info.GetComponentInChildren<Text>();
+        player1Text = (from r in player1Info.GetComponentsInChildren<Text>() where r.gameObject.name == "PlayerText" select r).Single();
+        player2Text = (from r in player2Info.GetComponentsInChildren<Text>() where r.gameObject.name == "PlayerText" select r).Single();
         playerInfo1Pos = player1Info.transform.position;
         playerInfo2Pos = player2Info.transform.position;
 
@@ -148,6 +149,9 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
         surrenderButton.gameObject.SetActive(false);
         finishTurnButton.interactable = false;
         surrenderButton.interactable = false;
+
+        finishTurnButton.GetComponentInChildren<Text>().text = LanguageManager.Instance.GetTextValue("Game.FinishTurn");
+        surrenderButton.GetComponentInChildren<Text>().text = LanguageManager.Instance.GetTextValue("Game.Surrender");
 	}
     
     public void Update()

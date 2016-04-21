@@ -12,6 +12,7 @@ public class SetNameDialog : MonoBehaviour, ISetProfileNameRequestHandler
     public InputField nameEditbox;
     public Button okButton;
     public Image splash;
+    public Text placeholderText;
 
     public delegate void OnClose();
 
@@ -34,6 +35,7 @@ public class SetNameDialog : MonoBehaviour, ISetProfileNameRequestHandler
     public void Open(ProfileData profileData, OnClose onCloseHandler)
     {
         headerText.text = LanguageManager.Instance.GetTextValue("SetName.SetupName");
+        placeholderText.text = LanguageManager.Instance.GetTextValue("SetName.EnterName");
         warningText.gameObject.SetActive(false);
         okButton.interactable = true;
         nameEditbox.interactable = true;

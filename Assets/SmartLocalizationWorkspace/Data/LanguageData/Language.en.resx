@@ -137,6 +137,9 @@
 	<data name="Char.WRB" xml:space="preserve">
 		<value>Water resistance bonus</value>
 	</data>
+	<data name="Game.FinishTurn" xml:space="preserve">
+		<value>Finish turn</value>
+	</data>
 	<data name="Game.OpponentCasted" xml:space="preserve">
 		<value>Opponent casted</value>
 	</data>
@@ -145,6 +148,9 @@
 	</data>
 	<data name="Game.OpponentTurn" xml:space="preserve">
 		<value>Opponent's turn</value>
+	</data>
+	<data name="Game.Surrender" xml:space="preserve">
+		<value>Surrender</value>
 	</data>
 	<data name="Game.YouCasted" xml:space="preserve">
 		<value>You casted</value>
@@ -193,6 +199,9 @@
 	</data>
 	<data name="Player.Level" xml:space="preserve">
 		<value>Level</value>
+	</data>
+	<data name="SetName.EnterName" xml:space="preserve">
+		<value>Enter your name...</value>
 	</data>
 	<data name="SetName.NameEmpty" xml:space="preserve">
 		<value>Name is empty</value>

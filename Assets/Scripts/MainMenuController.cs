@@ -25,8 +25,9 @@ public class MainMenuController : MonoBehaviour, IProfileRequestsHandler, ISpell
 
 	public void Start()
     {
-        //TEMP
-        LanguageManager.Instance.ChangeLanguage("ru");
+        #if UNITY_EDITOR
+            LanguageManager.Instance.ChangeLanguage("ru");
+        #endif
 
         Application.runInBackground = true;
         Persistence.Load();

@@ -137,6 +137,9 @@
 	<data name="Char.WRB" xml:space="preserve">
 		<value>Сопротивление магии воды</value>
 	</data>
+	<data name="Game.FinishTurn" xml:space="preserve">
+		<value>Завершить ход</value>
+	</data>
 	<data name="Game.OpponentCasted" xml:space="preserve">
 		<value>Противник наколдовал</value>
 	</data>
@@ -145,6 +148,9 @@
 	</data>
 	<data name="Game.OpponentTurn" xml:space="preserve">
 		<value>Ход противника</value>
+	</data>
+	<data name="Game.Surrender" xml:space="preserve">
+		<value>Сдаться</value>
 	</data>
 	<data name="Game.YouCasted" xml:space="preserve">
 		<value>Вы наколдовали</value>
@@ -193,6 +199,9 @@
 	</data>
 	<data name="Player.Level" xml:space="preserve">
 		<value>Уровень</value>
+	</data>
+	<data name="SetName.EnterName" xml:space="preserve">
+		<value>Введите имя...</value>
 	</data>
 	<data name="SetName.NameEmpty" xml:space="preserve">
 		<value>Имя не задано</value>

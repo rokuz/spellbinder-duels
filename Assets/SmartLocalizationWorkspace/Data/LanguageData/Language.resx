@@ -179,10 +179,16 @@
 	<data name="Message.OpponentNotFound" xml:space="preserve">
 		<value />
 	</data>
+	<data name="Message.OpponentSurrender" xml:space="preserve">
+		<value />
+	</data>
 	<data name="Message.ServerUnavailable" xml:space="preserve">
 		<value />
 	</data>
 	<data name="Message.Win" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Message.YouSurrender" xml:space="preserve">
 		<value />
 	</data>
 	<data name="Player.Level" xml:space="preserve">
@@ -380,10 +386,13 @@
 	<data name="Temp.Tournament" xml:space="preserve">
 		<value />
 	</data>
-	<data name="Message.YouSurrender" xml:space="preserve">
+	<data name="Game.FinishTurn" xml:space="preserve">
 		<value />
 	</data>
-	<data name="Message.OpponentSurrender" xml:space="preserve">
+	<data name="Game.Surrender" xml:space="preserve">
+		<value />
+	</data>
+	<data name="SetName.EnterName" xml:space="preserve">
 		<value />
 	</data>
 </root>
