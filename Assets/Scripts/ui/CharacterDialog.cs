@@ -54,9 +54,9 @@ public class CharacterDialog : MonoBehaviour
     public void Open(ProfileData profileData, OnClose onCloseHandler)
     {
         this.profileData = profileData;
-        if (profileData != null)
+        if (this.profileData != null)
         {
-            nameText.text = profileData.name;
+            nameText.text = this.profileData.name;
             levelText.text = LanguageManager.Instance.GetTextValue("Player.Level") + " " + profileData.level;
 
             SetupBarProgress(experienceText, profileData.experienceProgress / 100.0f);

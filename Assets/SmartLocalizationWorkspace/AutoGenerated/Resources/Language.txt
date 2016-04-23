@@ -137,6 +137,9 @@
 	<data name="Char.WRB" xml:space="preserve">
 		<value />
 	</data>
+	<data name="Game.FinishTurn" xml:space="preserve">
+		<value />
+	</data>
 	<data name="Game.OpponentCasted" xml:space="preserve">
 		<value />
 	</data>
@@ -144,6 +147,9 @@
 		<value />
 	</data>
 	<data name="Game.OpponentTurn" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Game.Surrender" xml:space="preserve">
 		<value />
 	</data>
 	<data name="Game.YouCasted" xml:space="preserve">
@@ -192,6 +198,9 @@
 		<value />
 	</data>
 	<data name="Player.Level" xml:space="preserve">
+		<value />
+	</data>
+	<data name="SetName.EnterName" xml:space="preserve">
 		<value />
 	</data>
 	<data name="SetName.NameEmpty" xml:space="preserve">
@@ -386,13 +395,7 @@
 	<data name="Temp.Tournament" xml:space="preserve">
 		<value />
 	</data>
-	<data name="Game.FinishTurn" xml:space="preserve">
-		<value />
-	</data>
-	<data name="Game.Surrender" xml:space="preserve">
-		<value />
-	</data>
-	<data name="SetName.EnterName" xml:space="preserve">
+	<data name="Player.SmthBlocked" xml:space="preserve">
 		<value />
 	</data>
 </root>

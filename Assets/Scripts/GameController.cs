@@ -40,8 +40,28 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
     public Button finishTurnButton;
     public Button surrenderButton;
 
-    private Text player1Text;
-    private Text player2Text;
+    class PlayerInfo
+    {
+        public Text name;
+        public Text health;
+        public Text defense;
+        public Text fire;
+        public Text water;
+        public Text air;
+        public Text blockedAttack;
+        public Text blockedHealing;
+        public Text blockedDefense;
+
+        public Animator healthPlus;
+        public Animator healthMinus;
+        public Animator defenseChanged;
+
+        public Vector2[] positions = new Vector2[3];
+        public int freePosition = 0;
+    }
+
+    private PlayerInfo player1 = new PlayerInfo();
+    private PlayerInfo player2 = new PlayerInfo();
 
     private SceneConnector.MatchData matchData = null;
     private GameData gameData = null;
@@ -62,6 +82,14 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
 
     private PlayerData lastPlayerData;
     private PlayerData lastOpponentData;
+
+    class ChangedStats
+    {
+        public int healthDelta = 0;
+        public int defenseDelta = 0;
+    }
+    private ChangedStats playerChangedStats = null;
+    private ChangedStats opponentChangedStats = null;
 
     class SwappingInfo
     {
@@ -124,8 +152,8 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
 
         gameInfo.gameObject.SetActive(false);
 
-        player1Text = (from r in player1Info.GetComponentsInChildren<Text>() where r.gameObject.name == "PlayerText" select r).Single();
-        player2Text = (from r in player2Info.GetComponentsInChildren<Text>() where r.gameObject.name == "PlayerText" select r).Single();
+        InitPlayerInfo(player1, player1Info);
+        InitPlayerInfo(player2, player2Info);
         playerInfo1Pos = player1Info.transform.position;
         playerInfo2Pos = player2Info.transform.position;
 
@@ -135,8 +163,10 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
         matchData = SceneConnector.Instance.PopMatch();
         if (matchData != null)
         {
-            player1Text.text = GetPlayerInfo(matchData.player, null);
-            player2Text.text = GetPlayerInfo(matchData.opponent, null);
+            player1.name.text = matchData.player.name;
+            player2.name.text = matchData.opponent.name;
+            UpdatePlayerInfo(matchData.player, player1, null);
+            UpdatePlayerInfo(matchData.opponent, player2, null);
 
             Dictionary<string, string> p = new Dictionary<string, string>();
             p["id"] = matchData.player.id;
@@ -153,7 +183,32 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
         finishTurnButton.GetComponentInChildren<Text>().text = LanguageManager.Instance.GetTextValue("Game.FinishTurn");
         surrenderButton.GetComponentInChildren<Text>().text = LanguageManager.Instance.GetTextValue("Game.Surrender");
 	}
-    
+
+    private void InitPlayerInfo(PlayerInfo info, GameObject obj)
+    {
+        info.name = (from r in obj.GetComponentsInChildren<Text>() where r.gameObject.name == "PlayerName" select r).Single();
+        info.health = (from r in obj.GetComponentsInChildren<Text>() where r.gameObject.name == "HealthText" select r).Single();
+        info.defense = (from r in obj.GetComponentsInChildren<Text>() where r.gameObject.name == "DefenseText" select r).Single();
+        info.fire = (from r in obj.GetComponentsInChildren<Text>() where r.gameObject.name == "FireText" select r).Single();
+        info.water = (from r in obj.GetComponentsInChildren<Text>() where r.gameObject.name == "WaterText" select r).Single();
+        info.air = (from r in obj.GetComponentsInChildren<Text>() where r.gameObject.name == "AirText" select r).Single();
+        info.blockedAttack = (from r in obj.GetComponentsInChildren<Text>() where r.gameObject.name == "AttackText" select r).Single();
+        info.blockedAttack.gameObject.SetActive(false);
+        info.positions[0] = info.blockedAttack.GetComponent<RectTransform>().anchoredPosition;
+        info.blockedHealing = (from r in obj.GetComponentsInChildren<Text>() where r.gameObject.name == "HealingText" select r).Single();
+        info.blockedHealing.gameObject.SetActive(false);
+        info.positions[1] = info.blockedHealing.GetComponent<RectTransform>().anchoredPosition;
+        info.blockedDefense = (from r in obj.GetComponentsInChildren<Text>() where r.gameObject.name == "DefText" select r).Single();
+        info.blockedDefense.gameObject.SetActive(false);
+        info.positions[2] = info.blockedDefense.GetComponent<RectTransform>().anchoredPosition;
+        info.healthPlus = (from r in obj.GetComponentsInChildren<Animator>() where r.gameObject.name == "HealthPlus" select r).Single();
+        info.healthPlus.gameObject.SetActive(false);
+        info.healthMinus = (from r in obj.GetComponentsInChildren<Animator>() where r.gameObject.name == "HealthMinus" select r).Single();
+        info.healthMinus.gameObject.SetActive(false);
+        info.defenseChanged = (from r in obj.GetComponentsInChildren<Animator>() where r.gameObject.name == "DefenseChanged" select r).Single();
+        info.defenseChanged.gameObject.SetActive(false);
+    }
+
     public void Update()
     {
         UpdateShiver(player1Info, playerInfo1Pos, startShiverTime1);
@@ -217,6 +272,8 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
     {
         UpdateManaAfterSpellCast(true, lastPlayerData, spellCost);
 
+        playerChangedStats = GetChangedStats(lastPlayerData, player);
+        opponentChangedStats = GetChangedStats(lastOpponentData, opponent);
         lastPlayerData = player;
         lastOpponentData = opponent;
         AnimateCastedSpell(spell, true, () => 
@@ -239,6 +296,8 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
     {
         yield return new WaitForSeconds(delaySec);
 
+        playerChangedStats = GetChangedStats(lastPlayerData, player);
+        opponentChangedStats = GetChangedStats(lastOpponentData, opponent);
         lastPlayerData = player;
         lastOpponentData = opponent;
 
@@ -266,6 +325,8 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
         surrenderButton.interactable = true;
         finishTurnButton.interactable = true;
 
+        playerChangedStats = GetChangedStats(lastPlayerData, player);
+        opponentChangedStats = GetChangedStats(lastOpponentData, opponent);
         lastPlayerData = player;
         lastOpponentData = opponent;
 
@@ -294,6 +355,8 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
         surrenderButton.interactable = true;
         finishTurnButton.interactable = false;
 
+        playerChangedStats = GetChangedStats(lastPlayerData, player);
+        opponentChangedStats = GetChangedStats(lastOpponentData, opponent);
         lastPlayerData = player;
         lastOpponentData = opponent;
 
@@ -313,6 +376,8 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
     {
         UpdateManaAfterSpellCast(true, lastPlayerData, spellCost);
 
+        playerChangedStats = GetChangedStats(lastPlayerData, player);
+        opponentChangedStats = GetChangedStats(lastOpponentData, opponent);
         lastPlayerData = player;
         lastOpponentData = opponent;
         AnimateCastedSpell(spell, true, () => { UpdatePlayersStats(); });
@@ -618,81 +683,63 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
         return null;
     }
 
-    private string GetPlayerInfo(ProfileData profile, PlayerData player)
-    {
-        StringBuilder builder = new StringBuilder();
-        builder.Append(profile.name);
-        if (player != null)
+    private void UpdatePlayerInfo(ProfileData profile, PlayerInfo info, PlayerData player)
+    { 
+        if (player == null)
+            return;
+
+        info.health.text = "" + player.health;
+        info.defense.text = "" + player.defense;
+        info.fire.text = GetBonus(profile, player, ProfileData.kFireIndex) + "/" + GetResistance(profile, player, ProfileData.kFireIndex);
+        info.water.text = GetBonus(profile, player, ProfileData.kWaterIndex) + "/" + GetResistance(profile, player, ProfileData.kWaterIndex);
+        info.air.text = GetBonus(profile, player, ProfileData.kAirIndex) + "/" + GetResistance(profile, player, ProfileData.kAirIndex);
+
+        string blockedStr = LanguageManager.Instance.GetTextValue("Player.SmthBlocked");
+        info.freePosition = 0;
+        if (player.blockedDamageTurns > 0)
         {
-            builder.Append("\nHealth: ");
-            builder.Append(player.health);
-            builder.Append("\nDefense: ");
-            builder.Append(player.defence);
-
-            if (GetBonus(profile, ProfileData.kFireIndex) > 0)
-            {
-                builder.Append("\nFire damage: ");
-                builder.Append(player.blockedBonusTurns[ProfileData.kFireIndex] == 0 ? ("+" + GetBonus(profile, ProfileData.kFireIndex)) : "0");
-            }
-            if (GetBonus(profile, ProfileData.kWaterIndex) > 0)
-            {
-                builder.Append("\nWater damage: ");
-                builder.Append(player.blockedBonusTurns[ProfileData.kWaterIndex] == 0 ? ("+" + GetBonus(profile, ProfileData.kWaterIndex)) : "0");
-            }
-            if (GetBonus(profile, ProfileData.kAirIndex) > 0)
-            {
-                builder.Append("\nAir damage: ");
-                builder.Append(player.blockedBonusTurns[ProfileData.kAirIndex] == 0 ? ("+" + GetBonus(profile, ProfileData.kAirIndex)) : "0");
-            }
-
-            if (GetResistance(profile, ProfileData.kFireIndex) > 0)
-            {
-                builder.Append("\nFire resistance: ");
-                builder.Append(player.blockedResistanceTurns[ProfileData.kFireIndex] == 0 ? GetResistance(profile, ProfileData.kFireIndex) : 0);
-            }
-            if (GetResistance(profile, ProfileData.kWaterIndex) > 0)
-            {
-                builder.Append("\nWater resistance: ");
-                builder.Append(player.blockedResistanceTurns[ProfileData.kWaterIndex] == 0 ? GetResistance(profile, ProfileData.kWaterIndex) : 0);
-            }
-            if (GetResistance(profile, ProfileData.kAirIndex) > 0)
-            {
-                builder.Append("\nAir resistance: ");
-                builder.Append(player.blockedResistanceTurns[ProfileData.kAirIndex] == 0 ? GetResistance(profile, ProfileData.kAirIndex) : 0);
-            }
-
-            if (player.blockedDamageTurns > 0)
-                builder.Append("\nDamage blocked for " + player.blockedDamageTurns + " turns");
-            if (player.blockedHealingTurns > 0)
-                builder.Append("\nHealing blocked for " + player.blockedHealingTurns + " turns");
-            if (player.blockedDefenseTurns > 0)
-                builder.Append("\nDefense blocked for " + player.blockedDefenseTurns + " turns");
-
-            if (player.blockedBonusTurns[ProfileData.kFireIndex] > 0)
-                builder.Append("\nFire damage bonus blocked for " + player.blockedBonusTurns[ProfileData.kFireIndex] + " turns");
-            if (player.blockedBonusTurns[ProfileData.kWaterIndex] > 0)
-                builder.Append("\nWater damage bonus blocked for " + player.blockedBonusTurns[ProfileData.kWaterIndex] + " turns");
-            if (player.blockedBonusTurns[ProfileData.kAirIndex] > 0)
-                builder.Append("\nAir damage bonus blocked for " + player.blockedBonusTurns[ProfileData.kAirIndex] + " turns");
-
-            if (player.blockedResistanceTurns[ProfileData.kFireIndex] > 0)
-                builder.Append("\nFire resistance blocked for " + player.blockedResistanceTurns[ProfileData.kFireIndex] + " turns");
-            if (player.blockedResistanceTurns[ProfileData.kWaterIndex] > 0)
-                builder.Append("\nWater resistance blocked for " + player.blockedResistanceTurns[ProfileData.kWaterIndex] + " turns");
-            if (player.blockedResistanceTurns[ProfileData.kAirIndex] > 0)
-                builder.Append("\nAir resistance blocked for " + player.blockedResistanceTurns[ProfileData.kAirIndex] + " turns");
+            info.blockedAttack.gameObject.SetActive(true);
+            info.blockedAttack.GetComponent<RectTransform>().anchoredPosition = info.positions[info.freePosition++];
+            info.blockedAttack.text = blockedStr + " (" + player.blockedDamageTurns + ")";
         }
-        return builder.ToString();
+        else
+        {
+            info.blockedAttack.gameObject.SetActive(false);
+        }
+
+        if (player.blockedHealingTurns > 0)
+        {
+            info.blockedHealing.gameObject.SetActive(true);
+            info.blockedHealing.GetComponent<RectTransform>().anchoredPosition = info.positions[info.freePosition++];
+            info.blockedHealing.text = blockedStr + " (" + player.blockedHealingTurns + ")";
+        }
+        else
+        {
+            info.blockedHealing.gameObject.SetActive(false);
+        }
+
+        if (player.blockedDefenseTurns > 0)
+        {
+            info.blockedDefense.gameObject.SetActive(true);
+            info.blockedDefense.GetComponent<RectTransform>().anchoredPosition = info.positions[info.freePosition++];
+            info.blockedDefense.text = blockedStr + " (" + player.blockedDefenseTurns + ")";
+        }
+        else
+        {
+            info.blockedDefense.gameObject.SetActive(false);
+        }
     }
 
-    private int GetBonus(ProfileData profile, int index)
+    private string GetBonus(ProfileData profile, PlayerData player, int index)
     {
-        return profile.bonuses[index] / 1000;
+        if (player.blockedBonusTurns[index] > 0) return "<color=red>0</color>";
+        return "" + profile.bonuses[index] / 1000;
     }
 
-    private int GetResistance(ProfileData profile, int index)
+    private string GetResistance(ProfileData profile, PlayerData player, int index)
     {
-        return profile.resistance[index] / 1000;
+        if (player.blockedResistanceTurns[index] > 0) return "<color=red>0</color>";
+        return "" + profile.resistance[index] / 1000;
     }
 
     private void UpdateManaBeforeTurn(PlayerData player, PlayerData opponent)
@@ -838,8 +885,60 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
 
     private void UpdatePlayersStats()
     {
-        player1Text.text = GetPlayerInfo(matchData.player, lastPlayerData);
-        player2Text.text = GetPlayerInfo(matchData.opponent, lastOpponentData);
+        UpdatePlayerInfo(matchData.player, player1, lastPlayerData);
+        if (playerChangedStats != null)
+        {
+            if (playerChangedStats.healthDelta > 0)
+                PlayTextAnimation(player1.healthPlus, "HealthPlus", playerChangedStats.healthDelta);
+            else if (playerChangedStats.healthDelta < 0)
+                PlayTextAnimation(player1.healthMinus, "HealthMinus", playerChangedStats.healthDelta);
+
+            if (playerChangedStats.defenseDelta != 0)
+                PlayTextAnimation(player1.defenseChanged, "DefenseChanged", playerChangedStats.defenseDelta);
+
+            playerChangedStats = null;
+        }
+
+        UpdatePlayerInfo(matchData.opponent, player2, lastOpponentData);
+        if (opponentChangedStats != null)
+        {
+            if (opponentChangedStats.healthDelta > 0)
+                PlayTextAnimation(player2.healthPlus, "HealthPlus", opponentChangedStats.healthDelta);
+            else if (opponentChangedStats.healthDelta < 0)
+                PlayTextAnimation(player2.healthMinus, "HealthMinus", opponentChangedStats.healthDelta);
+
+            if (opponentChangedStats.defenseDelta != 0)
+                PlayTextAnimation(player2.defenseChanged, "DefenseChanged", opponentChangedStats.defenseDelta);
+
+            opponentChangedStats = null;
+        }
+    }
+
+    private ChangedStats GetChangedStats(PlayerData oldState, PlayerData newState)
+    {
+        if (newState == null || oldState == null)
+            return null;
+
+        if (newState.health == oldState.health && newState.defense == oldState.defense)
+            return null;
+
+        ChangedStats stats = new ChangedStats();
+        stats.healthDelta = newState.health - oldState.health;
+        stats.defenseDelta = newState.defense - oldState.defense;
+        return stats;
+    }
+
+    private void PlayTextAnimation(Animator animator, string name, int textValue)
+    {
+        animator.GetComponent<Text>().text = ((textValue > 0) ? "+" : "") + textValue;
+        PlayAnimation(animator, name);
+    }
+
+    private void PlayAnimation(Animator animator, string name)
+    {
+        animator.gameObject.SetActive(true);
+        animator.SetTime(0.0);
+        animator.Play(name);
     }
 
     public void OnSettingsClicked()

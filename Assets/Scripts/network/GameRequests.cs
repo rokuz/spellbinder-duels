@@ -5,7 +5,7 @@ public class PlayerData
 {
     public int mana;
     public int health;
-    public int defence;
+    public int defense;
     public int blockedDamageTurns;
     public int blockedHealingTurns;
     public int blockedDefenseTurns;
@@ -445,7 +445,7 @@ public static class GameRequests
     {
         player.mana = (int)playerObject.GetField("mana").i;
         player.health = (int)playerObject.GetField("health").i;
-        player.defence = (int)playerObject.GetField("defence").i;
+        player.defense = (int)playerObject.GetField("defense").i;
         player.blockedDamageTurns = (int)playerObject.GetField("blockedDamageTurns").i;
         player.blockedHealingTurns = (int)playerObject.GetField("blockedHealingTurns").i;
         player.blockedDefenseTurns = (int)playerObject.GetField("blockedDefenseTurns").i;

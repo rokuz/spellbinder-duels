@@ -200,6 +200,9 @@
 	<data name="Player.Level" xml:space="preserve">
 		<value>Level</value>
 	</data>
+	<data name="Player.SmthBlocked" xml:space="preserve">
+		<value>blocked</value>
+	</data>
 	<data name="SetName.EnterName" xml:space="preserve">
 		<value>Enter your name...</value>
 	</data>
