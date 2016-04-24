@@ -6,6 +6,7 @@ using SmartLocalization;
 public class SettingsDialog : MonoBehaviour
 {
     public Image splash;
+    public Image splash2;
     public Text title;
     public Text changeNameText;
     public Button changeNameButton;
@@ -79,17 +80,22 @@ public class SettingsDialog : MonoBehaviour
 
     private void CloseIfClickedOutside(GameObject panel)
     {
-         if (Input.GetMouseButtonDown(0) && panel.activeSelf && 
+        if (setNameDialog.IsOpened())
+            return;
+
+        if (Input.GetMouseButtonDown(0) && panel.activeSelf && 
              !RectTransformUtility.RectangleContainsScreenPoint(
                  panel.GetComponent<RectTransform>(), 
                  Input.mousePosition, 
                  Camera.main)) {
             Close();
-         }
+        }
     }
 
      public void OnChangeNameClicked()
      {
+        splash.gameObject.SetActive(false);
+        splash2.gameObject.SetActive(true);
         changeNameButton.interactable = false;
         loginButton.interactable = false;
         volumeSlider.interactable = false;
@@ -102,6 +108,8 @@ public class SettingsDialog : MonoBehaviour
             loginButton.interactable = true;
             volumeSlider.interactable = true;
             gameServerEditbox.interactable = true;
-        });
+            splash2.gameObject.SetActive(false);
+            splash.gameObject.SetActive(true);
+        }, false);
      }
 }

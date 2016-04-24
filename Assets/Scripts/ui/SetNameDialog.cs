@@ -32,7 +32,12 @@ public class SetNameDialog : MonoBehaviour, ISetProfileNameRequestHandler
     {
 	}
 
-    public void Open(ProfileData profileData, OnClose onCloseHandler)
+    public bool IsOpened()
+    {
+        return gameObject.activeSelf;
+    }
+
+    public void Open(ProfileData profileData, OnClose onCloseHandler, bool showSplash = true)
     {
         headerText.text = LanguageManager.Instance.GetTextValue("SetName.SetupName");
         placeholderText.text = LanguageManager.Instance.GetTextValue("SetName.EnterName");
@@ -46,7 +51,7 @@ public class SetNameDialog : MonoBehaviour, ISetProfileNameRequestHandler
         this.nameEditbox.text = profileData.name;
 
         gameObject.SetActive(true);
-        splashWasActive = splash.IsActive();
+        splashWasActive = splash.IsActive() || !showSplash;
         if (!splashWasActive)
             splash.gameObject.SetActive(true);
     }

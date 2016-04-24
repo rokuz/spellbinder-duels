@@ -11,6 +11,8 @@ public class SpellbookDialog : MonoBehaviour
     public Image splash;
     public GameObject content;
 
+    public Text title;
+
     public Sprite fireIconSprite;
     public Sprite waterIconSprite;
     public Sprite airIconSprite;
@@ -104,6 +106,8 @@ public class SpellbookDialog : MonoBehaviour
 		}
 		height += kSpacing;
 		content.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
+
+        this.title.text = LanguageManager.Instance.GetTextValue("Spellbook.Title");
 	}
 
     public void Update()

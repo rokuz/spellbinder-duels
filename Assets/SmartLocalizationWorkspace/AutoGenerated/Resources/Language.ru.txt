@@ -290,6 +290,9 @@
 	<data name="Spell.WILDFIRE" xml:space="preserve">
 		<value>Лесной пожар</value>
 	</data>
+	<data name="Spellbook.Title" xml:space="preserve">
+		<value>Книга заклинаний</value>
+	</data>
 	<data name="SpellDesc.BlockAB" xml:space="preserve">
 		<value>Блокирует бонус к урону воздухом на 1 ход</value>
 	</data>

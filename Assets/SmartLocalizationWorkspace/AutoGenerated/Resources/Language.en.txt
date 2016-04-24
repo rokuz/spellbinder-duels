@@ -290,6 +290,9 @@
 	<data name="Spell.WILDFIRE" xml:space="preserve">
 		<value>Wildfire</value>
 	</data>
+	<data name="Spellbook.Title" xml:space="preserve">
+		<value>Spellbook</value>
+	</data>
 	<data name="SpellDesc.BlockAB" xml:space="preserve">
 		<value>Blocks air damage bonus for a turn</value>
 	</data>

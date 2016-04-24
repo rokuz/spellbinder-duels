@@ -200,6 +200,9 @@
 	<data name="Player.Level" xml:space="preserve">
 		<value />
 	</data>
+	<data name="Player.SmthBlocked" xml:space="preserve">
+		<value />
+	</data>
 	<data name="SetName.EnterName" xml:space="preserve">
 		<value />
 	</data>
@@ -395,7 +398,7 @@
 	<data name="Temp.Tournament" xml:space="preserve">
 		<value />
 	</data>
-	<data name="Player.SmthBlocked" xml:space="preserve">
+	<data name="Spellbook.Title" xml:space="preserve">
 		<value />
 	</data>
 </root>
