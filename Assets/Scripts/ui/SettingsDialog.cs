@@ -15,6 +15,8 @@ public class SettingsDialog : MonoBehaviour
     public Button loginButton;
     public Text volumeText;
     public Slider volumeSlider;
+    public Text gammaText;
+    public Slider gammaSlider;
     public Text gameServerText;
     public InputField gameServerEditbox;
     public SetNameDialog setNameDialog;
@@ -24,6 +26,11 @@ public class SettingsDialog : MonoBehaviour
     private OnClose onCloseHandler;
 
     private ProfileData profileData;
+
+    public static void ApplyGamma()
+    {
+        RenderSettings.ambientIntensity = Mathf.Lerp(0.1f, 0.5f, Persistence.gameConfig.gamma);
+    }
 
     public void Start()
     {
@@ -39,6 +46,10 @@ public class SettingsDialog : MonoBehaviour
         loginDescText.text = LanguageManager.Instance.GetTextValue("Settings.LoginDesc");
         volumeText.text = LanguageManager.Instance.GetTextValue("Settings.MusicVolume");
         gameServerText.text = LanguageManager.Instance.GetTextValue("Settings.GameServer");
+        gammaText.text = LanguageManager.Instance.GetTextValue("Settings.Gamma");
+
+        volumeSlider.value = Persistence.gameConfig.musicVolume;
+        gammaSlider.value = Persistence.gameConfig.gamma;
 
         gameServerEditbox.text = Persistence.gameConfig.serverAddress;
     }
@@ -67,6 +78,8 @@ public class SettingsDialog : MonoBehaviour
     public void Close()
     {
         Persistence.gameConfig.serverAddress = gameServerEditbox.text;
+        Persistence.gameConfig.musicVolume = volumeSlider.value;
+        Persistence.gameConfig.gamma = gammaSlider.value;
         Persistence.Save();
 
         if (splash != null && splash.IsActive())
@@ -111,5 +124,11 @@ public class SettingsDialog : MonoBehaviour
             splash2.gameObject.SetActive(false);
             splash.gameObject.SetActive(true);
         }, false);
+     }
+
+     public void OnChangeGamma(float val)
+     {
+        Persistence.gameConfig.gamma = val;
+        ApplyGamma();
      }
 }

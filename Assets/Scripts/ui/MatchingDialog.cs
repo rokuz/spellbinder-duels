@@ -66,6 +66,11 @@ public class MatchingDialog : MonoBehaviour, IMatchingRequestsHandler
         }
 	}
 
+    public bool IsOpened()
+    {
+        return gameObject.activeSelf;
+    }
+
     public void Open(ProfileData profileData, OnClose onCloseHandler)
     {
         this.profileData = profileData;

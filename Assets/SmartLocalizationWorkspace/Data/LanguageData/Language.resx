@@ -227,6 +227,9 @@
 	<data name="Settings.GameServer" xml:space="preserve">
 		<value />
 	</data>
+	<data name="Settings.Gamma" xml:space="preserve">
+		<value />
+	</data>
 	<data name="Settings.Login" xml:space="preserve">
 		<value />
 	</data>
@@ -288,6 +291,9 @@
 		<value />
 	</data>
 	<data name="Spell.WILDFIRE" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Spellbook.Title" xml:space="preserve">
 		<value />
 	</data>
 	<data name="SpellDesc.BlockAB" xml:space="preserve">
@@ -396,9 +402,6 @@
 		<value />
 	</data>
 	<data name="Temp.Tournament" xml:space="preserve">
-		<value />
-	</data>
-	<data name="Spellbook.Title" xml:space="preserve">
 		<value />
 	</data>
 </root>

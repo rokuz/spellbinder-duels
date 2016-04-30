@@ -227,6 +227,9 @@
 	<data name="Settings.GameServer" xml:space="preserve">
 		<value>Game server address</value>
 	</data>
+	<data name="Settings.Gamma" xml:space="preserve">
+		<value>Gamma</value>
+	</data>
 	<data name="Settings.Login" xml:space="preserve">
 		<value>Log into Facebook</value>
 	</data>
@@ -396,9 +399,9 @@
 		<value>Resets opponent's defense</value>
 	</data>
 	<data name="Temp.Shop" xml:space="preserve">
-		<value>Tournament will be available soon</value>
+		<value>Shop will be available soon</value>
 	</data>
 	<data name="Temp.Tournament" xml:space="preserve">
-		<value>Shop will be available soon</value>
+		<value>Tournament will be available soon</value>
 	</data>
 </root>

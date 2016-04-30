@@ -227,6 +227,9 @@
 	<data name="Settings.GameServer" xml:space="preserve">
 		<value>Адрес игрового сервера</value>
 	</data>
+	<data name="Settings.Gamma" xml:space="preserve">
+		<value>Гамма</value>
+	</data>
 	<data name="Settings.Login" xml:space="preserve">
 		<value>Логин в Facebook</value>
 	</data>

@@ -115,6 +115,11 @@ public class SpellbookDialog : MonoBehaviour
         CloseIfClickedOutside(this.gameObject);
     }
 
+    public bool IsOpened()
+    {
+        return gameObject.activeSelf;
+    }
+
     public void Open(ProfileData profileData, OnClose onCloseHandler)
     {
         this.profileData = profileData;

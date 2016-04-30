@@ -34,6 +34,8 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
 
     public GameObject fireballPrefab;
     public GameObject iceSpearPrefab;
+    public GameObject lightningPrefab;
+    public GameObject natureCallPrefab;
     public GameObject miscastPrefab;
 
     public Button settingsButton;
@@ -123,6 +125,8 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
         #if UNITY_EDITOR
             LanguageManager.Instance.ChangeLanguage("ru");
         #endif
+
+        SettingsDialog.ApplyGamma();
 
         SpriteRenderer renderer = (from r in cards[0].GetComponentsInChildren<SpriteRenderer>()
                                          where r.gameObject.name == "front"
@@ -792,6 +796,41 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
         projectileSpells.Add(new CastedSpell(projectileSpellObject, onFinished));
     }
 
+    private void CastInstantSpell(GameObject spellPrefab, bool isPlayer, Vector3 targetPos, float duration, OnSpellAnimationFinished onFinished)
+    {
+        GameObject spellObject = Instantiate(spellPrefab);
+        Vector3 dir = targetPos - spellObject.transform.position;
+        dir.z = 0;
+        dir.Normalize();
+        spellObject.transform.forward = dir;
+        spellObject.transform.Rotate(0.0f, 0.0f, 90.0f);
+        StartCoroutine(CastInstantSpellRoutine(spellObject, isPlayer, duration, onFinished));
+    }
+
+    private IEnumerator CastInstantSpellRoutine(GameObject spellObject, bool isPlayer, float duration, OnSpellAnimationFinished onFinished)
+    {
+        yield return new WaitForSeconds(duration);
+        Destroy(spellObject);
+        ShiverPlayer(!isPlayer);
+        if (onFinished != null)
+            onFinished();
+    }
+
+    private void CastBuffSpell(GameObject spellPrefab, Vector3 targetPos, float duration, OnSpellAnimationFinished onFinished)
+    {
+        GameObject spellObject = Instantiate(spellPrefab);
+        spellObject.transform.position = targetPos;
+        StartCoroutine(CastBuffSpellRoutine(spellObject, duration, onFinished));
+    }
+
+    private IEnumerator CastBuffSpellRoutine(GameObject spellObject, float duration, OnSpellAnimationFinished onFinished)
+    {
+        yield return new WaitForSeconds(duration);
+        Destroy(spellObject);
+        if (onFinished != null)
+            onFinished();
+    }
+
     private void MiscastSpell(OnSpellAnimationFinished onFinished)
     {
         GameObject spellObject = Instantiate(miscastPrefab);
@@ -876,6 +915,14 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
         else if (spell == "ICE_SPEAR")
         {
             CastProjectileSpell(iceSpearPrefab, toOpponent ? playerInfo2Pos : playerInfo1Pos, onFinished);
+        }
+        else if (spell == "LIGHTNING")
+        {
+            CastInstantSpell(lightningPrefab, toOpponent, toOpponent ? playerInfo2Pos : playerInfo1Pos, 0.5f, onFinished);
+        }
+        else if (spell == "NATURE_CALL")
+        {
+            CastBuffSpell(natureCallPrefab, toOpponent ? playerInfo1Pos : playerInfo2Pos, 2.5f, onFinished);
         }
         else
         {

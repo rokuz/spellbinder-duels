@@ -20,6 +20,11 @@ public class MessageDialog : MonoBehaviour
     {
 	}
 
+    public bool IsOpened()
+    {
+        return gameObject.activeSelf;
+    }
+
     public void Open(string message, OnClose onCloseHandler)
     {
         text.text = message;

@@ -32,6 +32,8 @@ public class MainMenuController : MonoBehaviour, IProfileRequestsHandler, ISpell
         Application.runInBackground = true;
         Persistence.Load();
 
+        SettingsDialog.ApplyGamma();
+
         this.playerText = playerLogo.GetComponentInChildren<Text>();
         this.playerLogo.gameObject.SetActive(false);
         playerLogo.GetComponent<PlayerInfoCollider>().Setup(OnPlayerInfoClicked);
@@ -97,7 +99,8 @@ public class MainMenuController : MonoBehaviour, IProfileRequestsHandler, ISpell
 
     public void OnPlayerInfoClicked()
     {
-        if (characterDialog.IsOpened())
+        if (characterDialog.IsOpened() || matchingDialog.IsOpened() || messageDialog.IsOpened() || settingsDialog.IsOpened() ||
+            spellbookDialog.IsOpened())
             return;
 
         characterDialog.Open(profileData, () => {});
