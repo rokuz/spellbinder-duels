@@ -36,6 +36,11 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
     public GameObject iceSpearPrefab;
     public GameObject lightningPrefab;
     public GameObject natureCallPrefab;
+    public GameObject blessingPrefab;
+    public GameObject bleedingPrefab;
+    public GameObject blindnessPrefab;
+    public GameObject stoneskinPrefab;
+    public GameObject doppelgangerPrefab;
     public GameObject miscastPrefab;
 
     public Button settingsButton;
@@ -923,6 +928,28 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
         else if (spell == "NATURE_CALL")
         {
             CastBuffSpell(natureCallPrefab, toOpponent ? playerInfo1Pos : playerInfo2Pos, 2.5f, onFinished);
+        }
+        else if (spell == "BLESSING")
+        {
+            Vector3 offset = new Vector3(0.0f, 10.0f, 0.0f);
+            CastBuffSpell(blessingPrefab, toOpponent ? (playerInfo1Pos + offset) : (playerInfo2Pos + offset), 2.5f, onFinished);
+        }
+        else if (spell == "BLEEDING")
+        {
+            Vector3 offset = new Vector3(0.0f, 10.0f, 0.0f);
+            CastBuffSpell(bleedingPrefab, toOpponent ? (playerInfo2Pos + offset) : (playerInfo1Pos + offset), 2.5f, onFinished);
+        }
+        else if (spell == "BLINDNESS")
+        {
+            CastBuffSpell(blindnessPrefab, toOpponent ? playerInfo2Pos : playerInfo1Pos, 2.5f, onFinished);
+        }
+        else if (spell == "STONESKIN")
+        {
+            CastBuffSpell(stoneskinPrefab, toOpponent ? playerInfo1Pos : playerInfo2Pos, 1.5f, onFinished);
+        }
+        else if (spell == "DOPPELGANGER")
+        {
+            CastBuffSpell(doppelgangerPrefab, toOpponent ? playerInfo1Pos : playerInfo2Pos, 2.5f, onFinished);
         }
         else
         {
