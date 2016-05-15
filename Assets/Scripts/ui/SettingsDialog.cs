@@ -5,6 +5,7 @@ using SmartLocalization;
 
 public class SettingsDialog : MonoBehaviour
 {
+    public FBHolder facebookHolder;
     public Image splash;
     public Image splash2;
     public Text title;
@@ -70,6 +71,12 @@ public class SettingsDialog : MonoBehaviour
         changeNameButton.interactable = (this.profileData != null);
         this.onCloseHandler = onCloseHandler;
 
+        if (facebookHolder.FacebookLoggedIn)
+        {
+            loginButton.gameObject.SetActive(false);
+            loginDescText.text = string.Format(LanguageManager.Instance.GetTextValue("Settings.LoginFinished"), facebookHolder.FacebookName);
+        }
+
         gameObject.SetActive(true);
         if (splash != null && !splash.IsActive())
             splash.gameObject.SetActive(true);
@@ -93,7 +100,7 @@ public class SettingsDialog : MonoBehaviour
 
     private void CloseIfClickedOutside(GameObject panel)
     {
-        if (setNameDialog.IsOpened())
+        if (setNameDialog.IsOpened() || facebookHolder.FacebookLoginInProgress)
             return;
 
         if (Input.GetMouseButtonDown(0) && panel.activeSelf && 
@@ -105,8 +112,8 @@ public class SettingsDialog : MonoBehaviour
         }
     }
 
-     public void OnChangeNameClicked()
-     {
+    public void OnChangeNameClicked()
+    {
         splash.gameObject.SetActive(false);
         splash2.gameObject.SetActive(true);
         changeNameButton.interactable = false;
@@ -124,11 +131,33 @@ public class SettingsDialog : MonoBehaviour
             splash2.gameObject.SetActive(false);
             splash.gameObject.SetActive(true);
         }, false);
-     }
+    }
 
-     public void OnChangeGamma(float val)
-     {
+    public void OnChangeGamma(float val)
+    {
         Persistence.gameConfig.gamma = val;
         ApplyGamma();
+    }
+
+    public void OnFacebookLoginClicked()
+    {
+        if (facebookHolder.FacebookInitialized)
+        {
+            if (!facebookHolder.FacebookLoggedIn)
+            {
+                loginButton.interactable = false;
+                facebookHolder.Login((bool success) =>
+                {
+                    loginButton.interactable = true;
+                    if (success)
+                    {
+                        loginButton.gameObject.SetActive(false);
+                        loginDescText.text = string.Format(LanguageManager.Instance.GetTextValue("Settings.LoginFinished"), facebookHolder.FacebookName);
+                        Persistence.gameConfig.facebookId = facebookHolder.FacebookID;
+                        Persistence.Save();
+                    }
+                });
+            }
+        }
      }
 }

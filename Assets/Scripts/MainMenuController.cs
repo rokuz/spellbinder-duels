@@ -7,6 +7,7 @@ using SmartLocalization;
 public class MainMenuController : MonoBehaviour, IProfileRequestsHandler, ISpellRequestsHandler
 {
     public ServerRequest serverRequest;
+    public FBHolder facebookHolder;
     public SetNameDialog setNameDialog;
     public MatchingDialog matchingDialog;
     public MessageDialog messageDialog;
@@ -33,6 +34,11 @@ public class MainMenuController : MonoBehaviour, IProfileRequestsHandler, ISpell
         Persistence.Load();
 
         SettingsDialog.ApplyGamma();
+
+        #if !UNITY_EDITOR
+        if (Persistence.gameConfig.facebookId != null && Persistence.gameConfig.facebookId.Length != 0)
+            facebookHolder.Login(null);
+        #endif
 
         this.playerText = playerLogo.GetComponentInChildren<Text>();
         this.playerLogo.gameObject.SetActive(false);
@@ -83,6 +89,9 @@ public class MainMenuController : MonoBehaviour, IProfileRequestsHandler, ISpell
 
     public void OnSettingsButtonClicked()
     {
+        if (facebookHolder.FacebookLoginInProgress)
+            return;
+
         this.settingsButton.interactable = false;
         settingsDialog.Open(this.profileData, () => 
         {

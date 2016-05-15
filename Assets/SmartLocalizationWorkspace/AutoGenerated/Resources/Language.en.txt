@@ -236,6 +236,9 @@
 	<data name="Settings.LoginDesc" xml:space="preserve">
 		<value>It opens special game options for you and helps us recover your profile in case of game reinstallation and device changing.</value>
 	</data>
+	<data name="Settings.LoginFinished" xml:space="preserve">
+		<value>You are logged in as {0}. Welcome to Spellbinder!</value>
+	</data>
 	<data name="Settings.MusicVolume" xml:space="preserve">
 		<value>Music volume</value>
 	</data>

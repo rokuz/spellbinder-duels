@@ -404,4 +404,7 @@
 	<data name="Temp.Tournament" xml:space="preserve">
 		<value />
 	</data>
+	<data name="Settings.LoginFinished" xml:space="preserve">
+		<value />
+	</data>
 </root>
