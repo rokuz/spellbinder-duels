@@ -26,6 +26,7 @@ public static class MatchingRequests
                 JSONObject profile = json.GetField("profile");
                 ProfileData data = new ProfileData();
                 data.name = profile.GetField("name").str;
+                data.facebookId = profile.GetField("facebookId").str;
                 data.level = (int)profile.GetField("level").n;
                 data.bonuses = Utils.ToIntArray(profile.GetField("bonuses").list.ToArray());
                 data.resistance = Utils.ToIntArray(profile.GetField("resistance").list.ToArray());

@@ -59,6 +59,8 @@ public class MainMenuController : MonoBehaviour, IProfileRequestsHandler, ISpell
         settingsDialog.Setup();
         characterDialog.Setup();
 
+        facebookHolder.GetPicture(playerLogo.GetComponentInChildren<Image>(), Persistence.gameConfig.facebookId);
+
         SynchronizeWithServer();
 	}
 
@@ -145,9 +147,9 @@ public class MainMenuController : MonoBehaviour, IProfileRequestsHandler, ISpell
         else
             this.UpdatePlayerText();
 
-        this.synchInProgress = false;
-
         facebookHolder.GetPicture(playerLogo.GetComponentInChildren<Image>(), Persistence.gameConfig.facebookId);
+
+        this.synchInProgress = false;
     }
 
     public void OnUnknownProfile()

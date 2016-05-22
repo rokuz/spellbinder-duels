@@ -9,6 +9,7 @@ public class ProfileData
 
     public string id = null;
     public string name;
+    public string facebookId;
     public int level;
     public int experience;
     public int experienceToNextLevel;
@@ -126,6 +127,7 @@ public static class ProfileRequests
                 if (id != null)
                     data.id = id.str;
                 data.name = profile.GetField("name").str;
+                data.facebookId = profile.GetField("facebookId").str;
                 data.level = (int)profile.GetField("level").n;
                 data.experience = (int)profile.GetField("experience").n;
                 data.experienceToNextLevel = (int)profile.GetField("experienceToNextLevel").n;

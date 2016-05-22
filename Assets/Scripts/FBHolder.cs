@@ -8,7 +8,7 @@ using System.IO;
 public class FBHolder : MonoBehaviour {
 
     private static bool facebookInitializeCalled = false;
-    private bool facebookInitialized = false;
+    private static bool facebookInitialized = false;
     private bool loginInProgress = false;
 
     private string facebookName = "Anonymous";
@@ -73,7 +73,7 @@ public class FBHolder : MonoBehaviour {
 
     public void GetPicture(Image image, string id)
     {
-        if (image == null || id == null || id.Length == 0)
+        if (!facebookInitialized || image == null || id == null || id.Length == 0)
             return;
 
         if (picturesCache.ContainsKey(id))
@@ -159,7 +159,7 @@ public class FBHolder : MonoBehaviour {
 
     private static string GetPicturePath(string id)
     {
-        return Application.temporaryCachePath + "/pics/" + id + ".png";
+        return Application.temporaryCachePath + "/" + id + ".png";
     }
 
     private IEnumerator LoadImageFromFile(string picturePath, Image image, string id)

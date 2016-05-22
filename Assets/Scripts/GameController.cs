@@ -14,6 +14,7 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
     const float kShiverDuration = 0.5f;
 
     public ServerRequest serverRequest;
+    public FBHolder facebookHolder;
     public MessageDialog messageDialog;
     public RewardDialog rewardDialog;
     public GameObject player1Info;
@@ -176,6 +177,11 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
             player2.name.text = matchData.opponent.name;
             UpdatePlayerInfo(matchData.player, player1, null);
             UpdatePlayerInfo(matchData.opponent, player2, null);
+
+            Image logo1 = (from r in player1Info.GetComponentsInChildren<Image>() where r.gameObject.name == "Logo" select r).Single();
+            Image logo2 = (from r in player2Info.GetComponentsInChildren<Image>() where r.gameObject.name == "Logo" select r).Single();
+            facebookHolder.GetPicture(logo1, matchData.player.facebookId);
+            facebookHolder.GetPicture(logo2, matchData.opponent.facebookId);
 
             Dictionary<string, string> p = new Dictionary<string, string>();
             p["id"] = matchData.player.id;

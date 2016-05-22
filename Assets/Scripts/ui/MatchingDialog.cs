@@ -8,6 +8,7 @@ using SmartLocalization;
 public class MatchingDialog : MonoBehaviour, IMatchingRequestsHandler
 {
     public ServerRequest serverRequest;
+    public FBHolder facebookHolder;
     public Text lookingForText;
     public MessageDialog messageDialog;
     public GameObject player;
@@ -80,6 +81,8 @@ public class MatchingDialog : MonoBehaviour, IMatchingRequestsHandler
         isAnimating = true;
         animationStartTime = Time.time;
 
+        facebookHolder.GetPicture(player.GetComponent<Image>(), profileData.facebookId);
+
         StartCoroutine(StartRequesting(1.0f));
     }
 
@@ -99,6 +102,8 @@ public class MatchingDialog : MonoBehaviour, IMatchingRequestsHandler
 
         player.gameObject.GetComponentInChildren<Text>().text = UIUtils.GetFormattedString(profileData);
         opponent.gameObject.GetComponentInChildren<Text>().text = UIUtils.GetFormattedString(opponentData);
+
+        facebookHolder.GetPicture(opponent.GetComponent<Image>(), opponentData.facebookId);
 
         SceneConnector.Instance.PushMatch(matchId, profileData, opponentData);
 
