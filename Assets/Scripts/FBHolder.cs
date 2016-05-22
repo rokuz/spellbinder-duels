@@ -1,11 +1,13 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using Facebook.Unity;
 using System.Collections.Generic;
+using System.IO;
 
 public class FBHolder : MonoBehaviour {
 
-    private bool facebookInitializeCalled = false;
+    private static bool facebookInitializeCalled = false;
     private bool facebookInitialized = false;
     private bool loginInProgress = false;
 
@@ -14,6 +16,36 @@ public class FBHolder : MonoBehaviour {
 
     public delegate void OnLoginFinished(bool success);
     private OnLoginFinished loginCallback;
+
+    private class PictureHandler
+    {
+        private Dictionary<string, Sprite> picturesCache;
+        private Image image;
+        private string id;
+
+        public PictureHandler(Dictionary<string, Sprite> picturesCache, Image image, string id)
+        {
+            this.picturesCache = picturesCache;
+            this.image = image;
+            this.id = id;
+        }
+
+        public void OnGetPicture(IGraphResult result)
+        {
+            if (result.Error != null || result.Texture == null)
+                return;
+
+            byte[] bytes = result.Texture.EncodeToPNG();
+            File.WriteAllBytes(FBHolder.GetPicturePath(id), bytes);
+
+            int w = result.Texture.width;
+            int h = result.Texture.height;
+            image.sprite = Sprite.Create(result.Texture, new Rect(0, 0, w, h), new Vector2(0.5f, 0.5f));
+            picturesCache.Add(id, image.sprite);
+        }
+    }
+
+    private Dictionary<string, Sprite> picturesCache = new Dictionary<string, Sprite>();
 
     public bool FacebookInitialized
     {
@@ -37,6 +69,26 @@ public class FBHolder : MonoBehaviour {
             loginInProgress = true;
             FB.LogInWithReadPermissions(new List<string>(){ "public_profile", "user_friends" }, AuthCallback);
         }
+    }
+
+    public void GetPicture(Image image, string id)
+    {
+        if (image == null || id == null || id.Length == 0)
+            return;
+
+        if (picturesCache.ContainsKey(id))
+        {
+            image.sprite = picturesCache[id];
+            return;
+        }
+        else if (File.Exists(GetPicturePath(id)))
+        {
+            StartCoroutine(LoadImageFromFile(GetPicturePath(id), image, id));
+            return;
+        }
+
+        PictureHandler handler = new PictureHandler(picturesCache, image, id);
+        FB.API("/" + id + "/picture?width=100&height=100", HttpMethod.GET, handler.OnGetPicture);
     }
 
     public void Logout()
@@ -103,5 +155,25 @@ public class FBHolder : MonoBehaviour {
     {
         Debug.Log("Facebook Initialized");
         facebookInitialized = true;
+    }
+
+    private static string GetPicturePath(string id)
+    {
+        return Application.temporaryCachePath + "/pics/" + id + ".png";
+    }
+
+    private IEnumerator LoadImageFromFile(string picturePath, Image image, string id)
+    {
+        WWW www = new WWW("file://" + picturePath);
+        yield return www;
+
+        Texture2D result = www.texture;
+        if (result != null)
+        {
+            int w = result.width;
+            int h = result.height;
+            image.sprite = Sprite.Create(result, new Rect(0, 0, w, h), new Vector2(0.5f, 0.5f));
+            picturesCache.Add(id, image.sprite);
+        }
     }
 }

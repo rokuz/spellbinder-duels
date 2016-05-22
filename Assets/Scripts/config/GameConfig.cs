@@ -8,6 +8,7 @@ public class GameConfig
     public float musicVolume;
     public float gamma;
     public string facebookId;
+    public bool profileSynchronized;
 
     public GameConfig()
     {
@@ -16,5 +17,6 @@ public class GameConfig
         this.musicVolume = 1.0f;
         this.gamma = 0.5f;
         this.facebookId = "";
+        this.profileSynchronized = true;
     }
 }

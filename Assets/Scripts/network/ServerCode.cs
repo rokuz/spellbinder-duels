@@ -19,4 +19,5 @@
     public const int YOU_WIN = 16;
     public const int YOU_LOSE = 17;
     public const int OPPONENT_SURRENDERED = 18;
+    public const int USED_FID = 19;
 }

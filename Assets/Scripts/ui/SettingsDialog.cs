@@ -154,6 +154,7 @@ public class SettingsDialog : MonoBehaviour
                         loginButton.gameObject.SetActive(false);
                         loginDescText.text = string.Format(LanguageManager.Instance.GetTextValue("Settings.LoginFinished"), facebookHolder.FacebookName);
                         Persistence.gameConfig.facebookId = facebookHolder.FacebookID;
+                        Persistence.gameConfig.profileSynchronized = false;
                         Persistence.Save();
                     }
                 });

@@ -24,6 +24,8 @@ public interface IProfileRequestsHandler
     void OnGetProfile(ProfileData profileData);
     void OnUnknownProfile();
     void OnProfileError(int code);
+    void OnBindFacebook();
+    void OnBindFacebookFailed();
 }
 
 public interface ISetProfileNameRequestHandler
@@ -38,6 +40,7 @@ public static class ProfileRequests
     public const string CREATE = "create_profile";
     public const string GET = "profile";
     public const string SET_NAME = "set_name";
+    public const string BIND_FACEBOOK = "bind_facebook";
 
     public static void OnCreateResponse(WWW response, IProfileRequestsHandler handler)
     {
@@ -47,6 +50,35 @@ public static class ProfileRequests
     public static void OnGetResponse(WWW response, IProfileRequestsHandler handler)
     {
         OnResponse(response, handler);
+    }
+
+    public static void OnBindFacebook(WWW response, IProfileRequestsHandler handler)
+    {
+        if (response.error == null)
+        {
+            JSONObject json = JSONObject.Create(response.text);
+            int code = (int)json.GetField("code").i;
+            if (code == ServerCode.OK)
+            {
+                if (handler != null)
+                    handler.OnBindFacebook();
+            }
+            else if (code == ServerCode.USED_FID)
+            {
+                OnResponse(response, handler);
+            }
+            else
+            {
+                if (handler != null)
+                    handler.OnBindFacebookFailed();
+            }
+        }
+        else
+        {
+            Debug.Log("" + response.error);
+            if (handler != null)
+                handler.OnProfileError(400);
+        }
     }
 
     public static void OnSetNameResponse(WWW response, ISetProfileNameRequestHandler handler)
@@ -86,7 +118,7 @@ public static class ProfileRequests
         {
             JSONObject json = JSONObject.Create(response.text);
             int code = (int)json.GetField("code").i;
-            if (code == ServerCode.OK)
+            if (code == ServerCode.OK || code == ServerCode.USED_FID)
             {
                 JSONObject profile = json.GetField("profile");
                 ProfileData data = new ProfileData();

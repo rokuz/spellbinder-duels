@@ -24,6 +24,8 @@ public class MainMenuController : MonoBehaviour, IProfileRequestsHandler, ISpell
     private ProfileData profileData;
     private Text playerText;
 
+    private bool synchInProgress = false;
+
 	public void Start()
     {
         #if UNITY_EDITOR
@@ -64,25 +66,30 @@ public class MainMenuController : MonoBehaviour, IProfileRequestsHandler, ISpell
     {
         Persistence.Save();
     }
-	
-    public void Update()
-    {  
-	}
-
+	   
     public void OnPlayButtonClicked()
     {
+        if (this.synchInProgress)
+            return;
+
         this.playButton.interactable = false;
         matchingDialog.Open(profileData, () => { this.playButton.interactable = true; });
     }
 
     public void OnTournamentButtonClicked()
     {
+        if (this.synchInProgress)
+            return;
+
         this.tournamentButton.interactable = false;
         messageDialog.Open(LanguageManager.Instance.GetTextValue("Temp.Tournament"), () => { this.tournamentButton.interactable = true; });
     }
 
     public void OnSpellbookButtonClicked()
     {
+        if (this.synchInProgress)
+            return;
+
         this.spellbookButton.interactable = false;
         spellbookDialog.Open(profileData, () => { this.spellbookButton.interactable = true; });
     }
@@ -102,6 +109,9 @@ public class MainMenuController : MonoBehaviour, IProfileRequestsHandler, ISpell
 
     public void OnShopButtonClicked()
     {
+        if (this.synchInProgress)
+            return;
+
         this.shopButton.interactable = false;
         messageDialog.Open(LanguageManager.Instance.GetTextValue("Temp.Shop"), () => { this.shopButton.interactable = true; });
     }
@@ -109,7 +119,7 @@ public class MainMenuController : MonoBehaviour, IProfileRequestsHandler, ISpell
     public void OnPlayerInfoClicked()
     {
         if (characterDialog.IsOpened() || matchingDialog.IsOpened() || messageDialog.IsOpened() || settingsDialog.IsOpened() ||
-            spellbookDialog.IsOpened())
+            spellbookDialog.IsOpened() || this.synchInProgress)
             return;
 
         characterDialog.Open(profileData, () => {});
@@ -134,6 +144,10 @@ public class MainMenuController : MonoBehaviour, IProfileRequestsHandler, ISpell
             setNameDialog.Open(this.profileData, () => { this.UpdatePlayerText(); });
         else
             this.UpdatePlayerText();
+
+        this.synchInProgress = false;
+
+        facebookHolder.GetPicture(playerLogo.GetComponentInChildren<Image>(), Persistence.gameConfig.facebookId);
     }
 
     public void OnUnknownProfile()
@@ -147,6 +161,18 @@ public class MainMenuController : MonoBehaviour, IProfileRequestsHandler, ISpell
             return;
         messageDialog.Open(LanguageManager.Instance.GetTextValue("Message.ServerUnavailable") + " (" + code + ")",
                            () => { StartCoroutine(SynchronizeWithServerDeferred()); });
+    }
+
+    public void OnBindFacebook()
+    {
+        Persistence.gameConfig.profileSynchronized = true;
+        Persistence.Save();
+        GetProfile();
+    }
+
+    public void OnBindFacebookFailed()
+    {
+        GetProfile();
     }
 
 #endregion
@@ -186,10 +212,26 @@ public class MainMenuController : MonoBehaviour, IProfileRequestsHandler, ISpell
 		
     private void SynchronizeWithServer()
     {
+        this.synchInProgress = true;
         if (Persistence.gameConfig.playerID.Length == 0)
+        {
             CreateProfile();
+        }
         else
-            GetProfile();
+        {
+            if (!Persistence.gameConfig.profileSynchronized && Persistence.gameConfig.facebookId != null &&
+                Persistence.gameConfig.facebookId.Length != 0)
+            {
+                Dictionary<string, string> p = new Dictionary<string, string>();
+                p["id"] = Persistence.gameConfig.playerID;
+                p["fid"] = Persistence.gameConfig.facebookId;
+                Request(ProfileRequests.BIND_FACEBOOK, p, (WWW response) => { ProfileRequests.OnBindFacebook(response, this); });
+            }
+            else
+            {
+                GetProfile();
+            }
+        }
     }
 
     private void UpdatePlayerText()
