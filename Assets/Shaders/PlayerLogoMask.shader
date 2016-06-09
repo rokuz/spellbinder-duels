@@ -60,7 +60,7 @@
 				fixed4 c = tex2D(_MainTex, IN.texcoord) * IN.color;
 				float2 uv = IN.texcoord - float2(0.5, 0.5);
 				float r = uv.x * uv.x + uv.y * uv.y;
-				c.rgb = lerp(c.rgb, fixed3(1.0, 1.0, 1.0), smoothstep(0.2, 0.25, r));
+				c.rgb = lerp(c.rgb, fixed3(1.0, 1.0, 1.0), smoothstep(0.22, 0.23, r));
 				c.a *= (1.0 - smoothstep(0.23, 0.25, r));
 				return c;
 			}

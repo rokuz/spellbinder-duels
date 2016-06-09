@@ -79,6 +79,7 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
     private bool youTurn = false;
     private bool cardsOpened = false;
     private int[] cardIndices = null;
+    private bool matchStarted = false;
 
     private int currentMana = 0;
     private int currentOpponentMana = 0;
@@ -467,7 +468,7 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
 
     public void OnCardTapped(int cardIndex)
     {
-        if (youTurn && !cardsOpened)
+        if (matchStarted && youTurn && !cardsOpened)
         {
             if (openedCards[cardIndex].isBackShowing && !openedCards[cardIndex].isSwapping)
                 SwapCard(cardIndex);
@@ -592,9 +593,11 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
 
     private IEnumerator StartMatchRoutine()
     {
+        matchStarted = false;
         SwapAllCards();
         yield return new WaitForSeconds(this.gameData.showTime);
         SwapAllCards();
+        matchStarted = true;
     }
 
     private IEnumerator ShowGameInfo(string text, float time)

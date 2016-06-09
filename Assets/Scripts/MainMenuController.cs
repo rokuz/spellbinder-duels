@@ -142,6 +142,15 @@ public class MainMenuController : MonoBehaviour, IProfileRequestsHandler, ISpell
         }
         this.profileData = profileData;
 
+        // Config and profile inconsistency.
+        if (Persistence.gameConfig.profileSynchronized && this.profileData.facebookId.Length == 0)
+        {
+            Persistence.gameConfig.profileSynchronized = false;
+            Persistence.Save();
+            SynchronizeWithServer();
+            return;
+        }
+
         if (this.profileData.name.Length == 0)
             setNameDialog.Open(this.profileData, () => { this.UpdatePlayerText(); });
         else
