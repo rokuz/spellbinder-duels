@@ -162,7 +162,7 @@
 		<value>Ваш ход</value>
 	</data>
 	<data name="MainMenu.Play" xml:space="preserve">
-		<value>Игра</value>
+		<value>Играть</value>
 	</data>
 	<data name="MainMenu.Tournament" xml:space="preserve">
 		<value>Турнир</value>
@@ -206,6 +206,12 @@
 	<data name="SetName.EnterName" xml:space="preserve">
 		<value>Введите имя...</value>
 	</data>
+	<data name="SetName.Login" xml:space="preserve">
+		<value>Войди и играй с друзьями</value>
+	</data>
+	<data name="SetName.LoginFinished" xml:space="preserve">
+		<value>Вход выполнен</value>
+	</data>
 	<data name="SetName.NameEmpty" xml:space="preserve">
 		<value>Имя не задано</value>
 	</data>
@@ -230,17 +236,11 @@
 	<data name="Settings.Gamma" xml:space="preserve">
 		<value>Гамма</value>
 	</data>
-	<data name="Settings.Login" xml:space="preserve">
-		<value>Логин в Facebook</value>
-	</data>
-	<data name="Settings.LoginDesc" xml:space="preserve">
-		<value>Это откроет вам специальные игровые возможности и поможет нам восстановить ваш игровой профиль в случае переустановки игры или смены устройства.</value>
-	</data>
-	<data name="Settings.LoginFinished" xml:space="preserve">
-		<value>Вы вошли как {0}. Добро пожаловать в Spellbinder!</value>
-	</data>
 	<data name="Settings.MusicVolume" xml:space="preserve">
 		<value>Громкость музыки</value>
+	</data>
+	<data name="Settings.SfxVolume" xml:space="preserve">
+		<value>Громкость звуковых эффектов</value>
 	</data>
 	<data name="Settings.Title" xml:space="preserve">
 		<value>Настройки</value>

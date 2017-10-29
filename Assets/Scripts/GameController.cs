@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Text;
 using SmartLocalization;
 
-public class GameController : MonoBehaviour, IGameRequestsHandler
+public class GameController : MonoBehaviour//, IGameRequestsHandler
 {
     private const int kCardsCount = 12;
     const float kAnimationTimeSec = 1.0f;
@@ -127,7 +127,7 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
     private List<CastedSpell> projectileSpells = new List<CastedSpell>();
     private CastedSpell miscastedSpell;
 
-    public void Start()
+    /*public void Start()
     {
         #if UNITY_EDITOR
             LanguageManager.Instance.ChangeLanguage("ru");
@@ -1020,7 +1020,7 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
     private void PlayAnimation(Animator animator, string name)
     {
         animator.gameObject.SetActive(true);
-        animator.SetTime(0.0);
+        //animator.SetTime(0.0);
         animator.Play(name);
     }
 
@@ -1059,5 +1059,5 @@ public class GameController : MonoBehaviour, IGameRequestsHandler
         finishTurnButton.gameObject.SetActive(false);
         surrenderButton.gameObject.SetActive(false);
         surrenderButton.interactable = false;
-    }
+    }*/
 }

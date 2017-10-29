@@ -3,20 +3,14 @@
 [System.Serializable]
 public class GameConfig
 {
-    public string playerID;
-    public string serverAddress;
-    public float musicVolume;
-    public float gamma;
-    public string facebookId;
-    public bool profileSynchronized;
+  public ProfileData profile = null;
+  public float musicVolume;
+  public float sfxVolume;
 
-    public GameConfig()
-    {
-        this.playerID = "";
-        this.serverAddress = "83.220.170.252";
-        this.musicVolume = 1.0f;
-        this.gamma = 0.5f;
-        this.facebookId = "";
-        this.profileSynchronized = true;
-    }
+  public GameConfig()
+  {
+    this.profile = null;
+    this.musicVolume = 1.0f;
+    this.sfxVolume = 1.0f;
+  }
 }

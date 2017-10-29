@@ -4,50 +4,41 @@ using System.Collections;
 
 public class MessageDialog : MonoBehaviour
 {
-    public Text text;
-    public Button okButton;
-    public Image splash;
+  public Text text;
+  public Button okButton;
+  public Image splash;
 
-    public delegate void OnClose();
-    private OnClose onCloseHandler;
+  public delegate void OnClose();
+  private OnClose onCloseHandler;
 
-	public void Start()
-    {
-        gameObject.SetActive(false);
-	}
+  public bool IsOpened()
+  {
+    return gameObject.activeSelf;
+  }
 
-	public void Update()
-    {
-	}
+  public void Open(string message, OnClose onCloseHandler)
+  {
+    text.text = message;
+    this.onCloseHandler = onCloseHandler;
 
-    public bool IsOpened()
-    {
-        return gameObject.activeSelf;
-    }
+    gameObject.SetActive(true);
+    if (splash != null && !splash.IsActive())
+      splash.gameObject.SetActive(true);
+  }
 
-    public void Open(string message, OnClose onCloseHandler)
-    {
-        text.text = message;
-        this.onCloseHandler = onCloseHandler;
+  public void Close()
+  {
+    if (splash != null && splash.IsActive())
+      splash.gameObject.SetActive(false);
 
-        gameObject.SetActive(true);
-        if (splash != null && !splash.IsActive())
-            splash.gameObject.SetActive(true);
-    }
+    gameObject.SetActive(false);
 
-    public void Close()
-    {
-        if (splash != null && splash.IsActive())
-            splash.gameObject.SetActive(false);
+    if (onCloseHandler != null)
+      onCloseHandler();
+  }
 
-        gameObject.SetActive(false);
-
-        if (onCloseHandler != null)
-            onCloseHandler();
-    }
-
-    public void OnOkButtonClicked()
-    {
-        Close();
-    }
+  public void OnOkButtonClicked()
+  {
+    Close();
+  }
 }

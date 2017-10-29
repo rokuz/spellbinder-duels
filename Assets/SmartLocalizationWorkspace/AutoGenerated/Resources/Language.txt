@@ -230,13 +230,16 @@
 	<data name="Settings.Gamma" xml:space="preserve">
 		<value />
 	</data>
-	<data name="Settings.Login" xml:space="preserve">
+	<data name="SetName.Login" xml:space="preserve">
 		<value />
 	</data>
-	<data name="Settings.LoginDesc" xml:space="preserve">
+	<data name="SetName.LoginFinished" xml:space="preserve">
 		<value />
 	</data>
 	<data name="Settings.MusicVolume" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Settings.SfxVolume" xml:space="preserve">
 		<value />
 	</data>
 	<data name="Settings.Title" xml:space="preserve">
@@ -402,9 +405,6 @@
 		<value />
 	</data>
 	<data name="Temp.Tournament" xml:space="preserve">
-		<value />
-	</data>
-	<data name="Settings.LoginFinished" xml:space="preserve">
 		<value />
 	</data>
 </root>

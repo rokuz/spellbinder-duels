@@ -1,28 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public class PlayerData
-{
-    public int mana;
-    public int health;
-    public int defense;
-    public int blockedDamageTurns;
-    public int blockedHealingTurns;
-    public int blockedDefenseTurns;
-    public int[] blockedBonusTurns;
-    public int[] blockedResistanceTurns;
-}
-
-public class RewardData
-{
-    public int experience;
-    public int levelsUp;
-    public int[] bonuses;
-    public int[] resistance;
-    public int coins;
-    public string[] newSpells;
-}
-
 public class GameData
 {
     public Magic[] gameField;
@@ -40,14 +18,14 @@ public class GameData
 public interface IGameRequestsHandler
 {
     void OnStartMatch(GameData gameData);
-    void OnYouDisconnected(RewardData rewardData);
-    void OnOpponentDisconnected(RewardData rewardData);
+  void OnYouDisconnected(RewardData rewardData);
+  void OnOpponentDisconnected(RewardData rewardData);
     void OnShowCards();
     void OnWaitForStart();
-    void OnWin(PlayerData player, PlayerData opponent, string spell, int spellCost, RewardData reward);
-    void OnLose(PlayerData player, PlayerData opponent, RewardData reward, bool delay);
-    void OnSurrender(RewardData reward);
-    void OnOpponentSurrender(RewardData reward);
+  void OnWin(PlayerData player, PlayerData opponent, string spell, int spellCost, RewardData reward);
+  void OnLose(PlayerData player, PlayerData opponent, RewardData reward, bool delay);
+  void OnSurrender(RewardData reward);
+  void OnOpponentSurrender(RewardData reward);
     void OnYourTurn(PlayerData player, PlayerData opponent, bool delay);
     void OnOpponentTurn(PlayerData player, PlayerData opponent, bool delay);
     void OnSpellCasted(PlayerData player, PlayerData opponent, string spell, int spellCost, Dictionary<int, Magic> substitutes);
@@ -65,7 +43,7 @@ public static class GameRequests
     public const string SURRENDER = "surrender";
     public const string FINISH_TURN = "finish_turn";
 
-    public static void OnStartMatchResponse(WWW response, IGameRequestsHandler handler)
+    /*public static void OnStartMatchResponse(WWW response, IGameRequestsHandler handler)
     {
         if (response.error == null)
         {
@@ -461,5 +439,5 @@ public static class GameRequests
         reward.bonuses = Utils.ToIntArray(rewardObject.GetField("bonuses").list.ToArray());
         reward.resistance = Utils.ToIntArray(rewardObject.GetField("resistance").list.ToArray());
         reward.newSpells = Utils.ToStringArray(rewardObject.GetField("newSpells").list.ToArray());
-    }
+    }*/
 }

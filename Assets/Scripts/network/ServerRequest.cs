@@ -14,7 +14,7 @@ public class ServerRequest : MonoBehaviour
     {
         StringBuilder builder = new StringBuilder();
         builder.Append(kServerUrlStart);
-        builder.Append(Persistence.gameConfig.serverAddress);
+        //builder.Append(Persistence.gameConfig.serverAddress);
         builder.Append(kServerUrlEnd);
         builder.Append(command);
         builder.Append("?");

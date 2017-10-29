@@ -60,10 +60,10 @@ public class MatchingDialog : MonoBehaviour, IMatchingRequestsHandler
         if (needRequest)
         {
             needRequest = false;
-            Dictionary<string, string> p = new Dictionary<string, string>();
-            p["id"] = profileData.id;
-            if (serverRequest != null)
-                serverRequest.Send(MatchingRequests.MATCH, p, (WWW response) => { MatchingRequests.OnMatchResponse(response, this); });
+            //Dictionary<string, string> p = new Dictionary<string, string>();
+            //p["id"] = profileData.id;
+            //if (serverRequest != null)
+            //    serverRequest.Send(MatchingRequests.MATCH, p, (WWW response) => { MatchingRequests.OnMatchResponse(response, this); });
         }
 	}
 
