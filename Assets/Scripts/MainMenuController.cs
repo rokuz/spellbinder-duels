@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using SmartLocalization;
 
 public class MainMenuController : MonoBehaviour
@@ -34,17 +35,20 @@ public class MainMenuController : MonoBehaviour
       facebookHolder.Login(null);
     #endif
 
+    Spellbook.Init();
+
     this.playerLogo.gameObject.SetActive(false);
 
-    this.playButton.interactable = false;
+    this.playButton.interactable = true;
     this.playButton.GetComponentInChildren<Text>().text = LanguageManager.Instance.GetTextValue("MainMenu.Play");
 
-    this.spellbookButton.interactable = false;
-    this.shopButton.interactable = false;
+    this.spellbookButton.interactable = true;
+    this.shopButton.interactable = true;
     this.settingsButton.interactable = true;
 
     settingsDialog.Setup();
     characterDialog.Setup();
+    spellbookDialog.Setup();
 
     InitProfile();
 	}
@@ -59,12 +63,6 @@ public class MainMenuController : MonoBehaviour
     this.playButton.interactable = false;
     matchingDialog.Open(Persistence.gameConfig.profile, () => { this.playButton.interactable = true; });
   }
-
-  /*public void OnTournamentButtonClicked()
-  {
-    this.tournamentButton.interactable = false;
-    messageDialog.Open(LanguageManager.Instance.GetTextValue("Temp.Tournament"), () => { this.tournamentButton.interactable = true; });
-  }*/
 
   public void OnSpellbookButtonClicked()
   {
@@ -87,7 +85,7 @@ public class MainMenuController : MonoBehaviour
   public void OnShopButtonClicked()
   {
     this.shopButton.interactable = false;
-    messageDialog.Open(LanguageManager.Instance.GetTextValue("Temp.Shop"), () => { this.shopButton.interactable = true; });
+    messageDialog.Open("", LanguageManager.Instance.GetTextValue("Temp.Shop"), () => { this.shopButton.interactable = true; });
   }
 
   public void OnPlayerInfoClicked()
@@ -108,6 +106,7 @@ public class MainMenuController : MonoBehaviour
     if (Persistence.gameConfig.profile == null)
     {
       Persistence.gameConfig.profile = new ProfileData();
+      Persistence.gameConfig.profile.spells = (from s in Spellbook.Spells where s.minLevel == 1 select s.Code).ToArray();
       Persistence.Save();
     }
 
@@ -126,28 +125,5 @@ public class MainMenuController : MonoBehaviour
 
     if (Persistence.gameConfig.profile != null)
       facebookHolder.GetPicture(playerLogo.transform.Find("Logo").GetComponentInChildren<Image>(), Persistence.gameConfig.profile.facebookId);
-
-    //GetAllSpells();
   }
-
-/*#region ISpellRequestsHandler
-
-	public void OnGetAllSpells(List<SpellData> spells)
-	{
-		SceneConnector.Instance.Spells = spells;
-		spellbookDialog.Setup(spells);
-
-		this.spellbookButton.interactable = true;
-		this.playButton.interactable = true;
-		this.tournamentButton.interactable = true;
-		this.shopButton.interactable = true;
-	}
-
-	public void OnSpellError(int code)
-	{
-		messageDialog.Open(LanguageManager.Instance.GetTextValue("Message.ServerUnavailable") + " (" + code + ")",
-						   () => { StartCoroutine(GetAllSpellsDeferred()); });
-	}
-
-#endregion*/
 }

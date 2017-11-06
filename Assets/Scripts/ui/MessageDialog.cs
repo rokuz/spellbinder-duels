@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using SmartLocalization;
 
 public class MessageDialog : MonoBehaviour
 {
+  public Text title;
   public Text text;
   public Button okButton;
   public Image splash;
@@ -16,8 +18,9 @@ public class MessageDialog : MonoBehaviour
     return gameObject.activeSelf;
   }
 
-  public void Open(string message, OnClose onCloseHandler)
+  public void Open(string titleStr, string message, OnClose onCloseHandler)
   {
+    title.text = (titleStr.Length == 0) ? LanguageManager.Instance.GetTextValue("Message.Title") : titleStr;
     text.text = message;
     this.onCloseHandler = onCloseHandler;
 

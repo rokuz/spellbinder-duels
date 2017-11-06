@@ -71,7 +71,7 @@ public class GameController : MonoBehaviour//, IGameRequestsHandler
     private PlayerInfo player1 = new PlayerInfo();
     private PlayerInfo player2 = new PlayerInfo();
 
-    private SceneConnector.MatchData matchData = null;
+    //private SceneConnector.MatchData matchData = null;
     private GameData gameData = null;
 
     private bool needRequest = false;
@@ -948,7 +948,7 @@ public class GameController : MonoBehaviour//, IGameRequestsHandler
             Vector3 offset = new Vector3(0.0f, 10.0f, 0.0f);
             CastBuffSpell(bleedingPrefab, toOpponent ? (playerInfo2Pos + offset) : (playerInfo1Pos + offset), 2.5f, onFinished);
         }
-        else if (spell == "BLINDNESS")
+        else if (spell == "DEATH_LOOK")
         {
             CastBuffSpell(blindnessPrefab, toOpponent ? playerInfo2Pos : playerInfo1Pos, 2.5f, onFinished);
         }

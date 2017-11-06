@@ -23,7 +23,17 @@ public class SpellbookDialog : MonoBehaviour
   public Sprite bloodIconSprite;
   public Sprite illusionIconSprite;
 
-  private SpellData[] allSpells;
+  public Sprite bleedingSprite;
+  public Sprite blessingSprite;
+  public Sprite deathLookSprite;
+  public Sprite doppelgangerSprite;
+  public Sprite fireballSprite;
+  public Sprite iceSpearSprite;
+  public Sprite lightningSprite;
+  public Sprite natureCallSprite;
+  public Sprite stoneskinSprite;
+
+  private Spell[] allSpells;
   private GameObject[] spellInfos;
 
   private ProfileData profileData;
@@ -31,9 +41,9 @@ public class SpellbookDialog : MonoBehaviour
   public delegate void OnClose();
   private OnClose onCloseHandler;
 
-	public void Setup(List<SpellData> spells)
+	public void Setup()
 	{
-		allSpells = spells.ToArray().OrderBy(x => x.minLevel).ThenBy(x => x.combination[0]).ThenBy(x => x.combination[1]).ToArray();
+		allSpells = Spellbook.Spells.ToArray().OrderBy(x => x.minLevel).ThenBy(x => x.Combination[0]).ThenBy(x => x.Combination[1]).ToArray();
 
 		for (int i = content.transform.childCount - 1; i >= 0; --i)
 		{
@@ -56,43 +66,44 @@ public class SpellbookDialog : MonoBehaviour
 
       spellInfos[i] = spellInfo;
 
-			SpellData data = allSpells[i];
+      var spellIcon = (from t in spellInfo.GetComponentsInChildren<Image>() where t.gameObject.name == "Spell" select t).Single();
+      spellIcon.sprite = GetSprite(allSpells[i]);
 
 			Text title = (from t in spellInfo.GetComponentsInChildren<Text>() where t.gameObject.name == "SpellTitle" select t).Single();
-			string spellName = LanguageManager.Instance.GetTextValue("Spell." + data.type);
-			if (spellName.Length == 0) spellName = data.type;
+      string spellName = LanguageManager.Instance.GetTextValue("Spell." + allSpells[i].SpellType);
+      if (spellName.Length == 0) spellName = allSpells[i].SpellType.ToString();
       title.text = spellName;
 
       Text level = (from t in spellInfo.GetComponentsInChildren<Text>() where t.gameObject.name == "SpellLevel" select t).Single();
-      level.text = LanguageManager.Instance.GetTextValue("SpellDesc.Level") + " " + data.minLevel;
+      level.text = LanguageManager.Instance.GetTextValue("SpellDesc.Level") + " " + allSpells[i].minLevel;
 
 			Text desc = (from t in spellInfo.GetComponentsInChildren<Text>() where t.gameObject.name == "SpellDesc" select t).Single();
-			desc.text = data.desc;
+      desc.text = UIUtils.GetSpellDescription(allSpells[i]);
 
       Text manaCost = (from t in spellInfo.GetComponentsInChildren<Text>() where t.gameObject.name == "ManaCost" select t).Single();
-      manaCost.text = "" + data.manaCost;
+      manaCost.text = "" + allSpells[i].manaCost;
 
-      if (data.combination.Length == 2)
+      if (allSpells[i].Combination.Length == 2)
       {
         var obj = (from t in spellInfo.GetComponentsInChildren<Image>() where t.gameObject.name == "Icon1" select t).Single();
         obj.gameObject.SetActive(false);
 
         var sr1 = (from t in spellInfo.GetComponentsInChildren<Image>() where t.gameObject.name == "IconImage2" select t).Single();
-        sr1.sprite = GetSprite(data.combination[0]);
+        sr1.sprite = GetSprite(allSpells[i].Combination[0]);
 
         var sr2 = (from t in spellInfo.GetComponentsInChildren<Image>() where t.gameObject.name == "IconImage3" select t).Single();
-        sr2.sprite = GetSprite(data.combination[1]);
+        sr2.sprite = GetSprite(allSpells[i].Combination[1]);
       }
-      else if (data.combination.Length == 3)
+      else if (allSpells[i].Combination.Length == 3)
       {
         var sr1 = (from t in spellInfo.GetComponentsInChildren<Image>() where t.gameObject.name == "IconImage1" select t).Single();
-        sr1.sprite = GetSprite(data.combination[0]);
+        sr1.sprite = GetSprite(allSpells[i].Combination[0]);
 
         var sr2 = (from t in spellInfo.GetComponentsInChildren<Image>() where t.gameObject.name == "IconImage2" select t).Single();
-        sr2.sprite = GetSprite(data.combination[1]);
+        sr2.sprite = GetSprite(allSpells[i].Combination[1]);
 
         var sr3 = (from t in spellInfo.GetComponentsInChildren<Image>() where t.gameObject.name == "IconImage3" select t).Single();
-        sr3.sprite = GetSprite(data.combination[2]);
+        sr3.sprite = GetSprite(allSpells[i].Combination[2]);
       }
       else
       {
@@ -119,12 +130,12 @@ public class SpellbookDialog : MonoBehaviour
     this.profileData = profileData;
     if (this.profileData != null)
     {
-        for (int i = 0; i < allSpells.Length; i++)
-        {
-            bool hasSpell = ((from s in this.profileData.spells where s == allSpells[i].type select s).Count() > 0);
-            var lockImage = (from t in spellInfos[i].GetComponentsInChildren<Image>(true) where t.gameObject.name == "Lock" select t).Single();
-            lockImage.gameObject.SetActive(!hasSpell);
-        }
+      for (int i = 0; i < allSpells.Length; i++)
+      {
+        bool hasSpell = ((from s in this.profileData.spells where s == allSpells[i].Code select s).Count() > 0);
+        var lockImage = (from t in spellInfos[i].GetComponentsInChildren<Image>(true) where t.gameObject.name == "Lock" select t).Single();
+        lockImage.gameObject.SetActive(!hasSpell);
+      }
     }
     this.onCloseHandler = onCloseHandler;
 
@@ -161,23 +172,49 @@ public class SpellbookDialog : MonoBehaviour
     switch (magic) 
     {
       case Magic.FIRE:
-          return this.fireIconSprite;
+        return this.fireIconSprite;
       case Magic.WATER:
-          return this.waterIconSprite;
+        return this.waterIconSprite;
       case Magic.AIR:
-          return this.airIconSprite;
+        return this.airIconSprite;
       case Magic.EARTH:
-          return this.earthIconSprite;
+        return this.earthIconSprite;
       case Magic.NATURE:
-          return this.natureIconSprite;
+        return this.natureIconSprite;
       case Magic.LIGHT:
-          return this.lightIconSprite;
+        return this.lightIconSprite;
       case Magic.DARKNESS:
-          return this.darknessIconSprite;
+        return this.darknessIconSprite;
       case Magic.BLOOD:
-          return this.bloodIconSprite;
+        return this.bloodIconSprite;
       case Magic.ILLUSION:
-          return this.illusionIconSprite;
+        return this.illusionIconSprite;
+    }
+    return null;
+  }
+
+  private Sprite GetSprite(Spell spell) 
+  {
+    switch (spell.SpellType) 
+    {
+      case Spell.Type.BLEEDING:
+        return this.bleedingSprite;
+      case Spell.Type.BLESSING:
+        return this.blessingSprite;
+      case Spell.Type.DEATH_LOOK:
+        return this.deathLookSprite;
+      case Spell.Type.DOPPELGANGER:
+        return this.doppelgangerSprite;
+      case Spell.Type.FIREBALL:
+        return this.fireballSprite;
+      case Spell.Type.ICE_SPEAR:
+        return this.iceSpearSprite;
+      case Spell.Type.LIGHTNING:
+        return this.lightningSprite;
+      case Spell.Type.NATURE_CALL:
+        return this.natureCallSprite;
+      case Spell.Type.STONESKIN:
+        return this.stoneskinSprite;
     }
     return null;
   }

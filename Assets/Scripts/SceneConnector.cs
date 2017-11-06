@@ -4,46 +4,29 @@ using System.Collections.Generic;
 
 public class SceneConnector
 {
-    private static SceneConnector instance;
-    private SceneConnector() {}
-    public static SceneConnector Instance
+  private static SceneConnector instance;
+  private SceneConnector() {}
+  public static SceneConnector Instance
+  {
+    get 
     {
-        get 
-        {
-            if (instance == null)
-                instance = new SceneConnector();
-            return instance;
-        }
+      if (instance == null)
+        instance = new SceneConnector();
+      return instance;
     }
+  }
 
-    public class MatchData
-    {
-        public string matchId;
-        public ProfileData player;
-        public ProfileData opponent;
-    }
+  private Match match = null;
 
-    private MatchData matchData = null;
-	private List<SpellData> spells;
+  public void PushMatch(ProfileData player, ProfileData opponent)
+  {
+    match = new Match(player, opponent);
+  }
 
-	public List<SpellData> Spells
-	{
-		get { return spells; }
-		set { spells = value; }
-	}
-
-    public void PushMatch(string matchId, ProfileData player, ProfileData opponent)
-    {
-        matchData = new MatchData();
-        matchData.matchId = matchId;
-        matchData.player = player;
-        matchData.opponent = opponent;
-    }
-
-    public MatchData PopMatch()
-    {
-        MatchData result = matchData;
-        matchData = null;
-        return result;
-    }
+  public Match PopMatch()
+  {
+    Match result = match;
+    match = null;
+    return result;
+  }
 }

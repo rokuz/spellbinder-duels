@@ -6,80 +6,74 @@ public static class UIUtils
 {
   public static string GetFormattedString(ProfileData profileData)
   {
-      return string.Format("{0}\n{1} {2}", profileData.name, i18n("Player.Level"), profileData.level);
+    return string.Format("{0}\n{1} {2}", profileData.name, i18n("Player.Level"), profileData.level);
   }
      
-  public static string GetSpellDescription(JSONObject spellObject)
+  public static string GetSpellDescription(Spell spellObject)
   {
     StringBuilder builder = new StringBuilder();
-    JSONObject obj = spellObject.GetField("damage");
-    if (obj != null)
+    if (spellObject.damage != 0)
     {
-        builder.Append(i18n("SpellDesc.Damage") + " ");
-        builder.Append(obj.i);
-        builder.Append("\n");
+      builder.Append(i18n("SpellDesc.Damage") + " ");
+      builder.Append(spellObject.damage);
+      builder.Append("\n");
     }
 
-    obj = spellObject.GetField("defense");
-    if (obj != null)
+    if (spellObject.defense != 0)
     {
-        builder.Append(i18n("SpellDesc.Defense") + " +");
-        builder.Append(obj.i);
-        builder.Append("\n");
+      builder.Append(i18n("SpellDesc.Defense") + " +");
+      builder.Append(spellObject.defense);
+      builder.Append("\n");
     }
 	
-    obj = spellObject.GetField("healing");
-    if (obj != null)
+    if (spellObject.healing != 0)
     {
-        builder.Append(i18n("SpellDesc.Health") + " +");
-        builder.Append(obj.i);
-        builder.Append("\n");
+      builder.Append(i18n("SpellDesc.Health") + " +");
+      builder.Append(spellObject.healing);
+      builder.Append("\n");
     }
 
-    FillBlockProperty(builder, spellObject, "blockDamageTurns", i18n("SpellDesc.BlockDmg"), i18n("SpellDesc.BlockDmg2"));
-    FillBlockProperty(builder, spellObject, "blockHealingTurns", i18n("SpellDesc.BlockHeal"), i18n("SpellDesc.BlockHeal2"));
-    FillBlockProperty(builder, spellObject, "blockDefenseTurns", i18n("SpellDesc.BlockDef"), i18n("SpellDesc.BlockDef2"));
+    FillBlockProperty(builder, spellObject, spellObject.blockDamageTurns, i18n("SpellDesc.BlockDmg"), i18n("SpellDesc.BlockDmg2"));
+    FillBlockProperty(builder, spellObject, spellObject.blockHealingTurns, i18n("SpellDesc.BlockHeal"), i18n("SpellDesc.BlockHeal2"));
+    FillBlockProperty(builder, spellObject, spellObject.blockDefenseTurns, i18n("SpellDesc.BlockDef"), i18n("SpellDesc.BlockDef2"));
 
-    FillBlockProperty(builder, spellObject, "blockFireBonusTurns", i18n("SpellDesc.BlockFB"), i18n("SpellDesc.BlockFB2"));
-    FillBlockProperty(builder, spellObject, "blockWaterBonusTurns", i18n("SpellDesc.BlockWB"), i18n("SpellDesc.BlockWB2"));
-    FillBlockProperty(builder, spellObject, "blockAirBonusTurns", i18n("SpellDesc.BlockAB"), i18n("SpellDesc.BlockAB2"));
+    FillBlockProperty(builder, spellObject, spellObject.blockBonusTurns[Spell.FIRE_INDEX], i18n("SpellDesc.BlockFB"), i18n("SpellDesc.BlockFB2"));
+    FillBlockProperty(builder, spellObject, spellObject.blockBonusTurns[Spell.WATER_INDEX], i18n("SpellDesc.BlockWB"), i18n("SpellDesc.BlockWB2"));
+    FillBlockProperty(builder, spellObject, spellObject.blockBonusTurns[Spell.AIR_INDEX], i18n("SpellDesc.BlockAB"), i18n("SpellDesc.BlockAB2"));
 
-    FillBlockProperty(builder, spellObject, "blockFireResistanceTurns", i18n("SpellDesc.BlockFR"), i18n("SpellDesc.BlockFR2"));
-    FillBlockProperty(builder, spellObject, "blockWaterResistanceTurns", i18n("SpellDesc.BlockWR"), i18n("SpellDesc.BlockWR2"));
-    FillBlockProperty(builder, spellObject, "blockAirResistanceTurns", i18n("SpellDesc.BlockAR"), i18n("SpellDesc.BlockAR2"));
+    FillBlockProperty(builder, spellObject, spellObject.blockResistanceTurns[Spell.FIRE_INDEX], i18n("SpellDesc.BlockFR"), i18n("SpellDesc.BlockFR2"));
+    FillBlockProperty(builder, spellObject, spellObject.blockResistanceTurns[Spell.WATER_INDEX], i18n("SpellDesc.BlockWR"), i18n("SpellDesc.BlockWR2"));
+    FillBlockProperty(builder, spellObject, spellObject.blockResistanceTurns[Spell.AIR_INDEX], i18n("SpellDesc.BlockAR"), i18n("SpellDesc.BlockAR2"));
 
-    obj = spellObject.GetField("considerResistance");
-    if (obj != null && !obj.b)
+    if (!spellObject.considerResistance)
     {
-        builder.Append(i18n("SpellDesc.ConsiderRes"));
-        builder.Append("\n");
+      builder.Append(i18n("SpellDesc.ConsiderRes"));
+      builder.Append("\n");
     }
 
-    obj = spellObject.GetField("considerDefense");
-    if (obj != null && !obj.b)
+    if (!spellObject.considerDefense)
     {
-        builder.Append(i18n("SpellDesc.ConsiderDef"));
-        builder.Append("\n");
+      builder.Append(i18n("SpellDesc.ConsiderDef"));
+      builder.Append("\n");
     }
 
-    obj = spellObject.GetField("removeDefense");
-    if (obj != null && obj.b)
+    if (spellObject.removeDefense)
     {
-        builder.Append(i18n("SpellDesc.RemoveDef"));
-        builder.Append("\n");
+      builder.Append(i18n("SpellDesc.RemoveDef"));
+      builder.Append("\n");
     }
 
-    FillClearProperty(builder, spellObject, "clearDamageCurse", i18n("SpellDesc.ClearDmg"));
-    FillClearProperty(builder, spellObject, "clearHealingCurse", i18n("SpellDesc.ClearHeal"));
-    FillClearProperty(builder, spellObject, "clearDefenseCurse", i18n("SpellDesc.ClearDef"));
+    FillClearProperty(builder, spellObject, spellObject.clearDamageCurse, i18n("SpellDesc.ClearDmg"));
+    FillClearProperty(builder, spellObject, spellObject.clearHealingCurse, i18n("SpellDesc.ClearHeal"));
+    FillClearProperty(builder, spellObject, spellObject.clearDefenseCurse, i18n("SpellDesc.ClearDef"));
 
-    FillClearProperty(builder, spellObject, "clearFireBonusCurse", i18n("SpellDesc.ClearFB"));
-    FillClearProperty(builder, spellObject, "clearWaterBonusCurse", i18n("SpellDesc.ClearWB"));
-    FillClearProperty(builder, spellObject, "clearAirBonusCurse", i18n("SpellDesc.ClearAB"));
+    FillClearProperty(builder, spellObject, spellObject.clearBonusCurse[Spell.FIRE_INDEX], i18n("SpellDesc.ClearFB"));
+    FillClearProperty(builder, spellObject, spellObject.clearBonusCurse[Spell.WATER_INDEX], i18n("SpellDesc.ClearWB"));
+    FillClearProperty(builder, spellObject, spellObject.clearBonusCurse[Spell.AIR_INDEX], i18n("SpellDesc.ClearAB"));
 
-    FillClearProperty(builder, spellObject, "clearFireResistanceCurse", i18n("SpellDesc.ClearFR"));
-    FillClearProperty(builder, spellObject, "clearWaterResistanceCurse", i18n("SpellDesc.ClearWR"));
-    FillClearProperty(builder, spellObject, "clearAirResistanceCurse", i18n("SpellDesc.ClearAR"));
+    FillClearProperty(builder, spellObject, spellObject.clearResistanceCurse[Spell.FIRE_INDEX], i18n("SpellDesc.ClearFR"));
+    FillClearProperty(builder, spellObject, spellObject.clearResistanceCurse[Spell.WATER_INDEX], i18n("SpellDesc.ClearWR"));
+    FillClearProperty(builder, spellObject, spellObject.clearResistanceCurse[Spell.AIR_INDEX], i18n("SpellDesc.ClearAR"));
 
 		return builder.ToString();
 	}
@@ -89,33 +83,31 @@ public static class UIUtils
     return LanguageManager.Instance.GetTextValue(s);
   }
 
-  private static void FillBlockProperty(StringBuilder builder, JSONObject spellObject, string field, string s1, string s2)
+  private static void FillBlockProperty(StringBuilder builder, Spell spellObject, int field, string s1, string s2)
   {
-    JSONObject obj = spellObject.GetField(field);
-    if (obj != null)
+    if (field == 0)
+      return;
+
+    if (field == 1)
     {
-      if (obj.i == 1)
-      {
-          builder.Append(s1);
-          builder.Append("\n");
-      }
-      else
-      {
-          builder.Append(s2);
-          builder.Append(" (");
-          builder.Append(obj.i);
-          builder.Append(")\n");
-      }
+      builder.Append(s1);
+      builder.Append("\n");
+    }
+    else
+    {
+      builder.Append(s2);
+      builder.Append(" (");
+      builder.Append(field);
+      builder.Append(")\n");
     }
   }
 
-  private static void FillClearProperty(StringBuilder builder, JSONObject spellObject, string field, string s)
+  private static void FillClearProperty(StringBuilder builder, Spell spellObject, bool field, string s)
   {
-    JSONObject obj = spellObject.GetField(field);
-    if (obj != null && obj.b)
+    if (field)
     {
-        builder.Append(s);
-        builder.Append("\n");
+      builder.Append(s);
+      builder.Append("\n");
     }
   }
 }

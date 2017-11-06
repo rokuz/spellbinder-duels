@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 838c5a793f9cc46c7aa04cdef8c17719
-timeCreated: 1509269569
+guid: fbe402301ff9449e8b66d2c77ce1995f
+timeCreated: 1509982958
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName: {}
@@ -44,7 +44,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spriteBorder: {x: 120, y: 120, z: 120, w: 180}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spritePixelsToUnits: 100
   alphaUsage: 1
   alphaIsTransparency: 1
@@ -92,7 +92,7 @@ TextureImporter:
     sprites: []
     outline: []
     physicsShape: []
-  spritePackingTag: skin
+  spritePackingTag: spells
   userData: 
   assetBundleName: 
   assetBundleVariant: 

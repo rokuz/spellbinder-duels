@@ -191,6 +191,9 @@
 	<data name="Message.ServerUnavailable" xml:space="preserve">
 		<value>Server is unavailable</value>
 	</data>
+	<data name="Message.Title" xml:space="preserve">
+		<value>Message</value>
+	</data>
 	<data name="Message.Win" xml:space="preserve">
 		<value>You win!</value>
 	</data>
@@ -251,11 +254,11 @@
 	<data name="Spell.BLESSING" xml:space="preserve">
 		<value>Blessing</value>
 	</data>
-	<data name="Spell.BLINDNESS" xml:space="preserve">
-		<value>Blindness</value>
-	</data>
 	<data name="Spell.BURNING_SHIELD" xml:space="preserve">
 		<value>Burning shield</value>
+	</data>
+	<data name="Spell.DEATH_LOOK" xml:space="preserve">
+		<value>Death look</value>
 	</data>
 	<data name="Spell.DIVINE_FIRE" xml:space="preserve">
 		<value>Divine fire</value>
