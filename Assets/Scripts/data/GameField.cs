@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GameField
 {
-  private static int CARDS_COUNT = 12;
+  public static int CARDS_COUNT = 12;
   private static Magic[] FIGHT_MAGIC = new Magic[] { Magic.FIRE, Magic.AIR, Magic.WATER, Magic.DARKNESS, Magic.BLOOD };
   private static Magic[] DEFENSE_MAGIC = new Magic[] { Magic.EARTH, Magic.NATURE, Magic.LIGHT, Magic.ILLUSION };
 

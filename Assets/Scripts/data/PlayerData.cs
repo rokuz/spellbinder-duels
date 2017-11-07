@@ -4,18 +4,6 @@ using UnityEngine;
 
 public class PlayerData
 {
-  public class OpponentAction
-  {
-    public Dictionary<int, Magic> substitutes = new Dictionary<int, Magic>();
-    public int[] openedCards = null;
-    public Spell.Type spell = Spell.Type.NO_SPELL;
-    public int spellCost = 0;
-
-    public OpponentAction() {}
-  }
-
-  private int mana = 1;
-
   public int health = Constants.HEALTH_POINTS;
   public int defense = 0;
 
@@ -23,6 +11,7 @@ public class PlayerData
   public int[] resistance = new int[] { 0, 0, 0 };
   private int level = 1;
   private int experience = 0;
+  private int mana = 1;
   private int usedMana = 0;
 
   public bool surrender = false;
@@ -41,10 +30,6 @@ public class PlayerData
 
   public int[] blockedResistanceTurns = new int[] { 0, 0, 0 };
   public int[] blockedResistanceTurnIndex = new int[] { 0, 0, 0 };
-
-  public List<OpponentAction> opponentActions = new List<OpponentAction>();
-
-  public float lastRequest = Time.time;
 
   public SpellCalculator spellCalculator = null;
 
@@ -91,9 +76,8 @@ public class PlayerData
   public void IncrementMana(int val)
   {
     this.mana += val;
-    int maxMana = Constants.MAX_MANA[level];
-    if (this.mana > maxMana)
-      this.mana = maxMana;
+    if (this.mana > Constants.MAX_MANA)
+      this.mana = Constants.MAX_MANA;
     this.usedMana = 0;
   }
 }

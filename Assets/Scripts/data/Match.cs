@@ -7,14 +7,15 @@ public class Match
   public enum MatchStatus { PREPARED, STARTED, FINISHED, INTERRUPTED }
 
   private ProfileData player1;
-
   private ProfileData player2;
+  private GameField gameField;
+  private PlayerData player1Data;
+  private PlayerData player2Data;
 
   private float timestamp;
-
   private MatchStatus matchStatus;
-  
   private int winnerIndex;
+  private bool player1FirstTurn;
 
   public Match(ProfileData player1, ProfileData player2)
   {
@@ -23,6 +24,12 @@ public class Match
     this.timestamp = Time.time;
     this.matchStatus = MatchStatus.PREPARED;
     this.winnerIndex = -1;
+    this.gameField = new GameField();
+    this.player1FirstTurn = (UnityEngine.Random.Range(0, 1) == 0);
+    this.player1Data = new PlayerData();
+    this.player2Data = new PlayerData();
+    this.player1Data.Mana = this.player1FirstTurn ? 1 : 2;
+    this.player2Data.Mana = this.player1FirstTurn ? 2 : 1;
   }
 
   float Timestamp
@@ -50,5 +57,25 @@ public class Match
   {
     get { return winnerIndex; }
     set { this.winnerIndex = value; }
+  }
+
+  public GameField Field
+  {
+    get { return gameField; }
+  }
+
+  public bool Player1FirstTurn
+  {
+    get { return player1FirstTurn; }
+  }
+
+  public PlayerData Player1Data
+  {
+    get { return player1Data; }
+  }
+
+  public PlayerData Player2Data
+  {
+    get { return player2Data; }
   }
 }
