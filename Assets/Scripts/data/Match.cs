@@ -28,8 +28,8 @@ public class Match
     this.player1FirstTurn = (UnityEngine.Random.Range(0, 1) == 0);
     this.player1Data = new PlayerData();
     this.player2Data = new PlayerData();
-    this.player1Data.Mana = this.player1FirstTurn ? 1 : 2;
-    this.player2Data.Mana = this.player1FirstTurn ? 2 : 1;
+    this.player1Data.mana = this.player1FirstTurn ? 1 : 2;
+    this.player2Data.mana = this.player1FirstTurn ? 2 : 1;
   }
 
   float Timestamp

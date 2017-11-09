@@ -337,8 +337,8 @@ public class GameController : MonoBehaviour
     SetupGameField();
     crystals1.SetActive(true);
     crystals2.SetActive(true);
-    SetMana(crystals1, this.matchData.Player1Data.Mana);
-    SetMana(crystals2, this.matchData.Player2Data.Mana);
+    SetMana(crystals1, this.matchData.Player1Data.mana);
+    SetMana(crystals2, this.matchData.Player2Data.mana);
 
     StartCoroutine(InitialShowCardsRoutine());
   }
