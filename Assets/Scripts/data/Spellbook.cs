@@ -126,4 +126,14 @@ public static class Spellbook
     // Special Nature
 
   }
+
+  public static Spell Find(string code)
+  {
+    foreach (var s in Spells)
+    {
+      if (s.Code == code)
+        return s;
+    }
+    return null;
+  }
 }

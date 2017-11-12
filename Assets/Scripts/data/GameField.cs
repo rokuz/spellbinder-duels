@@ -34,22 +34,31 @@ public class GameField
     ShuffleCards();
   }
 
-  public Magic[] Cards { get { return this.cards;} }
+  public Magic[] Cards { get { return this.cards; } }
 
-  public Dictionary<int, Magic> SubstituteCards(int card1, int card2)
+  public Magic[] SubstituteCards(int[] indices)
   {
-    if (card1 < 0 || card1 >= CARDS_COUNT || card2 < 0 || card2 >= CARDS_COUNT)
+    if (indices == null)
       return null;
 
-    bool isFight = Array.Exists(FIGHT_MAGIC, c => c == cards[card1]);
+    if (indices.Length == 2 && cards[indices[0]] != cards[indices[1]])
+      return null;
+
+    if (indices.Length == 3 && cards[indices[0]] != cards[indices[2]])
+      return null;
+
+    int card1 = indices[0];
+    int card2 = (indices.Length == 2) ? indices[1] : indices[2];
+
+    bool isFight = Array.Exists(FIGHT_MAGIC, c => c == cards[indices[0]]);
     List<Magic> magic = isFight ? GetNewMagic(FIGHT_MAGIC) : GetNewMagic(DEFENSE_MAGIC);
     int magicIndex = UnityEngine.Random.Range(0, magic.Count);
     cards[card1] = magic[magicIndex];
     cards[card2] = magic[magicIndex];
 
-    var result = new Dictionary<int, Magic>();
-    result[card1] = cards[card1];
-    result[card2] = cards[card2];
+    Magic[] result = new Magic[indices.Length];
+    for (int i = 0; i < indices.Length; i++)
+      result[i] = cards[indices[i]];
     return result;
   }
 
@@ -86,5 +95,17 @@ public class GameField
     if (result.Count == 0)
       result.Add(magic[UnityEngine.Random.Range(0, magic.Length)]);
     return result;
+  }
+
+  public List<int> GetRandomMagic()
+  {
+    var indices = new List<int>();
+    int index = UnityEngine.Random.Range(0, CARDS_COUNT);
+    for (int i = 0; i < CARDS_COUNT; i++)
+    {
+      if (cards[i] == cards[index])
+        indices.Add(i);
+    }
+    return indices;
   }
 }

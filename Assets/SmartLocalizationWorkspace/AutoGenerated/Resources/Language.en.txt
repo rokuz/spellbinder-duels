@@ -146,11 +146,23 @@
 	<data name="Game.OpponentMiscasted" xml:space="preserve">
 		<value>Opponent miscasted</value>
 	</data>
+	<data name="Game.OpponentMiscasted.NoMana" xml:space="preserve">
+		<value>Opponent has no enough mana</value>
+	</data>
+	<data name="Game.OpponentMiscasted.Unknown" xml:space="preserve">
+		<value>Opponent has't known this spell yet</value>
+	</data>
 	<data name="Game.OpponentTurn" xml:space="preserve">
 		<value>Opponent's turn</value>
 	</data>
+	<data name="Game.OpponentTurnFirst" xml:space="preserve">
+		<value>Opponent is first</value>
+	</data>
 	<data name="Game.Surrender" xml:space="preserve">
 		<value>Surrender</value>
+	</data>
+	<data name="Game.Toss" xml:space="preserve">
+		<value>Toss...</value>
 	</data>
 	<data name="Game.YouCasted" xml:space="preserve">
 		<value>You casted</value>
@@ -158,8 +170,17 @@
 	<data name="Game.YouMiscasted" xml:space="preserve">
 		<value>You miscasted</value>
 	</data>
+	<data name="Game.YouMiscasted.NoMana" xml:space="preserve">
+		<value>No enough mana</value>
+	</data>
+	<data name="Game.YouMiscasted.Unknown" xml:space="preserve">
+		<value>You have't known this spell yet</value>
+	</data>
 	<data name="Game.YourTurn" xml:space="preserve">
 		<value>Your turn</value>
+	</data>
+	<data name="Game.YourTurnFirst" xml:space="preserve">
+		<value>You are first</value>
 	</data>
 	<data name="MainMenu.Play" xml:space="preserve">
 		<value>Play</value>

@@ -76,23 +76,22 @@ public class PlayerData
     }
   }*/
 
-  /*public int Mana
+  public int RestMana
   {
-    get { return mana; }
-    set { this.mana = value; }
+    get { return this.mana - this.usedMana; }
   }
-
-  public int UsedMana
-  {
-    get { return usedMana; }
-    set { this.usedMana = value; }
-  }*/
 
   public void IncrementMana(int val)
   {
     this.mana += val;
     if (this.mana > Constants.MAX_MANA)
       this.mana = Constants.MAX_MANA;
-    this.usedMana = 0;
+  }
+
+  public void UseMana(int val)
+  {
+    this.usedMana += val;
+    if (this.usedMana > this.mana)
+      this.usedMana = this.mana;
   }
 }

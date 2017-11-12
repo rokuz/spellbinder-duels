@@ -1,35 +1,47 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Match
 {
   public enum MatchStatus { PREPARED, STARTED, FINISHED, INTERRUPTED }
+  public enum MiscastReason { NO_REASON, NO_ENOUGH_MANA, UNKNOWN_SPELL }
 
-  private ProfileData player1;
-  private ProfileData player2;
+  public class Player
+  {
+    public ProfileData profile;
+    public PlayerData data;
+    public bool hasFirstTurn;
+
+    public Player(ProfileData prof)
+    {
+      this.profile = prof;
+      this.data = new PlayerData();
+      this.hasFirstTurn = false;
+    }
+  }
+
   private GameField gameField;
-  private PlayerData player1Data;
-  private PlayerData player2Data;
+
+  private Player user;
+  private Player opponent;
 
   private float timestamp;
   private MatchStatus matchStatus;
-  private int winnerIndex;
-  private bool player1FirstTurn;
+  private MiscastReason miscastReason;
 
-  public Match(ProfileData player1, ProfileData player2)
+  public Match(ProfileData profile1, ProfileData profile2)
   {
-    this.player1 = player1;
-    this.player2 = player2;
+    this.user = new Player(profile1);
+    this.opponent = new Player(profile2);
     this.timestamp = Time.time;
     this.matchStatus = MatchStatus.PREPARED;
-    this.winnerIndex = -1;
     this.gameField = new GameField();
-    this.player1FirstTurn = (UnityEngine.Random.Range(0, 1) == 0);
-    this.player1Data = new PlayerData();
-    this.player2Data = new PlayerData();
-    this.player1Data.mana = this.player1FirstTurn ? 1 : 2;
-    this.player2Data.mana = this.player1FirstTurn ? 2 : 1;
+    this.user.hasFirstTurn = (UnityEngine.Random.Range(0, 2) == 0);
+    this.opponent.hasFirstTurn = !this.user.hasFirstTurn;
+    this.user.data.mana = this.user.hasFirstTurn ? 0 : 1;
+    this.opponent.data.mana = this.opponent.hasFirstTurn ? 0 : 1;
   }
 
   float Timestamp
@@ -37,14 +49,14 @@ public class Match
     get { return timestamp; }
   }
 
-  public ProfileData Player1
+  public Player User
   {
-    get { return player1; }
+    get { return user; }
   }
 
-  public ProfileData Player2
+  public Player Opponent
   {
-    get { return player2; }
+    get { return opponent; }
   }
 
   public MatchStatus Status
@@ -53,29 +65,65 @@ public class Match
     set { this.matchStatus = value; }
   }
 
-  public int WinnerIndex
-  {
-    get { return winnerIndex; }
-    set { this.winnerIndex = value; }
-  }
-
   public GameField Field
   {
-    get { return gameField; }
+    get { return this.gameField; }
   }
 
-  public bool Player1FirstTurn
+  public MiscastReason Reason
   {
-    get { return player1FirstTurn; }
+    get { return this.miscastReason; }
   }
 
-  public PlayerData Player1Data
+  public void StartTurn(Player caster)
   {
-    get { return player1Data; }
+    caster.data.IncrementMana(1);
+    caster.data.usedMana = 0;
   }
 
-  public PlayerData Player2Data
+  public void FinishTurn(Player caster)
   {
-    get { return player2Data; }
+
+  }
+
+  public Spell CastSpell(int[] indices, Player caster)
+  {
+    Magic[] combination = new Magic[indices.Length];
+    for (int i = 0; i < indices.Length; i++)
+      combination[i] = gameField.Cards[indices[i]];
+    var code = SpellCoder.Encode(combination);
+    Spell s = Spellbook.Find(code);
+    if (s == null)
+    {
+      this.miscastReason = MiscastReason.NO_REASON;
+      caster.data.UseMana(1);
+      return null;
+    }
+    else if ((from sp in caster.profile.spells where sp == s.Code select sp).Count() == 0)
+    {
+      this.miscastReason = MiscastReason.UNKNOWN_SPELL;
+      caster.data.UseMana(1);
+      return null;
+    }
+    else if (caster.data.RestMana < s.manaCost)
+    {
+      this.miscastReason = MiscastReason.NO_ENOUGH_MANA;
+      caster.data.UseMana(1);
+      return null;
+    }
+
+    caster.data.UseMana(s.manaCost);
+    return s;
+  }
+
+  // Returns substitutes.
+  public Magic[] ApplySpell(Spell spell, int[] indices, Player caster)
+  {
+    if (spell == null)
+      return null;
+
+    //TODO
+    Magic[] substitutes = gameField.SubstituteCards(indices);
+    return substitutes;
   }
 }

@@ -146,10 +146,22 @@
 	<data name="Game.OpponentMiscasted" xml:space="preserve">
 		<value />
 	</data>
+	<data name="Game.OpponentMiscasted.NoMana" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Game.OpponentMiscasted.Unknown" xml:space="preserve">
+		<value />
+	</data>
 	<data name="Game.OpponentTurn" xml:space="preserve">
 		<value />
 	</data>
+	<data name="Game.OpponentTurnFirst" xml:space="preserve">
+		<value />
+	</data>
 	<data name="Game.Surrender" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Game.Toss" xml:space="preserve">
 		<value />
 	</data>
 	<data name="Game.YouCasted" xml:space="preserve">
@@ -158,7 +170,16 @@
 	<data name="Game.YouMiscasted" xml:space="preserve">
 		<value />
 	</data>
+	<data name="Game.YouMiscasted.NoMana" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Game.YouMiscasted.Unknown" xml:space="preserve">
+		<value />
+	</data>
 	<data name="Game.YourTurn" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Game.YourTurnFirst" xml:space="preserve">
 		<value />
 	</data>
 	<data name="MainMenu.Play" xml:space="preserve">
@@ -254,10 +275,10 @@
 	<data name="Spell.BLESSING" xml:space="preserve">
 		<value />
 	</data>
-	<data name="Spell.DEATH_LOOK" xml:space="preserve">
+	<data name="Spell.BURNING_SHIELD" xml:space="preserve">
 		<value />
 	</data>
-	<data name="Spell.BURNING_SHIELD" xml:space="preserve">
+	<data name="Spell.DEATH_LOOK" xml:space="preserve">
 		<value />
 	</data>
 	<data name="Spell.DIVINE_FIRE" xml:space="preserve">

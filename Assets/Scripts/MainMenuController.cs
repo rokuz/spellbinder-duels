@@ -106,7 +106,6 @@ public class MainMenuController : MonoBehaviour
     if (Persistence.gameConfig.profile == null)
     {
       Persistence.gameConfig.profile = new ProfileData();
-      Persistence.gameConfig.profile.spells = (from s in Spellbook.Spells where s.minLevel == 1 select s.Code).ToArray();
       Persistence.Save();
     }
 
