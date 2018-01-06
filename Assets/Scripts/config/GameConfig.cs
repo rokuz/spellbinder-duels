@@ -8,13 +8,16 @@ public class GameConfig
   public float musicVolume;
   public float sfxVolume;
   public List<ProfileData> rivals = new List<ProfileData>();
+  public bool showSpellbookWidget;
 
   public GameConfig()
   {
     this.profile = null;
     this.musicVolume = 1.0f;
     this.sfxVolume = 1.0f;
+    this.showSpellbookWidget = true;
 
+    //TODO
     string[] names = new string[]{ "Name1", "Name2", "Name3", "Name4", "Name5",
                                    "Name6", "Name7", "Name8", "Name9", "Name10",
                                    "Name11", "Name12", "Name13", "Name14", "Name15",

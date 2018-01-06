@@ -198,7 +198,7 @@
 		<value>Сетевое соединение потеряно</value>
 	</data>
 	<data name="Message.Lose" xml:space="preserve">
-		<value>Победа за противником</value>
+		<value>Вы проиграли</value>
 	</data>
 	<data name="Message.OpponentDisconnected" xml:space="preserve">
 		<value>Противник вышел из игры</value>
@@ -216,7 +216,7 @@
 		<value>Сообщение</value>
 	</data>
 	<data name="Message.Win" xml:space="preserve">
-		<value>Вы победили!</value>
+		<value>Победа</value>
 	</data>
 	<data name="Message.YouSurrender" xml:space="preserve">
 		<value>Вы признали поражение</value>
@@ -226,6 +226,24 @@
 	</data>
 	<data name="Player.SmthBlocked" xml:space="preserve">
 		<value>блокировка</value>
+	</data>
+	<data name="Reward.CoinsForm1" xml:space="preserve">
+		<value>монета</value>
+	</data>
+	<data name="Reward.CoinsForm2" xml:space="preserve">
+		<value>монеты</value>
+	</data>
+	<data name="Reward.CoinsForm3" xml:space="preserve">
+		<value>монет</value>
+	</data>
+	<data name="Reward.CoinsUni" xml:space="preserve">
+		<value>монет</value>
+	</data>
+	<data name="Reward.Exp" xml:space="preserve">
+		<value>опыта</value>
+	</data>
+	<data name="Reward.NewLevel" xml:space="preserve">
+		<value>Новый уровень!</value>
 	</data>
 	<data name="SetName.EnterName" xml:space="preserve">
 		<value>Введите имя...</value>

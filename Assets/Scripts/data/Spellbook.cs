@@ -38,12 +38,12 @@ public static class Spellbook
 
     spell = new Spell(new Magic[] { Magic.EARTH, Magic.EARTH }, Spell.Type.STONESKIN);
     spell.manaCost = 1;
-    spell.clearHealingCurse = true;
+    spell.defense = 1;
     Spells.Add(spell);
 
     spell = new Spell(new Magic[] { Magic.ILLUSION, Magic.ILLUSION }, Spell.Type.DOPPELGANGER);
     spell.manaCost = 1;
-    spell.defense = 1;
+    spell.clearHealingCurse = true;
     Spells.Add(spell);
 
     spell = new Spell(new Magic[] { Magic.NATURE, Magic.NATURE }, Spell.Type.NATURE_CALL);

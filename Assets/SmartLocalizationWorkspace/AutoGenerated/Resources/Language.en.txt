@@ -216,7 +216,7 @@
 		<value>Message</value>
 	</data>
 	<data name="Message.Win" xml:space="preserve">
-		<value>You win!</value>
+		<value>Victory</value>
 	</data>
 	<data name="Message.YouSurrender" xml:space="preserve">
 		<value>You surrender</value>
@@ -226,6 +226,24 @@
 	</data>
 	<data name="Player.SmthBlocked" xml:space="preserve">
 		<value>blocked</value>
+	</data>
+	<data name="Reward.CoinsForm1" xml:space="preserve">
+		<value>coins</value>
+	</data>
+	<data name="Reward.CoinsForm2" xml:space="preserve">
+		<value>coins</value>
+	</data>
+	<data name="Reward.CoinsForm3" xml:space="preserve">
+		<value>coins</value>
+	</data>
+	<data name="Reward.CoinsUni" xml:space="preserve">
+		<value>coins</value>
+	</data>
+	<data name="Reward.Exp" xml:space="preserve">
+		<value>experience</value>
+	</data>
+	<data name="Reward.NewLevel" xml:space="preserve">
+		<value>Level up!</value>
 	</data>
 	<data name="SetName.EnterName" xml:space="preserve">
 		<value>Enter your name...</value>

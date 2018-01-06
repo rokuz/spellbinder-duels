@@ -108,4 +108,19 @@ public class GameField
     }
     return indices;
   }
+
+  public List<int> GetRandomCards()
+  {
+    var indices = new List<int>();
+    while (indices.Count != 3)
+    {
+      int index = UnityEngine.Random.Range(0, CARDS_COUNT);
+      if (indices.Exists(x => x == index))
+        continue;
+      indices.Add(index);
+      if (indices.Count == 2 && cards[indices[0]] == cards[indices[1]])
+        return indices;
+    }
+    return indices;
+  }
 }

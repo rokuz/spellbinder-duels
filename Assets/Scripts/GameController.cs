@@ -13,7 +13,7 @@ public class GameController : MonoBehaviour
   const float kShiverDuration = 0.5f;
 
   public FBHolder facebookHolder;
-  public MessageDialog messageDialog;
+  public DefeatDialog defeatDialog;
   public RewardDialog rewardDialog;
   public GameObject player1Info;
   public GameObject player2Info;
@@ -45,6 +45,9 @@ public class GameController : MonoBehaviour
   public Button settingsButton;
   public Button finishTurnButton;
   public Button surrenderButton;
+  public Button spellbookButton;
+
+  public SpellbookWidget spellbookWidget;
 
   class PlayerInfo
   {
@@ -73,22 +76,12 @@ public class GameController : MonoBehaviour
 
   private bool yourTurn = false;
   private bool cardsOpened = false;
+  private bool spellInProgress = false;
 
   private Vector3 playerInfo1Pos;
   private Vector3 playerInfo2Pos;
   private float startShiverTime1 = -1.0f;
   private float startShiverTime2 = -1.0f;
-
-  private PlayerData lastPlayerData;
-  private PlayerData lastOpponentData;
-
-  class ChangedStats
-  {
-    public int healthDelta = 0;
-    public int defenseDelta = 0;
-  }
-  private ChangedStats playerChangedStats = null;
-  private ChangedStats opponentChangedStats = null;
 
   class SwappingInfo
   {
@@ -127,6 +120,8 @@ public class GameController : MonoBehaviour
     if (systemLanguage != null)
       LanguageManager.Instance.ChangeLanguage(systemLanguage);
 
+    Persistence.Load();
+
     Spellbook.Init();
 
     SpriteRenderer renderer = (from r in cards[0].GetComponentsInChildren<SpriteRenderer>()
@@ -164,13 +159,19 @@ public class GameController : MonoBehaviour
     crystals1.SetActive(false);
     crystals2.SetActive(false);
 
-    matchData = SceneConnector.Instance.PopMatch();
+    matchData = SceneConnector.Instance.GetMatch();
     #if UNITY_EDITOR
     if (matchData == null)
       matchData = new Match(new ProfileData(), new ProfileData());
     #endif
     if (matchData != null)
     {
+      spellbookWidget.Setup(matchData.User.profile);
+      if (Persistence.gameConfig.showSpellbookWidget)
+        spellbookWidget.Open();
+      else
+        spellbookWidget.Close();
+
       bot = new Bot(matchData, matchData.Opponent);
 
       player1.name.text = matchData.User.profile.name;
@@ -186,11 +187,14 @@ public class GameController : MonoBehaviour
 
     finishTurnButton.gameObject.SetActive(false);
     surrenderButton.gameObject.SetActive(false);
+    spellbookButton.gameObject.SetActive(false);
     finishTurnButton.interactable = false;
     surrenderButton.interactable = false;
+    spellbookButton.interactable = true;
 
     finishTurnButton.GetComponentInChildren<Text>().text = LanguageManager.Instance.GetTextValue("Game.FinishTurn");
     surrenderButton.GetComponentInChildren<Text>().text = LanguageManager.Instance.GetTextValue("Game.Surrender");
+    spellbookButton.GetComponentInChildren<Text>().text = LanguageManager.Instance.GetTextValue("Spellbook.Title");
 
     StartMatch();
   }
@@ -288,15 +292,24 @@ public class GameController : MonoBehaviour
     {
       if (openedCards[cardIndex].isBackShowing && !openedCards[cardIndex].isSwapping)
         SwapCard(cardIndex);
+
       int[] cards = GetOpenCards();
       if (cards.Length == 2)
       {
         if (matchData != null && matchData.Field.Cards[cards[0]] == matchData.Field.Cards[cards[1]])
-          CastSpell(cards);
+        {
+          cardsOpened = true;
+          bot.OnOpponentOpenedCards(cards);
+          spellInProgress = true;
+          StartCoroutine(CastSpellWithDelay(cards, matchData.User, kAnimationTimeSec));
+        }
       }
       else if (cards.Length == 3)
       {
-        CastSpell(cards);
+        cardsOpened = true;
+        bot.OnOpponentOpenedCards(cards);
+        spellInProgress = true;
+        StartCoroutine(CastSpellWithDelay(cards, matchData.User, kAnimationTimeSec));
       }
     }
   }
@@ -321,12 +334,6 @@ public class GameController : MonoBehaviour
     return cards.ToArray();
   }
 
-  private void CastSpell(int[] indices)
-  {
-    cardsOpened = true;
-    StartCoroutine(CastSpellWithDelay(indices, matchData.User, kAnimationTimeSec));
-  }
-
   private IEnumerator CastSpellWithDelay(int[] indices, Match.Player caster, float delay)
   {
     yield return new WaitForSeconds(delay);
@@ -334,7 +341,7 @@ public class GameController : MonoBehaviour
     bool youAreCaster = caster == matchData.User;
     if (s != null)
     {
-      AnimateCastedSpell(s, true /* userCasted */, () => 
+      AnimateCastedSpell(s, youAreCaster, () => 
       {
         StartCoroutine(ApplySpellWithDelay(indices, s, caster, 1.0f));
       });
@@ -369,14 +376,14 @@ public class GameController : MonoBehaviour
 
     UpdatePlayersStats();
 
-    // Update data and play text animations.
-    //TODO
+    if (!matchData.CheckMatchStatus(OnWin))
+    {
+      // Substitute cards.
+      if (substitutes != null)
+        SubstituteCards(indices, substitutes);
 
-    // Substitute cards.
-    if (substitutes != null)
-      SubstituteCards(indices, substitutes);
-
-    StartCoroutine(FinishSpell(caster, substitutes != null ? 2.0f : 0.0f));
+      StartCoroutine(FinishSpell(caster, substitutes != null ? 2.0f : 0.0f));
+    }
   }
 
   private IEnumerator FinishSpell(Match.Player caster, float delay)
@@ -386,9 +393,23 @@ public class GameController : MonoBehaviour
     yield return new WaitForSeconds(kAnimationTimeSec);
     if (caster.data.RestMana == 0)
     {
+      if (!yourTurn)
+        bot.Forget();
+
+      matchData.FinishTurn(caster);
       yourTurn = !yourTurn;
-      ProcessTurn();
+      StartTurn();
     }
+    else
+    {
+      // Try to cast another spell.
+      if (!yourTurn)
+      {
+        var turn = bot.MakeTurn();
+        StartCoroutine(MakeOpponentTurn(turn));
+      }
+    }
+    spellInProgress = false;
   }
 
   public void StartMatch()
@@ -420,7 +441,7 @@ public class GameController : MonoBehaviour
     yield return new WaitForSeconds(kAnimationTimeSec);
     matchData.Status = Match.MatchStatus.STARTED;
 
-    ProcessTurn();
+    StartTurn();
   }
 
   private void SwapAllCards()
@@ -488,20 +509,15 @@ public class GameController : MonoBehaviour
       if (i <= curMana)
         img.color = new Color(47.0f / 255.0f, 61.0f / 255.0f, 128.0f / 255.0f);
       else
-        img.color = new Color(21.0f / 255.0f, 27.0f / 255.0f, 57.0f / 255.0f);
+        img.color = new Color(60.0f / 255.0f, 60.0f / 255.0f, 60.0f / 255.0f);
     }
   }
 
-  private void ProcessTurn()
+  private void StartTurn()
   {
     matchData.StartTurn(yourTurn ? matchData.User : matchData.Opponent);
     surrenderButton.interactable = true;
     finishTurnButton.interactable = yourTurn;
-
-    //playerChangedStats = GetChangedStats(lastPlayerData, matchData.Player1Data);
-    //opponentChangedStats = GetChangedStats(lastOpponentData, matchData.Player2Data);
-    //lastPlayerData = matchData.Player1Data.Copy();
-    //lastOpponentData = matchData.Player2Data.Copy();
 
     UpdateManaUI();
     StartCoroutine(ShowGameInfo(LanguageManager.Instance.GetTextValue(yourTurn ? "Game.YourTurn" : "Game.OpponentTurn"), 1.0f));
@@ -510,22 +526,24 @@ public class GameController : MonoBehaviour
 
     if (!yourTurn)
     {
-      var turns = bot.MakeTurns();
+      var turn = bot.MakeTurn();
+      StartCoroutine(MakeOpponentTurn(turn));
     }
   }
 
-  private ChangedStats GetChangedStats(PlayerData oldState, PlayerData newState)
+  private IEnumerator MakeOpponentTurn(int[] indices)
   {
-    if (newState == null || oldState == null)
-      return null;
+    yield return new WaitForSeconds(1.0f); // Opponent thinks.
 
-    if (newState.health == oldState.health && newState.defense == oldState.defense)
-      return null;
-
-    ChangedStats stats = new ChangedStats();
-    stats.healthDelta = newState.health - oldState.health;
-    stats.defenseDelta = newState.defense - oldState.defense;
-    return stats;
+    if (indices != null)
+    {
+      for (int i = 0; i < indices.Length; i++)
+      {
+        SwapCard(indices[i]);
+        yield return new WaitForSeconds(kAnimationTimeSec); 
+      }
+    }
+    StartCoroutine(CastSpellWithDelay(indices, matchData.Opponent, 0.0f));
   }
 
   private void CloseAllOpenedCards()
@@ -562,32 +580,28 @@ public class GameController : MonoBehaviour
   private void UpdatePlayersStats()
   {
     UpdatePlayerInfo(matchData.User, player1);
-    if (playerChangedStats != null)
-    {
-      if (playerChangedStats.healthDelta > 0)
-        PlayTextAnimation(player1.healthPlus, "HealthPlus", playerChangedStats.healthDelta);
-      else if (playerChangedStats.healthDelta < 0)
-        PlayTextAnimation(player1.healthMinus, "HealthMinus", playerChangedStats.healthDelta);
 
-      if (playerChangedStats.defenseDelta != 0)
-        PlayTextAnimation(player1.defenseChanged, "DefenseChanged", playerChangedStats.defenseDelta);
+    if (Attribute<int>.Delta(matchData.User.data.health) > 0)
+      PlayTextAnimation(player1.healthPlus, "HealthPlus", Attribute<int>.Delta(matchData.User.data.health));
+    else if (Attribute<int>.Delta(matchData.User.data.health) < 0)
+      PlayTextAnimation(player1.healthMinus, "HealthMinus", Attribute<int>.Delta(matchData.User.data.health));
 
-      playerChangedStats = null;
-    }
+    if (Attribute<int>.Delta(matchData.User.data.defense) != 0)
+      PlayTextAnimation(player1.defenseChanged, "DefenseChanged", Attribute<int>.Delta(matchData.User.data.defense));
+
+    matchData.User.data.ResetPreviousAttributeValues();
 
     UpdatePlayerInfo(matchData.Opponent, player2);
-    if (opponentChangedStats != null)
-    {
-      if (opponentChangedStats.healthDelta > 0)
-        PlayTextAnimation(player2.healthPlus, "HealthPlus", opponentChangedStats.healthDelta);
-      else if (opponentChangedStats.healthDelta < 0)
-        PlayTextAnimation(player2.healthMinus, "HealthMinus", opponentChangedStats.healthDelta);
 
-      if (opponentChangedStats.defenseDelta != 0)
-        PlayTextAnimation(player2.defenseChanged, "DefenseChanged", opponentChangedStats.defenseDelta);
+    if (Attribute<int>.Delta(matchData.Opponent.data.health) > 0)
+      PlayTextAnimation(player2.healthPlus, "HealthPlus", Attribute<int>.Delta(matchData.Opponent.data.health));
+    else if (Attribute<int>.Delta(matchData.Opponent.data.health) < 0)
+      PlayTextAnimation(player2.healthMinus, "HealthMinus", Attribute<int>.Delta(matchData.Opponent.data.health));
 
-      opponentChangedStats = null;
-    }
+    if (Attribute<int>.Delta(matchData.Opponent.data.defense) != 0)
+      PlayTextAnimation(player2.defenseChanged, "DefenseChanged", Attribute<int>.Delta(matchData.Opponent.data.defense));
+
+    matchData.Opponent.data.ResetPreviousAttributeValues();
   }
 
   private void PlayTextAnimation(Animator animator, string name, int textValue)
@@ -872,113 +886,78 @@ public class GameController : MonoBehaviour
     }
   }
 
-    /*
-    public void OnWin(PlayerData player, PlayerData opponent, string spell, int spellCost, RewardData reward)
+  public void OnWin(Match.Player winner)
+  {
+    if (winner == matchData.User)
     {
-        UpdateManaAfterSpellCast(true, lastPlayerData, spellCost);
-
-        playerChangedStats = GetChangedStats(lastPlayerData, player);
-        opponentChangedStats = GetChangedStats(lastOpponentData, opponent);
-        lastPlayerData = player;
-        lastOpponentData = opponent;
-        AnimateCastedSpell(spell, true, () => 
-        { 
-            UpdatePlayersStats();
-            rewardDialog.Open(LanguageManager.Instance.GetTextValue("Message.Win"), true, () => { this.BackToMainMenu(); });
-        });
-
-        string spellName = LanguageManager.Instance.GetTextValue("Spell." + spell);
-        if (spellName.Length == 0) spellName = spell;
-        StartCoroutine(ShowGameInfo(LanguageManager.Instance.GetTextValue("Game.YouCasted") + " " + spellName, 1.0f));
+      if (!rewardDialog.IsOpened())
+        rewardDialog.Open(winner, () => { this.BackToMainMenu(); });
     }
-
-    public void OnLose(PlayerData player, PlayerData opponent, RewardData reward, bool delay)
+    else
     {
-        StartCoroutine(ProcessLose(player, opponent, delay ? 2.5f : 0.0f));
+      if (!defeatDialog.IsOpened())
+        defeatDialog.Open(LanguageManager.Instance.GetTextValue("Message.Lose"), () => { this.BackToMainMenu(); }, () => { this.Replay(); });
     }
+  }
 
-    private IEnumerator ProcessLose(PlayerData player, PlayerData opponent, float delaySec)
+  private void BackToMainMenu()
+  {
+    SceneConnector.Instance.PopMatch();
+    SceneManager.LoadScene("MainMenu");
+  }
+
+  private void Replay()
+  {
+    SceneManager.LoadScene("CoreGame");
+  }
+
+  public void OnSettingsClicked()
+  {
+    bool active = finishTurnButton.gameObject.activeSelf;
+    finishTurnButton.gameObject.SetActive(!active);
+    surrenderButton.gameObject.SetActive(!active);
+    spellbookButton.gameObject.SetActive(!active);
+  }
+
+  public void OnFinishTurnClicked()
+  {
+    if (spellInProgress)
+      return;
+
+    finishTurnButton.gameObject.SetActive(false);
+    surrenderButton.gameObject.SetActive(false);
+    spellbookButton.gameObject.SetActive(false);
+
+    if (yourTurn)
     {
-        yield return new WaitForSeconds(delaySec);
-
-        playerChangedStats = GetChangedStats(lastPlayerData, player);
-        opponentChangedStats = GetChangedStats(lastOpponentData, opponent);
-        lastPlayerData = player;
-        lastOpponentData = opponent;
-
-        rewardDialog.Open(LanguageManager.Instance.GetTextValue("Message.Lose"), false, () => { this.BackToMainMenu(); });
+      matchData.User.data.UseMana(matchData.User.data.RestMana);
+      StartCoroutine(FinishSpell(matchData.User, 0.0f));
     }
+  }
 
-    public void OnSurrender(RewardData reward)
-    {
-        rewardDialog.Open(LanguageManager.Instance.GetTextValue("Message.YouSurrender"), false, () => { this.BackToMainMenu(); });
-    }
+  public void OnSurrenderClicked()
+  {
+    finishTurnButton.gameObject.SetActive(false);
+    surrenderButton.gameObject.SetActive(false);
+    spellbookButton.gameObject.SetActive(false);
 
-    public void OnOpponentSurrender(RewardData reward)
-    {
-        rewardDialog.Open(LanguageManager.Instance.GetTextValue("Message.OpponentSurrender"), true, () => { this.BackToMainMenu(); });
-    }
+    if (defeatDialog.IsOpened())
+      return;
 
-    private string CardsIndicesToString(int[] indices)
-    {
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < indices.Length; i++)
-        {
-            builder.Append(indices[i]);
-            if (i != indices.Length - 1) builder.Append(",");
-        }
-        return builder.ToString();
-    }
+    matchData.Surrender();
+    defeatDialog.Open(LanguageManager.Instance.GetTextValue("Message.YouSurrender"),
+                      () => { this.BackToMainMenu(); }, () => { this.Replay(); });
+  }
 
-    private IEnumerator ProcessCardsAfterTurn()
-    {
-        for (int i = 0; i < openedCards.Length; i++)
-        {
-            if (openedCards[i].isBackShowing)
-                SwapCard(i);
-        }
-        yield return new WaitForSeconds(2 * kAnimationTimeSec);
-        CloseAllOpenedCards();
-        cardsOpened = false;
-    }
+  public void OnSpellbookClicked()
+  {
+    finishTurnButton.gameObject.SetActive(false);
+    surrenderButton.gameObject.SetActive(false);
+    spellbookButton.gameObject.SetActive(false);
 
-    private void BackToMainMenu()
-    {
-        SceneManager.LoadScene("MainMenu");
-    }
-
-    private void UpdateManaAfterSpellCast(bool isPlayer, PlayerData data, int spellCost)
-    {
-        if (isPlayer) 
-        {
-            currentMana -= spellCost;
-            SetMana(crystals1, data, currentMana, gameData.maxMana);
-        }
-        else 
-        {
-            currentOpponentMana -= spellCost;
-            SetMana(crystals2, data, currentOpponentMana, gameData.opponentMaxMana);  
-        }
-    }
-
-    public void OnSettingsClicked()
-    {
-        bool active = finishTurnButton.gameObject.activeSelf;
-        finishTurnButton.gameObject.SetActive(!active);
-        surrenderButton.gameObject.SetActive(!active);
-    }
-
-    public void OnFinishTurnClicked()
-    {
-        finishTurnButton.gameObject.SetActive(false);
-        surrenderButton.gameObject.SetActive(false);
-        finishTurnButton.interactable = false;
-    }
-
-    public void OnSurrenderClicked()
-    {
-        finishTurnButton.gameObject.SetActive(false);
-        surrenderButton.gameObject.SetActive(false);
-        surrenderButton.interactable = false;
-    }*/
+    if (spellbookWidget.IsOpened())
+      spellbookWidget.Close();
+    else
+      spellbookWidget.Open();
+  }
 }

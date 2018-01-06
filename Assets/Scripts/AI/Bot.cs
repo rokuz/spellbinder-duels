@@ -11,13 +11,15 @@ public class Bot
   private int[] memory = null;
   private int initialMemoryIndex = 0;
 
+  private float[] randomCardsProbs = new float[] { 1.0f, 0.5f, 0.25f, 0.1f, 0.0f, 0.0f, 0.0f };
+
   public Bot(Match matchData, Match.Player caster)
   {
     this.matchData = matchData;
     this.caster = caster;
   }
 
-  public List<int[]> MakeTurns()
+  public int[] MakeTurn()
   {
     if (memory == null)
       InitMemory();
@@ -25,29 +27,30 @@ public class Bot
     Spell[] availableSpells = (from sp in caster.profile.spells
                                  select Spellbook.Find(sp)).ToArray();
     Match.Player opponent = (this.matchData.User == caster) ? this.matchData.Opponent : this.matchData.User;
-    var result = new List<int[]>();
-    int[] indices = null;
-    do
-    {
-      indices = ChooseSpell(availableSpells, opponent);
-      if (indices != null)
-        result.Add(indices);
-    }
-    while (indices != null);
+    int[] indices = ChooseSpell(availableSpells, opponent);
+
+    return indices;
+  }
+
+  public void OnOpponentOpenedCards(int[] indices)
+  {
+    if (memory == null)
+      InitMemory();
+
+    for (int i = 0; i < indices.Length; i++)
+      memory[indices[i]]++;
+  }
+
+  public void Forget()
+  {
+    if (memory == null)
+      InitMemory();
 
     for (int i = 0; i < GameField.CARDS_COUNT; i++)
     {
       memory[i]--;
       if (memory[i] < 0) memory[i] = 0;
     }
-
-    return result;
-  }
-
-  public void OnOpponentOpenedCards(int[] indices)
-  {
-    for (int i = 0; i < indices.Length; i++)
-      memory[indices[i]]++;
   }
 
   private void InitMemory()
@@ -82,40 +85,217 @@ public class Bot
     }
   }
 
-  private int[] ChooseSpell(Spell[] availableSpells, Match.Player opponent)
+  private bool CheckOpenRandomCardsProbability(int spellsOnFieldCount)
   {
-    int[] result = null;
+    if (spellsOnFieldCount == 0)
+      return true;
 
-    var spells = FindSpellsOnField(availableSpells);
-    //TODO: choose spell
+    if (spellsOnFieldCount > 6)
+      spellsOnFieldCount = 6;
 
-    if (result != null)
-    {
-      for (int i = 0; i < result.Length; i++)
-        memory[result[i]]++;
-    }
-    return result;
+    bool result = UnityEngine.Random.value <= randomCardsProbs[spellsOnFieldCount];
+    if (result)
+      return true;
+
+    int levelIndex = caster.profile.level - 1;
+    if (levelIndex >= Constants.OPEN_RANDOM_CARDS.Length)
+      levelIndex = Constants.OPEN_RANDOM_CARDS.Length - 1;
+    return UnityEngine.Random.value <= Constants.OPEN_RANDOM_CARDS[levelIndex];
   }
 
-  private List<Spell> FindSpellsOnField(Spell[] spells)
+  private int[] ChooseSpell(Spell[] availableSpells, Match.Player opponent)
   {
-    var availableMagic = new List<Magic>();
+    int[] resultIndices = null;
+
+    var spellsOnField = FindSpellsOnField(availableSpells, caster.data.RestMana);
+    if (CheckOpenRandomCardsProbability(spellsOnField.Count))
+    {
+      // Open random cards.
+      resultIndices = matchData.Field.GetRandomCards().ToArray();
+      for (int i = 0; i < resultIndices.Length; i++)
+        memory[resultIndices[i]]++;
+      return resultIndices;
+    }
+
+    var spellIndex = GetChosenSpellIndex(spellsOnField, opponent);
+    resultIndices = spellsOnField[spellIndex].Value;
+
+    if (resultIndices != null)
+    {
+      for (int i = 0; i < resultIndices.Length; i++)
+        memory[resultIndices[i]]++;
+    }
+    return resultIndices;
+  }
+
+  private int GetChosenSpellIndex(List<KeyValuePair<Spell, int[]>> spells, Match.Player opponent)
+  {
+    // Clear damage curse.
+    if (this.caster.data.blockedDamageTurns > 0)
+    {
+      int index = spells.FindIndex(x => x.Key.clearDamageCurse);
+      if (index >= 0)
+        return index;
+
+      // Increase defense.
+      index = FindDefenseSpell(spells, opponent);
+      if (index >= 0)
+        return index;
+
+      // Heal yourself.
+      index = FindHealSpell(spells, opponent);
+      if (index >= 0)
+        return index;
+    }
+
+    if (caster.data.health.Value < 10)
+    {
+      // Cast damage curse.
+      if (opponent.data.blockedDamageTurns == 0)
+      {
+        int index = spells.FindIndex(x => x.Key.blockDamageTurns > 0);
+        if (index >= 0)
+          return index;
+      }
+
+      {
+        // Increase defense.
+        int index = FindDefenseSpell(spells, opponent);
+        if (index >= 0)
+          return index;
+
+        // Heal yourself.
+        index = FindHealSpell(spells, opponent);
+        if (index >= 0)
+          return index;
+      }
+    }
+
+    int maxDamage = 0;
+    int maxDamageSpellIndex = FindSpellWithMaxDamage(spells, opponent, out maxDamage);
+
+    // Try to do maximum damage.
+    if (maxDamageSpellIndex >= 0)
+    {
+      if (spells[maxDamageSpellIndex].Key.manaCost == caster.data.RestMana)
+      {
+        if (opponent.data.health.Value <= maxDamage)
+          return maxDamageSpellIndex;
+
+        // Cast damage curse.
+        if (opponent.data.blockedDamageTurns == 0)
+        {
+          int index = spells.FindIndex(x => x.Key.blockDamageTurns > 0);
+          if (index >= 0)
+            return index;
+        }
+      }
+      return maxDamageSpellIndex;
+    }
+
+    // Cast curses.
+    if (opponent.data.blockedDamageTurns == 0)
+    {
+      int index = spells.FindIndex(x => x.Key.blockDamageTurns > 0);
+      if (index >= 0)
+        return index;
+    }
+    if (opponent.data.blockedHealingTurns == 0)
+    {
+      int index = spells.FindIndex(x => x.Key.blockHealingTurns > 0);
+      if (index >= 0)
+        return index;
+    }
+    if (opponent.data.blockedDefenseTurns == 0)
+    {
+      int index = spells.FindIndex(x => x.Key.blockDefenseTurns > 0);
+      if (index >= 0)
+        return index;
+    }
+
+    // Cast random spell.
+    return Random.Range(0, spells.Count);
+  }
+
+  private int FindDefenseSpell(List<KeyValuePair<Spell, int[]>> spells, Match.Player opponent)
+  {
+    if (this.caster.data.blockedDefenseTurns == 0)
+    {
+      int index = spells.FindIndex(x => x.Key.defense > 0);
+      if (index >= 0)
+        return index;
+    }
+    else
+    {
+      int index = spells.FindIndex(x => x.Key.clearDefenseCurse);
+      if (index >= 0)
+        return index;
+    }
+    return -1;
+  }
+
+  private int FindHealSpell(List<KeyValuePair<Spell, int[]>> spells, Match.Player opponent)
+  {
+    if (this.caster.data.blockedHealingTurns == 0)
+    {
+      int index = spells.FindIndex(x => x.Key.healing > 0);
+      if (index >= 0)
+        return index;
+    }
+    else
+    {
+      int index = spells.FindIndex(x => x.Key.clearHealingCurse);
+      if (index >= 0)
+        return index;
+    }
+    return -1;
+  }
+
+  private int FindSpellWithMaxDamage(List<KeyValuePair<Spell, int[]>> spells, Match.Player opponent, out int maxDamage)
+  {
+    int index = -1;
+    maxDamage = 0;
+    for (int i = 0; i < spells.Count; i++)
+    {
+      var dmg = spells[i].Key.damage;
+      if (dmg == 0)
+        continue;
+      var elemIndex = spells[i].Key.Index;
+      if (spells[i].Key.Index >= 0)
+        dmg += ((caster.profile.bonuses[elemIndex] - opponent.profile.resistance[elemIndex]) / 1000);
+
+      if (dmg > maxDamage && spells[i].Key.manaCost <= caster.data.RestMana)
+      {
+        maxDamage = spells[i].Key.damage;
+        index = i;
+      }
+    }
+    return index;
+  }
+
+  private List<KeyValuePair<Spell, int[]>> FindSpellsOnField(Spell[] spells, int availableMana)
+  {
+    var availableMagic = new List<KeyValuePair<Magic, int>>();
     for (int i = 0; i < GameField.CARDS_COUNT; i++)
     {
       if (memory[i] > 0)
-        availableMagic.Add(matchData.Field.Cards[i]);
+        availableMagic.Add(new KeyValuePair<Magic, int>(matchData.Field.Cards[i], i));
     }
 
-    var result = new List<Spell>();
+    var result = new List<KeyValuePair<Spell, int[]>>();
     for (int i = 0; i < spells.Length; i++)
     {
-      if (IncludesCombination(availableMagic, spells[i].Combination))
-        result.Add(spells[i]);
+      if (spells[i].manaCost > availableMana)
+        continue;
+
+      var indices = IncludesCombination(availableMagic, spells[i].Combination);
+      if (indices != null)
+        result.Add(new KeyValuePair<Spell, int[]>(spells[i], indices));
     }
     return result;
   }
 
-  private bool IncludesCombination(List<Magic> magic, Magic[] combination)
+  private int[] IncludesCombination(List<KeyValuePair<Magic, int>> magic, Magic[] combination)
   {
     var dict = new Dictionary<Magic, int>();
     foreach (var c in combination)
@@ -126,11 +306,19 @@ public class Bot
         dict.Add(c, 1);
     }
 
+    List<int> indices = new List<int>();
     foreach (Magic m in dict.Keys)
     {
-      if (magic.FindAll(x => x == m).Count != dict[m])
-        return false;
+      var pairs = magic.FindAll(x => x.Key == m);
+      if (pairs.Count < dict[m])
+        return null;
+
+      for (int i = 0; i < dict[m]; i++)
+        indices.Add(pairs[i].Value);
     }
-    return true;
+    if (combination.Length != indices.Count)
+      throw new UnityException("Bad logic");
+
+    return indices.ToArray();
   }
 }

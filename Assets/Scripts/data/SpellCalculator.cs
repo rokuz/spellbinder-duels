@@ -1,15 +1,17 @@
+using System;
+
 public class SpellCalculator
 {
-  private int[] initialBonuses;
-  private int[] initialResistance;
+  private int[] initialBonuses = new int[] { 0, 0, 0 };
+  private int[] initialResistance = new int[] { 0, 0, 0 };
 
   private int[] bonuses = new int[] { 0, 0, 0 };
   private int[] resistance = new int[] { 0, 0, 0 };
 
   public SpellCalculator(int[] initialBonuses, int[] initialResistance)
   {
-    this.initialBonuses = initialBonuses;
-    this.initialResistance = initialResistance;
+    Array.Copy(initialBonuses, this.initialBonuses, this.initialBonuses.Length);
+    Array.Copy(initialResistance, this.initialResistance, this.initialResistance.Length);
   }
 
   public int[] Bonuses
@@ -22,10 +24,12 @@ public class SpellCalculator
     get { return resistance; }
   }
 
-  public void onCastSpell(Spell spell)
+  public void OnCastSpell(Spell spell)
   {
     int index = spell.Index;
-    if (index < 0) return;
+    if (index < 0)
+      return;
+
     if (initialBonuses[index] == 0)
     {
       bonuses[index] += spell.Complex ? 10 : 5;
@@ -40,10 +44,12 @@ public class SpellCalculator
     }
   }
 
-  public void onReceiveSpell(Spell spell)
+  public void OnReceiveSpell(Spell spell)
   {
     int index = spell.Index;
-    if (index < 0) return;
+    if (index < 0)
+      return;
+
     if (initialResistance[index] == 0)
     {
       resistance[index] += spell.Complex ? 8 : 3;

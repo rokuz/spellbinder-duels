@@ -7,7 +7,6 @@ using SmartLocalization;
 
 public class MainMenuController : MonoBehaviour
 {
-  public ServerRequest serverRequest;
   public FBHolder facebookHolder;
   public SetNameDialog setNameDialog;
   public MatchingDialog matchingDialog;

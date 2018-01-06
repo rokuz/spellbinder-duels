@@ -431,4 +431,22 @@
 	<data name="Temp.Tournament" xml:space="preserve">
 		<value />
 	</data>
+	<data name="Reward.NewLevel" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Reward.Exp" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Reward.CoinsUni" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Reward.CoinsForm1" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Reward.CoinsForm2" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Reward.CoinsForm3" xml:space="preserve">
+		<value />
+	</data>
 </root>

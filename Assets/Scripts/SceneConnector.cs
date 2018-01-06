@@ -23,10 +23,13 @@ public class SceneConnector
     match = new Match(player, opponent);
   }
 
-  public Match PopMatch()
+  public Match GetMatch()
   {
-    Match result = match;
+    return match;
+  }
+
+  public void PopMatch()
+  {
     match = null;
-    return result;
   }
 }

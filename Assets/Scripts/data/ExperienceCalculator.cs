@@ -10,7 +10,13 @@ public class ExperienceCalculator
   private int experience = 0;
   private int levelsUp = 0;
 
-  public ExperienceCalculator(){}
+  private int coins = 0;
+
+  public ExperienceCalculator(int initialExperience, int initialLevel)
+  {
+    this.initialExperience = initialExperience;
+    this.initialLevel = initialLevel;
+  }
 
   public int Experience
   {
@@ -22,42 +28,38 @@ public class ExperienceCalculator
     get { return levelsUp; }
   }
 
-  public int InitialExperience
+  public int Coins
   {
-    set { this.initialExperience = value; }
+    get { return coins; }
   }
 
-  public int InitialLevel
-  {
-    set { this.initialLevel = value; }
-  }
-
-  public void onWin()
+  public void OnWin()
   {
     AddExperience(100);
+    coins = UnityEngine.Random.Range(Constants.COINS_MIN, Constants.COINS_MAX + 1);
   }
 
-  public void onLose()
+  public void OnLose()
   {
-    AddExperience(25);
-  }
-  
-  public void onSurrender()
-  {
-    AddExperience(15);
+    AddExperience(10);
   }
 
   public static int GetExperienceToNextLevel(int level)
   {
-    if (level <= 0 || level >= Constants.MAX_LEVEL)
-      return -1;
+    if (level <= 0)
+      return 0;
+    if (level >= Constants.MAX_LEVEL)
+      return Constants.LEVEL_EXP[Constants.MAX_LEVEL - 2];
     return Constants.LEVEL_EXP[level - 1];
   }
 
   public static int GetExperienceProgress(int level, int experience)
   {
-    if (level <= 0 || level >= Constants.MAX_LEVEL)
+    if (level <= 0)
       return 0;
+    if (level >= Constants.MAX_LEVEL)
+      return 100;
+
     if (level == 1)
     {
       int e = (int)(100.0f * (float)experience / Constants.LEVEL_EXP[0]);
@@ -79,6 +81,13 @@ public class ExperienceCalculator
     if (experience != 0)
     {
       int resultExp = initialExperience + experience;
+      if (resultExp > Constants.LEVEL_EXP[Constants.MAX_LEVEL - 2])
+        resultExp = Constants.LEVEL_EXP[Constants.MAX_LEVEL - 2];
+
+      experience = resultExp - initialExperience;
+      if (experience < 0)
+        experience = 0;
+
       int newLevel = FindLevel(resultExp);
       if (newLevel != initialLevel)
       {
@@ -88,7 +97,7 @@ public class ExperienceCalculator
     }
   }
 
-  private int FindLevel(int exp)
+  public static int FindLevel(int exp)
   {
     int i = 0;
     for (; i < Constants.LEVEL_EXP.Length; i++)

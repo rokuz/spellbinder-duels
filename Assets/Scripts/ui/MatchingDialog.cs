@@ -7,7 +7,6 @@ using SmartLocalization;
 
 public class MatchingDialog : MonoBehaviour
 {
-  public ServerRequest serverRequest;
   public FBHolder facebookHolder;
   public Text lookingForText;
   public MessageDialog messageDialog;
@@ -107,6 +106,7 @@ public class MatchingDialog : MonoBehaviour
   private IEnumerator StartFinding(float delay)
   {
     yield return new WaitForSeconds(delay);
+    //TODO: compare levels
     int rivalIndex = Random.Range(0, Persistence.gameConfig.rivals.Count);
     OnMatchingSuccess(Persistence.gameConfig.rivals[rivalIndex]);
   }

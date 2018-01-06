@@ -28,4 +28,29 @@ public class ProfileData
     this.coins = 0;
     this.spells = (from s in Spellbook.Spells where s.minLevel <= this.level select s.Code).ToArray();
   }
+
+  public void ApplyExperience(int experience)
+  {
+    this.experience += experience;
+    if (this.experience > Constants.LEVEL_EXP[Constants.MAX_LEVEL - 2])
+      this.experience = Constants.LEVEL_EXP[Constants.MAX_LEVEL - 2];
+
+    this.level = ExperienceCalculator.FindLevel(this.experience);
+    this.experienceToNextLevel = ExperienceCalculator.GetExperienceToNextLevel(this.level);
+    this.experienceProgress = ExperienceCalculator.GetExperienceProgress(this.level, this.experience);
+  }
+
+  public void ApplyBonusesAndResistance(int[] bonuses, int[] resistance)
+  {
+    for (int i = 0; i < this.bonuses.Length; i++)
+      this.bonuses[i] += bonuses[i];
+
+    for (int i = 0; i < this.resistance.Length; i++)
+      this.resistance[i] += resistance[i];
+  }
+
+  public void ApplyCoins(int coins)
+  {
+    this.coins += coins;
+  }
 }
