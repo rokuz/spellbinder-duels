@@ -41,7 +41,10 @@ public class FBHolder : MonoBehaviour
       int w = result.Texture.width;
       int h = result.Texture.height;
       image.sprite = Sprite.Create(result.Texture, new Rect(0, 0, w, h), new Vector2(0.5f, 0.5f));
-      picturesCache.Add(id, image.sprite);
+      if (!picturesCache.ContainsKey(id))
+        picturesCache.Add(id, image.sprite);
+      else
+        picturesCache[id] = image.sprite;
     }
   }
 
@@ -173,7 +176,10 @@ public class FBHolder : MonoBehaviour
       int w = result.width;
       int h = result.height;
       image.sprite = Sprite.Create(result, new Rect(0, 0, w, h), new Vector2(0.5f, 0.5f));
-      picturesCache.Add(id, image.sprite);
+      if (!picturesCache.ContainsKey(id))
+        picturesCache.Add(id, image.sprite);
+      else
+        picturesCache[id] = image.sprite;
     }
   }
 }

@@ -3,11 +3,14 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System;
 using SmartLocalization;
 
 public class MatchingDialog : MonoBehaviour
 {
   public FBHolder facebookHolder;
+  public AvatarHolder avatarHolder;
   public Text lookingForText;
   public MessageDialog messageDialog;
   public GameObject player;
@@ -90,7 +93,16 @@ public class MatchingDialog : MonoBehaviour
     player.gameObject.GetComponentInChildren<Text>().text = UIUtils.GetFormattedString(profileData);
     opponent.gameObject.GetComponentInChildren<Text>().text = UIUtils.GetFormattedString(opponentData);
 
-    facebookHolder.GetPicture(opponent.GetComponent<Image>(), opponentData.facebookId);
+    if (opponentData.facebookId.Length != 0)
+    {
+      facebookHolder.GetPicture(opponent.GetComponent<Image>(), opponentData.facebookId);
+    }
+    else
+    {
+      var avatarSprite = avatarHolder.GetAvatar(opponentData);
+      if (avatarSprite != null)
+        opponent.GetComponent<Image>().sprite = avatarSprite;
+    }
 
     SceneConnector.Instance.PushMatch(profileData, opponentData);
 
@@ -106,8 +118,16 @@ public class MatchingDialog : MonoBehaviour
   private IEnumerator StartFinding(float delay)
   {
     yield return new WaitForSeconds(delay);
-    //TODO: compare levels
-    int rivalIndex = Random.Range(0, Persistence.gameConfig.rivals.Count);
-    OnMatchingSuccess(Persistence.gameConfig.rivals[rivalIndex]);
+    var rivals = (from r in Persistence.gameConfig.rivals where Math.Abs(profileData.level - r.level) <= 1 select r).ToArray();
+    if (rivals.Length == 0)
+    {
+      int rivalIndex = UnityEngine.Random.Range(0, Persistence.gameConfig.rivals.Count);
+      OnMatchingSuccess(Persistence.gameConfig.rivals[rivalIndex]);
+    }
+    else
+    {
+      int rivalIndex = UnityEngine.Random.Range(0, rivals.Length);
+      OnMatchingSuccess(rivals[rivalIndex]);
+    }
   }
 }

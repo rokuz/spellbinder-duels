@@ -258,12 +258,22 @@ public class Match
   private void ApplyReward()
   {
     this.User.profile.ApplyExperience(user.data.experienceCalculator.Experience);
-    this.Opponent.profile.ApplyExperience(opponent.data.experienceCalculator.Experience);
+    if (this.User.data.health.Value > 0)
+      this.User.profile.victories++;
+    else
+      this.User.profile.defeats++;
+    
     this.User.profile.ApplyBonusesAndResistance(user.data.spellCalculator.Bonuses,
                                                 user.data.spellCalculator.Resistance);
-    this.Opponent.profile.ApplyBonusesAndResistance(opponent.data.spellCalculator.Bonuses,
-                                                    opponent.data.spellCalculator.Resistance);
     this.User.profile.ApplyCoins(user.data.experienceCalculator.Coins);
+
+    if (this.Opponent.data.health.Value > 0)
+      this.Opponent.profile.victories++;
+    else
+      this.Opponent.profile.defeats++;
+    //this.Opponent.profile.ApplyExperience(opponent.data.experienceCalculator.Experience);
+    //this.Opponent.profile.ApplyBonusesAndResistance(opponent.data.spellCalculator.Bonuses,
+    //                                                opponent.data.spellCalculator.Resistance);
 
     Persistence.Save();
   }

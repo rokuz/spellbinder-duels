@@ -182,6 +182,18 @@
 	<data name="Game.YourTurnFirst" xml:space="preserve">
 		<value>Вы ходите первым</value>
 	</data>
+	<data name="Leaderboard.Defeats" xml:space="preserve">
+		<value>Поражения</value>
+	</data>
+	<data name="Leaderboard.Victories" xml:space="preserve">
+		<value>Победы</value>
+	</data>
+	<data name="MainMenu.Duels" xml:space="preserve">
+		<value>Дуэли</value>
+	</data>
+	<data name="MainMenu.Leaderboard" xml:space="preserve">
+		<value>Лучшие чародеи</value>
+	</data>
 	<data name="MainMenu.Play" xml:space="preserve">
 		<value>Играть</value>
 	</data>

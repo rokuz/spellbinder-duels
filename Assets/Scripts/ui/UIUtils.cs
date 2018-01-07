@@ -8,6 +8,13 @@ public static class UIUtils
   {
     return string.Format("{0}\n{1} {2}", profileData.name, i18n("Player.Level"), profileData.level);
   }
+
+  public static string GetProfileDesc(ProfileData profileData)
+  {
+    return string.Format("{0}: {1}\n{2}: {3}\n{4}: {5}", i18n("Player.Level"), profileData.level,
+                                                         i18n("Leaderboard.Victories"), profileData.victories,
+                                                         i18n("Leaderboard.Defeats"), profileData.defeats);
+  }
      
   public static string GetSpellDescription(Spell spellObject)
   {

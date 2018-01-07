@@ -182,6 +182,12 @@
 	<data name="Game.YourTurnFirst" xml:space="preserve">
 		<value />
 	</data>
+	<data name="MainMenu.Duels" xml:space="preserve">
+		<value />
+	</data>
+	<data name="MainMenu.Leaderboard" xml:space="preserve">
+		<value />
+	</data>
 	<data name="MainMenu.Play" xml:space="preserve">
 		<value />
 	</data>
@@ -225,6 +231,24 @@
 		<value />
 	</data>
 	<data name="Player.SmthBlocked" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Reward.CoinsForm1" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Reward.CoinsForm2" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Reward.CoinsForm3" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Reward.CoinsUni" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Reward.Exp" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Reward.NewLevel" xml:space="preserve">
 		<value />
 	</data>
 	<data name="SetName.EnterName" xml:space="preserve">
@@ -431,22 +455,10 @@
 	<data name="Temp.Tournament" xml:space="preserve">
 		<value />
 	</data>
-	<data name="Reward.NewLevel" xml:space="preserve">
+	<data name="Leaderboard.Victories" xml:space="preserve">
 		<value />
 	</data>
-	<data name="Reward.Exp" xml:space="preserve">
-		<value />
-	</data>
-	<data name="Reward.CoinsUni" xml:space="preserve">
-		<value />
-	</data>
-	<data name="Reward.CoinsForm1" xml:space="preserve">
-		<value />
-	</data>
-	<data name="Reward.CoinsForm2" xml:space="preserve">
-		<value />
-	</data>
-	<data name="Reward.CoinsForm3" xml:space="preserve">
+	<data name="Leaderboard.Defeats" xml:space="preserve">
 		<value />
 	</data>
 </root>

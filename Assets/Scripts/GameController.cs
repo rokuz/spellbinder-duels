@@ -13,6 +13,7 @@ public class GameController : MonoBehaviour
   const float kShiverDuration = 0.5f;
 
   public FBHolder facebookHolder;
+  public AvatarHolder avatarHolder;
   public DefeatDialog defeatDialog;
   public RewardDialog rewardDialog;
   public GameObject player1Info;
@@ -182,7 +183,17 @@ public class GameController : MonoBehaviour
       Image logo1 = (from r in player1Info.GetComponentsInChildren<Image>() where r.gameObject.name == "Logo" select r).Single();
       Image logo2 = (from r in player2Info.GetComponentsInChildren<Image>() where r.gameObject.name == "Logo" select r).Single();
       facebookHolder.GetPicture(logo1, matchData.User.profile.facebookId);
-      facebookHolder.GetPicture(logo2, matchData.Opponent.profile.facebookId);
+
+      if (matchData.Opponent.profile.facebookId.Length != 0)
+      {
+        facebookHolder.GetPicture(logo2, matchData.Opponent.profile.facebookId);
+      }
+      else
+      {
+        var avatarSprite = avatarHolder.GetAvatar(matchData.Opponent.profile);
+        if (avatarSprite != null)
+          logo2.sprite = avatarSprite;
+      }
     }
 
     finishTurnButton.gameObject.SetActive(false);

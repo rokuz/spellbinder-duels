@@ -182,6 +182,18 @@
 	<data name="Game.YourTurnFirst" xml:space="preserve">
 		<value>You are first</value>
 	</data>
+	<data name="Leaderboard.Defeats" xml:space="preserve">
+		<value>Defeats</value>
+	</data>
+	<data name="Leaderboard.Victories" xml:space="preserve">
+		<value>Victories</value>
+	</data>
+	<data name="MainMenu.Duels" xml:space="preserve">
+		<value>Duels</value>
+	</data>
+	<data name="MainMenu.Leaderboard" xml:space="preserve">
+		<value>Leaderboard</value>
+	</data>
 	<data name="MainMenu.Play" xml:space="preserve">
 		<value>Play</value>
 	</data>

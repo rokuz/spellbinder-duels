@@ -14,11 +14,14 @@ public class MainMenuController : MonoBehaviour
   public SpellbookDialog spellbookDialog;
   public SettingsDialog settingsDialog;
   public CharacterDialog characterDialog;
+  public LeaderboardDialog leaderboardDialog;
   public GameObject playerLogo;
   public Button playButton;
   public Button spellbookButton;
   public Button settingsButton;
   public Button shopButton;
+  public Button leaderboardButton;
+  public Text subtitleText;
 
 	public void Start()
   {
@@ -40,10 +43,12 @@ public class MainMenuController : MonoBehaviour
 
     this.playButton.interactable = true;
     this.playButton.GetComponentInChildren<Text>().text = LanguageManager.Instance.GetTextValue("MainMenu.Play");
+    subtitleText.text = LanguageManager.Instance.GetTextValue("MainMenu.Duels");
 
     this.spellbookButton.interactable = true;
     this.shopButton.interactable = true;
     this.settingsButton.interactable = true;
+    this.leaderboardButton.interactable = false;
 
     settingsDialog.Setup();
     characterDialog.Setup();
@@ -69,6 +74,12 @@ public class MainMenuController : MonoBehaviour
     spellbookDialog.Open(Persistence.gameConfig.profile, () => { this.spellbookButton.interactable = true; });
   }
 
+  public void OnLeaderboardButtonClicked()
+  {
+    this.leaderboardButton.interactable = false;
+    leaderboardDialog.Open(Persistence.gameConfig.profile, () => { this.leaderboardButton.interactable = true; });
+  }
+
   public void OnSettingsButtonClicked()
   {
     if (facebookHolder.FacebookLoginInProgress)
@@ -90,7 +101,7 @@ public class MainMenuController : MonoBehaviour
   public void OnPlayerInfoClicked()
   {
     if (characterDialog.IsOpened() || matchingDialog.IsOpened() || messageDialog.IsOpened() || settingsDialog.IsOpened() ||
-        spellbookDialog.IsOpened())
+        spellbookDialog.IsOpened() || leaderboardDialog.IsOpened())
       return;
 
     this.playerLogo.gameObject.GetComponentInChildren<Button>().interactable = false;
@@ -123,5 +134,8 @@ public class MainMenuController : MonoBehaviour
 
     if (Persistence.gameConfig.profile != null)
       facebookHolder.GetPicture(playerLogo.transform.Find("Logo").GetComponentInChildren<Image>(), Persistence.gameConfig.profile.facebookId);
+
+    this.leaderboardButton.interactable = true;
+    leaderboardDialog.Setup();
   }
 }
