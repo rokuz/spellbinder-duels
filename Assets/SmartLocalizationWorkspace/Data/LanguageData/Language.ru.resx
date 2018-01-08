@@ -197,6 +197,9 @@
 	<data name="MainMenu.Play" xml:space="preserve">
 		<value>Играть</value>
 	</data>
+	<data name="MainMenu.Shop" xml:space="preserve">
+		<value>Магазин</value>
+	</data>
 	<data name="MainMenu.Tournament" xml:space="preserve">
 		<value>Турнир</value>
 	</data>
@@ -298,6 +301,15 @@
 	</data>
 	<data name="Settings.Title" xml:space="preserve">
 		<value>Настройки</value>
+	</data>
+	<data name="Shop.BuyCheck" xml:space="preserve">
+		<value>Вы уверены, что хотите купить</value>
+	</data>
+	<data name="Shop.BuyMessage" xml:space="preserve">
+		<value>Покупка</value>
+	</data>
+	<data name="Shop.NotEnoughCoins" xml:space="preserve">
+		<value>Недостаточно монет для покупки</value>
 	</data>
 	<data name="Spell.BLEEDING" xml:space="preserve">
 		<value>Кровотечение</value>

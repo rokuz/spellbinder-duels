@@ -55,7 +55,8 @@ public class CharacterDialog : MonoBehaviour
       levelText.text = LanguageManager.Instance.GetTextValue("Player.Level") + " " + profileData.level;
 
       SetupBarProgress(experienceText, profileData.experienceProgress / 100.0f);
-      GetBarText(experienceText).text = "" + profileData.experience + "/" + profileData.experienceToNextLevel;
+      GetBarText(experienceText).text = "" + profileData.experience + "/" + 
+        (profileData.level != Constants.MAX_LEVEL ? profileData.experienceToNextLevel : Constants.LEVEL_EXP[Constants.MAX_LEVEL - 2]);
 
       SetupBarProgress(fireDamageText, GetBonusProgress(profileData.bonuses[Spell.FIRE_INDEX]));
       FormatBonusText(fireDamageText, profileData.bonuses[Spell.FIRE_INDEX]);

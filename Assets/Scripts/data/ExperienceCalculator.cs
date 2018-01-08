@@ -48,8 +48,10 @@ public class ExperienceCalculator
   {
     if (level <= 0)
       return 0;
+
     if (level >= Constants.MAX_LEVEL)
-      return Constants.LEVEL_EXP[Constants.MAX_LEVEL - 2];
+      return Constants.LEVEL_EXP[level - 2];
+
     return Constants.LEVEL_EXP[level - 1];
   }
 

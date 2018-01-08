@@ -27,7 +27,7 @@ public class ProfileData
     this.experienceProgress = ExperienceCalculator.GetExperienceProgress(this.level, this.experience);
     this.bonuses = new int[] { 0, 0, 0 };
     this.resistance = new int[] { 0, 0, 0 };
-    this.coins = 0;
+    this.coins = 100;
     this.victories = 0;
     this.defeats = 0;
     this.spells = (from s in Spellbook.Spells where s.minLevel <= this.level select s.Code).ToArray();
@@ -56,8 +56,17 @@ public class ProfileData
       this.experience = Constants.LEVEL_EXP[Constants.MAX_LEVEL - 2];
 
     this.level = ExperienceCalculator.FindLevel(this.experience);
-    this.experienceToNextLevel = ExperienceCalculator.GetExperienceToNextLevel(this.level);
-    this.experienceProgress = ExperienceCalculator.GetExperienceProgress(this.level, this.experience);
+    if (this.level == Constants.MAX_LEVEL)
+    {
+      this.experience = Constants.LEVEL_EXP[Constants.MAX_LEVEL - 2];
+      this.experienceToNextLevel = 0;
+      this.experienceProgress = 100;
+    }
+    else
+    {
+      this.experienceToNextLevel = ExperienceCalculator.GetExperienceToNextLevel(this.level);
+      this.experienceProgress = ExperienceCalculator.GetExperienceProgress(this.level, this.experience);
+    }
   }
 
   public void ApplyBonusesAndResistance(int[] bonuses, int[] resistance)
@@ -72,5 +81,23 @@ public class ProfileData
   public void ApplyCoins(int coins)
   {
     this.coins += coins;
+  }
+
+  public void LevelUp()
+  {
+    if (this.level == Constants.MAX_LEVEL - 1)
+    {
+      this.experience = Constants.LEVEL_EXP[Constants.MAX_LEVEL - 2];
+      this.level = Constants.MAX_LEVEL;
+      this.experienceToNextLevel = 0;
+      this.experienceProgress = 100;
+    }
+    else
+    {
+      this.experience = ExperienceCalculator.GetExperienceToNextLevel(this.level);
+      this.level = ExperienceCalculator.FindLevel(this.experience);
+      this.experienceToNextLevel = ExperienceCalculator.GetExperienceToNextLevel(this.level);
+      this.experienceProgress = ExperienceCalculator.GetExperienceProgress(this.level, this.experience);
+    }
   }
 }

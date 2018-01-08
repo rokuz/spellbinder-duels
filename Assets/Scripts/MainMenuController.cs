@@ -15,6 +15,7 @@ public class MainMenuController : MonoBehaviour
   public SettingsDialog settingsDialog;
   public CharacterDialog characterDialog;
   public LeaderboardDialog leaderboardDialog;
+  public ShopDialog shopDialog;
   public GameObject playerLogo;
   public Button playButton;
   public Button spellbookButton;
@@ -46,7 +47,7 @@ public class MainMenuController : MonoBehaviour
     subtitleText.text = LanguageManager.Instance.GetTextValue("MainMenu.Duels");
 
     this.spellbookButton.interactable = true;
-    this.shopButton.interactable = true;
+    this.shopButton.interactable = false;
     this.settingsButton.interactable = true;
     this.leaderboardButton.interactable = false;
 
@@ -95,7 +96,7 @@ public class MainMenuController : MonoBehaviour
   public void OnShopButtonClicked()
   {
     this.shopButton.interactable = false;
-    messageDialog.Open("", LanguageManager.Instance.GetTextValue("Temp.Shop"), () => { this.shopButton.interactable = true; });
+    shopDialog.Open(Persistence.gameConfig.profile, () => { this.shopButton.interactable = true; UpdatePlayerUI(); });
   }
 
   public void OnPlayerInfoClicked()
@@ -137,5 +138,7 @@ public class MainMenuController : MonoBehaviour
 
     this.leaderboardButton.interactable = true;
     leaderboardDialog.Setup();
+
+    this.shopButton.interactable = true;
   }
 }
