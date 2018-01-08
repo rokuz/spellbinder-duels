@@ -56,17 +56,17 @@ public static class Spellbook
     spell.clearDamageCurse = true;
     Spells.Add(spell);
 
+    spell = new Spell(new Magic[] { Magic.FIRE, Magic.AIR, Magic.FIRE }, Spell.Type.METEORITE);
+    spell.manaCost = 1;
+    spell.minLevel = 3;
+    spell.damage = 3;
+    Spells.Add(spell);
+
     // Special Fire
     /*spell = new Spell(new Magic[] { Magic.FIRE, Magic.FIRE, Magic.FIRE }, Spell.Type.FIRE_STORM);
     spell.manaCost = 2;
     spell.minLevel = 5;
     spell.damage = 5;
-    Spells.Add(spell);
-
-    spell = new Spell(new Magic[] { Magic.FIRE, Magic.AIR, Magic.FIRE }, Spell.Type.METEORITE);
-    spell.manaCost = 2;
-    spell.minLevel = 11;
-    spell.damage = 7;
     Spells.Add(spell);
 
     spell = new Spell(new Magic[] { Magic.FIRE, Magic.DARKNESS, Magic.FIRE }, Spell.Type.BURNING_SHIELD);

@@ -42,6 +42,7 @@ public class GameController : MonoBehaviour
   public GameObject stoneskinPrefab;
   public GameObject doppelgangerPrefab;
   public GameObject miscastPrefab;
+  public GameObject meteoritePrefab;
 
   public Button settingsButton;
   public Button finishTurnButton;
@@ -163,7 +164,7 @@ public class GameController : MonoBehaviour
     matchData = SceneConnector.Instance.GetMatch();
     #if UNITY_EDITOR
     if (matchData == null)
-      matchData = new Match(new ProfileData(), new ProfileData());
+      matchData = new Match(new ProfileData("Player1", 12, 0), new ProfileData("Player2", 12, 0));
     #endif
     if (matchData != null)
     {
@@ -775,14 +776,23 @@ public class GameController : MonoBehaviour
     projectileSpells.Add(new CastedSpell(projectileSpellObject, onFinished));
   }
 
-  private void CastInstantSpell(GameObject spellPrefab, bool isPlayer, Vector3 targetPos, float duration, OnSpellAnimationFinished onFinished)
+  private void CastInstantSpell(GameObject spellPrefab, bool isPlayer, Vector3 targetPos, float zRotation, bool alignDir,
+                                float duration, OnSpellAnimationFinished onFinished)
   {
     GameObject spellObject = Instantiate(spellPrefab);
-    Vector3 dir = targetPos - spellObject.transform.position;
-    dir.z = 0;
-    dir.Normalize();
-    spellObject.transform.forward = dir;
-    spellObject.transform.Rotate(0.0f, 0.0f, 90.0f);
+    if (alignDir)
+    {
+      Vector3 dir = targetPos - spellObject.transform.position;
+      dir.z = 0;
+      dir.Normalize();
+      spellObject.transform.forward = dir;
+      spellObject.transform.Rotate(0.0f, 0.0f, zRotation);
+    }
+    else
+    {
+      spellObject.transform.localRotation = Quaternion.AngleAxis(zRotation, Vector3.forward);
+    }
+
     StartCoroutine(CastInstantSpellRoutine(spellObject, isPlayer, duration, onFinished));
   }
 
@@ -795,14 +805,14 @@ public class GameController : MonoBehaviour
       onFinished();
   }
 
-  private void CastBuffSpell(GameObject spellPrefab, Vector3 targetPos, float duration, OnSpellAnimationFinished onFinished)
+  private void CastTargetedSpell(GameObject spellPrefab, Vector3 targetPos, float duration, OnSpellAnimationFinished onFinished)
   {
     GameObject spellObject = Instantiate(spellPrefab);
     spellObject.transform.position = targetPos;
-    StartCoroutine(CastBuffSpellRoutine(spellObject, duration, onFinished));
+    StartCoroutine(CastTargetedSpellRoutine(spellObject, duration, onFinished));
   }
 
-  private IEnumerator CastBuffSpellRoutine(GameObject spellObject, float duration, OnSpellAnimationFinished onFinished)
+  private IEnumerator CastTargetedSpellRoutine(GameObject spellObject, float duration, OnSpellAnimationFinished onFinished)
   {
     yield return new WaitForSeconds(duration);
     spellObject.SetActive(false);
@@ -820,7 +830,9 @@ public class GameController : MonoBehaviour
   {
     if (spell.SpellType == Spell.Type.FIREBALL)
     {
-      CastProjectileSpell(fireballPrefab, userCasted ? playerInfo2Pos : playerInfo1Pos, onFinished);
+      CastInstantSpell(meteoritePrefab, userCasted, userCasted ? playerInfo2Pos : playerInfo1Pos,
+                       userCasted ? 80.0f : -80.0f, false, 3.5f, onFinished);
+      //CastProjectileSpell(fireballPrefab, userCasted ? playerInfo2Pos : playerInfo1Pos, onFinished);
     }
     else if (spell.SpellType == Spell.Type.ICE_SPEAR)
     {
@@ -828,33 +840,39 @@ public class GameController : MonoBehaviour
     }
     else if (spell.SpellType == Spell.Type.LIGHTNING)
     {
-      CastInstantSpell(lightningPrefab, userCasted, userCasted ? playerInfo2Pos : playerInfo1Pos, 0.5f, onFinished);
+      CastInstantSpell(lightningPrefab, userCasted, userCasted ? playerInfo2Pos : playerInfo1Pos,
+                       90.0f, true, 0.5f, onFinished);
     }
     else if (spell.SpellType == Spell.Type.NATURE_CALL)
     {
-      CastBuffSpell(natureCallPrefab, userCasted ? playerInfo1Pos : playerInfo2Pos, 2.5f, onFinished);
+      CastTargetedSpell(natureCallPrefab, userCasted ? playerInfo1Pos : playerInfo2Pos, 2.5f, onFinished);
     }
     else if (spell.SpellType == Spell.Type.BLESSING)
     {
       Vector3 offset = new Vector3(0.0f, 10.0f, 0.0f);
-      CastBuffSpell(blessingPrefab, userCasted ? (playerInfo1Pos + offset) : (playerInfo2Pos + offset), 2.5f, onFinished);
+      CastTargetedSpell(blessingPrefab, userCasted ? (playerInfo1Pos + offset) : (playerInfo2Pos + offset), 2.5f, onFinished);
     }
     else if (spell.SpellType == Spell.Type.BLEEDING)
     {
       Vector3 offset = new Vector3(0.0f, 10.0f, 0.0f);
-      CastBuffSpell(bleedingPrefab, userCasted ? (playerInfo2Pos + offset) : (playerInfo1Pos + offset), 2.5f, onFinished);
+      CastTargetedSpell(bleedingPrefab, userCasted ? (playerInfo2Pos + offset) : (playerInfo1Pos + offset), 2.5f, onFinished);
     }
     else if (spell.SpellType == Spell.Type.DEATH_LOOK)
     {
-      CastBuffSpell(blindnessPrefab, userCasted ? playerInfo2Pos : playerInfo1Pos, 2.5f, onFinished);
+      CastTargetedSpell(blindnessPrefab, userCasted ? playerInfo2Pos : playerInfo1Pos, 2.5f, onFinished);
     }
     else if (spell.SpellType == Spell.Type.STONESKIN)
     {
-      CastBuffSpell(stoneskinPrefab, userCasted ? playerInfo1Pos : playerInfo2Pos, 1.5f, onFinished);
+      CastTargetedSpell(stoneskinPrefab, userCasted ? playerInfo1Pos : playerInfo2Pos, 1.5f, onFinished);
     }
     else if (spell.SpellType == Spell.Type.DOPPELGANGER)
     {
-      CastBuffSpell(doppelgangerPrefab, userCasted ? playerInfo1Pos : playerInfo2Pos, 2.5f, onFinished);
+      CastTargetedSpell(doppelgangerPrefab, userCasted ? playerInfo1Pos : playerInfo2Pos, 2.5f, onFinished);
+    }
+    else if (spell.SpellType == Spell.Type.METEORITE)
+    {
+      CastInstantSpell(meteoritePrefab, userCasted, userCasted ? playerInfo2Pos : playerInfo1Pos,
+                       userCasted ? 80.0f : -80.0f, false, 3.5f, onFinished);
     }
     else
     {

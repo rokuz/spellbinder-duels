@@ -31,6 +31,7 @@ public class SpellbookWidget : MonoBehaviour
   public Sprite lightningSprite;
   public Sprite natureCallSprite;
   public Sprite stoneskinSprite;
+  public Sprite meteoriteSprite;
 
   private Spell[] allSpells;
   private GameObject[] spellInfos;
@@ -210,6 +211,8 @@ public class SpellbookWidget : MonoBehaviour
         return this.natureCallSprite;
       case Spell.Type.STONESKIN:
         return this.stoneskinSprite;
+      case Spell.Type.METEORITE:
+        return this.meteoriteSprite;
     }
     return null;
   }

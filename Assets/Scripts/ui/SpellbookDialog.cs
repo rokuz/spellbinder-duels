@@ -32,6 +32,7 @@ public class SpellbookDialog : MonoBehaviour
   public Sprite lightningSprite;
   public Sprite natureCallSprite;
   public Sprite stoneskinSprite;
+  public Sprite meteoriteSprite;
 
   private Spell[] allSpells;
   private GameObject[] spellInfos;
@@ -215,6 +216,8 @@ public class SpellbookDialog : MonoBehaviour
         return this.natureCallSprite;
       case Spell.Type.STONESKIN:
         return this.stoneskinSprite;
+      case Spell.Type.METEORITE:
+        return this.meteoriteSprite;
     }
     return null;
   }
