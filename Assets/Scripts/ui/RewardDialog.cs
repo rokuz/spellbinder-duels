@@ -9,6 +9,7 @@ public class RewardDialog : MonoBehaviour
   public Text rewardText;
   public Image coinsImage;
   public Text coinsText;
+  public Text finishText;
 
   public delegate void OnClose();
   private OnClose onCloseHandler;
@@ -59,6 +60,8 @@ public class RewardDialog : MonoBehaviour
     {
       coinsImage.gameObject.SetActive(false);
     }
+
+    finishText.text = LanguageManager.Instance.GetTextValue("Victory.Finish");
 
     gameObject.SetActive(true);
   }

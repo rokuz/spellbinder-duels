@@ -8,6 +8,8 @@ public class MessageYesNoDialog : MonoBehaviour
   public Text title;
   public Text text;
   public Image splash;
+  public Text yesText;
+  public Text noText;
 
   public delegate void OnClose(bool yes);
   private OnClose onCloseHandler;
@@ -21,6 +23,8 @@ public class MessageYesNoDialog : MonoBehaviour
   {
     title.text = (titleStr.Length == 0) ? LanguageManager.Instance.GetTextValue("Message.Title") : titleStr;
     text.text = message;
+    yesText.text = LanguageManager.Instance.GetTextValue("Message.Yes");
+    noText.text = LanguageManager.Instance.GetTextValue("Message.No");
     this.onCloseHandler = onCloseHandler;
 
     gameObject.SetActive(true);

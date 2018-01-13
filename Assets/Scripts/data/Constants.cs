@@ -20,4 +20,24 @@ public static class Constants
 
   //                                             Level:   1     2     3     4     5     6     7     8     9     10    11    12
   public static float[] OPEN_RANDOM_CARDS = new float[] { 0.3f, 0.3f, 0.3f, 0.3f, 0.2f, 0.2f, 0.2f, 0.1f, 0.1f, 0.1f, 0.0f, 0.0f };
+
+  public static int GetSpellPrice(Spell spell) 
+  {
+    switch (spell.SpellType) 
+    {
+      case Spell.Type.BLEEDING:
+      case Spell.Type.BLESSING:
+      case Spell.Type.DEATH_LOOK:
+      case Spell.Type.DOPPELGANGER:
+      case Spell.Type.FIREBALL:
+      case Spell.Type.ICE_SPEAR:
+      case Spell.Type.LIGHTNING:
+      case Spell.Type.NATURE_CALL:
+      case Spell.Type.STONESKIN:
+        return 0;
+      case Spell.Type.METEORITE:
+        return 100;
+    }
+    return 0;
+  }
 }

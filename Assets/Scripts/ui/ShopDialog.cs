@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +8,7 @@ using SmartLocalization;
 
 public class ShopDialog : MonoBehaviour
 {
+  public Purchaser purchaser;
   public GameObject shopItemPrefab;
   public Image splash;
   public GameObject content;
@@ -15,11 +17,15 @@ public class ShopDialog : MonoBehaviour
 
   public Text title;
 
+  public Text coinsText;
+
   public Sprite spriteRemoveAds;
   public Sprite spriteCoinsSmall;
   public Sprite spriteCoinsMedium;
   public Sprite spriteCoinsBig;
   public Sprite spriteLevelUp;
+
+  public SpellSpritesHolder spellSpritesHolder;
 
   private ShopItem[] items;
   private GameObject[] itemInfos;
@@ -29,15 +35,35 @@ public class ShopDialog : MonoBehaviour
   public delegate void OnClose();
   private OnClose onCloseHandler;
 
-	public void Setup()
+  public delegate void OnRemovedAds();
+  public OnRemovedAds onRemovedAds;
+
+  private static string i18n(string s)
   {
+    return LanguageManager.Instance.GetTextValue(s);
+  }
+
+	private void Setup()
+  {
+    purchaser.onBuy = OnBuyInStore;
+
     var itemsList = new List<ShopItem>();
-    itemsList.Add(new ShopItem(ShopItemType.REMOVE_ADS, "Remove Ads", "We will remove ads completely", "store-id"));
-    itemsList.Add(new ShopItem(ShopItemType.COINS_PACK1, "Small bag of coins", "100 coins", "store-id", 100));
-    itemsList.Add(new ShopItem(ShopItemType.COINS_PACK2, "Medium bag of coins", "500 coins", "store-id", 500));
-    itemsList.Add(new ShopItem(ShopItemType.COINS_PACK3, "Big bag of coins", "1000 coins", "store-id", 1000));
+    if (!Persistence.gameConfig.removedAds)
+      itemsList.Add(new ShopItem(ShopItemType.REMOVE_ADS, i18n("Shop.RemoveAds"), i18n("Shop.RemoveAds.Desc"), Purchaser.kProductIDRemoveAds));
+    itemsList.Add(new ShopItem(ShopItemType.COINS_PACK1, i18n("Shop.SmallBag"), i18n("Shop.SmallBag.Desc"), Purchaser.kProductIDCoinsPack1, 200));
+    itemsList.Add(new ShopItem(ShopItemType.COINS_PACK2, i18n("Shop.MediumBag"), i18n("Shop.MediumBag.Desc"), Purchaser.kProductIDCoinsPack2, 500));
+    itemsList.Add(new ShopItem(ShopItemType.COINS_PACK3, i18n("Shop.BigBag"), i18n("Shop.BigBag.Desc"), Purchaser.kProductIDCoinsPack3, 1000));
     if (this.profileData.level < Constants.MAX_LEVEL)
-      itemsList.Add(new ShopItem(ShopItemType.LEVEL_UP, "Level up", "Increase your level immediately", 1, 100));
+      itemsList.Add(new ShopItem(ShopItemType.LEVEL_UP, i18n("Shop.LevelUp"), i18n("Shop.LevelUp.Desc"), 1, 100));
+
+    var allSpells = (from s in Spellbook.Spells where !Array.Exists(this.profileData.spells, x => x == s.Code) select s)
+                     .OrderBy(x => x.minLevel).ThenBy(x => x.Combination[0]).ThenBy(x => x.Combination[1]).ToArray();
+    foreach (Spell s in allSpells)
+    {
+      string spellName = i18n("Shop.Spell") + " \"" + i18n("Spell." + s.SpellType)+ "\"";
+      string spellDesc = UIUtils.GetShopSpellDescription(this.profileData, s);
+      itemsList.Add(new ShopItem(ShopItemType.SPELL, spellName, spellDesc, Constants.GetSpellPrice(s), s));
+    }
 
     items = itemsList.ToArray();
 
@@ -61,7 +87,7 @@ public class ShopDialog : MonoBehaviour
       itemInfos[i] = profileInfo;
 
       var img = (from t in profileInfo.GetComponentsInChildren<Image>() where t.gameObject.name == "ItemImage" select t).Single();
-      img.sprite = GetSprite(items[i].type);
+      img.sprite = GetSprite(items[i]);
 
       Text title = (from t in profileInfo.GetComponentsInChildren<Text>() where t.gameObject.name == "Name" select t).Single();
       title.text = items[i].title;
@@ -76,7 +102,7 @@ public class ShopDialog : MonoBehaviour
         coinImg.gameObject.SetActive(false);
         var tr = priceText.GetComponent<RectTransform>();
         tr.anchoredPosition = new Vector2(tr.anchoredPosition.x - 15.0f, tr.anchoredPosition.y);
-        priceText.text = "$0.99"; //TODO
+        priceText.text = purchaser.GetPrice(items[i].storePriceId);
       }
       else
       {
@@ -89,7 +115,9 @@ public class ShopDialog : MonoBehaviour
 		}
 		height += kSpacing;
     content.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
-    this.title.text = LanguageManager.Instance.GetTextValue("MainMenu.Shop");
+    this.title.text = i18n("MainMenu.Shop");
+
+    UpdateCoins();
 	}
 
   public void Update()
@@ -102,30 +130,46 @@ public class ShopDialog : MonoBehaviour
     return gameObject.activeSelf;
   }
 
-  public void Open(ProfileData profileData, OnClose onCloseHandler)
+  public void Open(ProfileData profileData, Spell selectedSpell, OnClose onCloseHandler)
   {
     this.profileData = profileData;
     this.onCloseHandler = onCloseHandler;
     Setup();
 
-    /*ScrollRect scroll = gameObject.GetComponentInChildren<ScrollRect>();
-    Vector3[] corners = new Vector3[4];
-    content.GetComponent<RectTransform>().GetWorldCorners(corners);
-    float ymax = 0.0f;
-    for (int i = 0; i < corners.Length; i++)
+    if (selectedSpell != null)
     {
-      if (corners[i].y > ymax)
-        ymax = corners[i].y;
-    }
+      int selectedIndex = -1;
+      for (int i = 0; i < items.Length; i++)
+      {
+        if (items[i].spell != null && items[i].spell.Code == selectedSpell.Code)
+        {
+          selectedIndex = i;
+          break;
+        }
+      }
 
-    for (float pos = 0.0f; pos < 1.0f; pos += 0.01f)
-    {
-      var rt = profileInfos[playerIndex].GetComponent<RectTransform>();
-      var p = rt.position.y + rt.rect.height * 0.5f;
-      scroll.verticalNormalizedPosition = 1.0f - pos;
-      if (p >= ymax)
-        break;
-    }*/
+      if (selectedIndex >= 0)
+      {
+        ScrollRect scroll = gameObject.GetComponentInChildren<ScrollRect>();
+        Vector3[] corners = new Vector3[4];
+        content.GetComponent<RectTransform>().GetWorldCorners(corners);
+        float ymax = 0.0f;
+        for (int i = 0; i < corners.Length; i++)
+        {
+          if (corners[i].y > ymax)
+            ymax = corners[i].y;
+        }
+
+        for (float pos = 0.0f; pos < 1.0f; pos += 0.01f)
+        {
+          var rt = itemInfos[selectedIndex].GetComponent<RectTransform>();
+          var p = rt.position.y + rt.rect.height * 0.5f;
+          scroll.verticalNormalizedPosition = 1.0f - pos;
+          if (p >= ymax)
+            break;
+        }
+      }
+    }
 
     gameObject.SetActive(true);
     if (splash != null && !splash.IsActive())
@@ -145,8 +189,8 @@ public class ShopDialog : MonoBehaviour
 
   public void OnBuy(int index)
   {
-    string s = LanguageManager.Instance.GetTextValue("Shop.BuyCheck") + " \"" + items[index].title + "\"?";
-    messageYesNoDialog.Open(LanguageManager.Instance.GetTextValue("Shop.BuyMessage"), s, (bool yes) =>
+    string s = i18n("Shop.BuyCheck") + " \"" + items[index].title + "\"?";
+    messageYesNoDialog.Open(i18n("Shop.BuyMessage"), s, (bool yes) =>
     {
       if (yes)
         this.Buy(items[index]);
@@ -157,14 +201,13 @@ public class ShopDialog : MonoBehaviour
   {
     if (item.storePriceId.Length != 0)
     {
-      // TODO: Buy in store.
+      purchaser.Buy(item.storePriceId);
     }
     else
     {
       if (this.profileData.coins < item.coinsCount)
       {
-        messageDialog.Open(LanguageManager.Instance.GetTextValue("Shop.BuyMessage"),
-          LanguageManager.Instance.GetTextValue("Shop.NotEnoughCoins"), null);
+        messageDialog.Open(i18n("Shop.BuyMessage"), i18n("Shop.NotEnoughCoins"), null);
       }
       else
       {
@@ -175,9 +218,53 @@ public class ShopDialog : MonoBehaviour
           if (this.profileData.level == Constants.MAX_LEVEL)
             Setup();
         }
+        else if (item.type == ShopItemType.SPELL)
+        {
+          this.profileData.coins -= item.coinsCount;
+          var lst = this.profileData.spells.ToList();
+          lst.Add(item.spell.Code);
+          this.profileData.spells = lst.ToArray();
+          Setup();
+        }
         Persistence.Save();
       }
     }
+    UpdateCoins();
+  }
+
+  private void OnBuyInStore(string productId, bool success)
+  {
+    var item = FindItemByProductId(productId);
+    if (!success || item == null)
+    {
+      messageDialog.Open(i18n("Shop.Error"), i18n("Shop.StoreFailure"), null);
+      return;
+    }
+
+    if (item.type == ShopItemType.REMOVE_ADS)
+    {
+      Persistence.gameConfig.removedAds = true;
+      Setup();
+      Persistence.Save();
+      if (onRemovedAds != null)
+        onRemovedAds();
+    }
+    else if (item.type == ShopItemType.COINS_PACK1 || item.type == ShopItemType.COINS_PACK2 ||
+             item.type == ShopItemType.COINS_PACK3)
+    {
+      this.profileData.coins += item.coinsCount;
+      Persistence.Save();
+    }
+  }
+
+  private ShopItem FindItemByProductId(string productId)
+  {
+    foreach (ShopItem i in items)
+    {
+      if (i.storePriceId == productId)
+        return i;
+    }
+    return null;
   }
 
   private void CloseIfClickedOutside(GameObject panel)
@@ -189,16 +276,22 @@ public class ShopDialog : MonoBehaviour
     }
   }
 
-  private Sprite GetSprite(ShopItemType itemType)
+  private Sprite GetSprite(ShopItem item)
   {
-    switch (itemType)
+    switch (item.type)
     {
       case ShopItemType.REMOVE_ADS: return spriteRemoveAds;
       case ShopItemType.COINS_PACK1: return spriteCoinsSmall;
       case ShopItemType.COINS_PACK2: return spriteCoinsMedium;
       case ShopItemType.COINS_PACK3: return spriteCoinsBig;
       case ShopItemType.LEVEL_UP: return spriteLevelUp;
+      case ShopItemType.SPELL: return spellSpritesHolder.GetSprite(item.spell);
     }
     return null;
+  }
+
+  private void UpdateCoins()
+  {
+    coinsText.text = "" + this.profileData.coins;
   }
 }

@@ -137,6 +137,12 @@
 	<data name="Char.WRB" xml:space="preserve">
 		<value />
 	</data>
+	<data name="Defeat.Leave" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Defeat.Replay" xml:space="preserve">
+		<value />
+	</data>
 	<data name="Game.FinishTurn" xml:space="preserve">
 		<value />
 	</data>
@@ -215,6 +221,9 @@
 	<data name="Message.Lose" xml:space="preserve">
 		<value />
 	</data>
+	<data name="Message.No" xml:space="preserve">
+		<value />
+	</data>
 	<data name="Message.OpponentDisconnected" xml:space="preserve">
 		<value />
 	</data>
@@ -231,6 +240,9 @@
 		<value />
 	</data>
 	<data name="Message.Win" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Message.Yes" xml:space="preserve">
 		<value />
 	</data>
 	<data name="Message.YouSurrender" xml:space="preserve">
@@ -302,10 +314,52 @@
 	<data name="Settings.Title" xml:space="preserve">
 		<value />
 	</data>
+	<data name="Shop.BigBag" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Shop.BigBag.Desc" xml:space="preserve">
+		<value />
+	</data>
 	<data name="Shop.BuyCheck" xml:space="preserve">
 		<value />
 	</data>
 	<data name="Shop.BuyMessage" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Shop.LevelUp" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Shop.LevelUp.Desc" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Shop.MediumBag" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Shop.MediumBag.Desc" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Shop.NotEnoughCoins" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Shop.RemoveAds" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Shop.RemoveAds.Desc" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Shop.RequiredLevel" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Shop.SmallBag" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Shop.SmallBag.Desc" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Shop.Spell" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Shop.StoreFailure" xml:space="preserve">
 		<value />
 	</data>
 	<data name="Spell.BLEEDING" xml:space="preserve">
@@ -342,6 +396,9 @@
 		<value />
 	</data>
 	<data name="Spell.INVISIBLE_FIRE" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Spell.Learn" xml:space="preserve">
 		<value />
 	</data>
 	<data name="Spell.LIGHTNING" xml:space="preserve">
@@ -470,7 +527,10 @@
 	<data name="Temp.Tournament" xml:space="preserve">
 		<value />
 	</data>
-	<data name="Shop.NotEnoughCoins" xml:space="preserve">
+	<data name="Victory.Finish" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Message.Error" xml:space="preserve">
 		<value />
 	</data>
 </root>

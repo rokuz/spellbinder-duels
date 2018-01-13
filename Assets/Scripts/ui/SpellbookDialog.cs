@@ -13,26 +13,9 @@ public class SpellbookDialog : MonoBehaviour
 
   public Text title;
 
-  public Sprite fireIconSprite;
-  public Sprite waterIconSprite;
-  public Sprite airIconSprite;
-  public Sprite earthIconSprite;
-  public Sprite natureIconSprite;
-  public Sprite lightIconSprite;
-  public Sprite darknessIconSprite;
-  public Sprite bloodIconSprite;
-  public Sprite illusionIconSprite;
+  public SpellSpritesHolder spellSpritesHolder;
 
-  public Sprite bleedingSprite;
-  public Sprite blessingSprite;
-  public Sprite deathLookSprite;
-  public Sprite doppelgangerSprite;
-  public Sprite fireballSprite;
-  public Sprite iceSpearSprite;
-  public Sprite lightningSprite;
-  public Sprite natureCallSprite;
-  public Sprite stoneskinSprite;
-  public Sprite meteoriteSprite;
+  public ShopDialog shopDialog;
 
   private Spell[] allSpells;
   private GameObject[] spellInfos;
@@ -68,7 +51,7 @@ public class SpellbookDialog : MonoBehaviour
       spellInfos[i] = spellInfo;
 
       var spellIcon = (from t in spellInfo.GetComponentsInChildren<Image>() where t.gameObject.name == "Spell" select t).Single();
-      spellIcon.sprite = GetSprite(allSpells[i]);
+      spellIcon.sprite = spellSpritesHolder.GetSprite(allSpells[i]);
 
 			Text title = (from t in spellInfo.GetComponentsInChildren<Text>() where t.gameObject.name == "SpellTitle" select t).Single();
       string spellName = LanguageManager.Instance.GetTextValue("Spell." + allSpells[i].SpellType);
@@ -90,21 +73,21 @@ public class SpellbookDialog : MonoBehaviour
         obj.gameObject.SetActive(false);
 
         var sr1 = (from t in spellInfo.GetComponentsInChildren<Image>() where t.gameObject.name == "IconImage2" select t).Single();
-        sr1.sprite = GetSprite(allSpells[i].Combination[0]);
+        sr1.sprite = spellSpritesHolder.GetSprite(allSpells[i].Combination[0]);
 
         var sr2 = (from t in spellInfo.GetComponentsInChildren<Image>() where t.gameObject.name == "IconImage3" select t).Single();
-        sr2.sprite = GetSprite(allSpells[i].Combination[1]);
+        sr2.sprite = spellSpritesHolder.GetSprite(allSpells[i].Combination[1]);
       }
       else if (allSpells[i].Combination.Length == 3)
       {
         var sr1 = (from t in spellInfo.GetComponentsInChildren<Image>() where t.gameObject.name == "IconImage1" select t).Single();
-        sr1.sprite = GetSprite(allSpells[i].Combination[0]);
+        sr1.sprite = spellSpritesHolder.GetSprite(allSpells[i].Combination[0]);
 
         var sr2 = (from t in spellInfo.GetComponentsInChildren<Image>() where t.gameObject.name == "IconImage2" select t).Single();
-        sr2.sprite = GetSprite(allSpells[i].Combination[1]);
+        sr2.sprite = spellSpritesHolder.GetSprite(allSpells[i].Combination[1]);
 
         var sr3 = (from t in spellInfo.GetComponentsInChildren<Image>() where t.gameObject.name == "IconImage3" select t).Single();
-        sr3.sprite = GetSprite(allSpells[i].Combination[2]);
+        sr3.sprite = spellSpritesHolder.GetSprite(allSpells[i].Combination[2]);
       }
       else
       {
@@ -129,16 +112,8 @@ public class SpellbookDialog : MonoBehaviour
   public void Open(ProfileData profileData, OnClose onCloseHandler)
   {
     this.profileData = profileData;
-    if (this.profileData != null)
-    {
-      for (int i = 0; i < allSpells.Length; i++)
-      {
-        bool hasSpell = ((from s in this.profileData.spells where s == allSpells[i].Code select s).Count() > 0);
-        var lockImage = (from t in spellInfos[i].GetComponentsInChildren<Image>(true) where t.gameObject.name == "Lock" select t).Single();
-        lockImage.gameObject.SetActive(!hasSpell);
-      }
-    }
     this.onCloseHandler = onCloseHandler;
+    UpdateUserSpells();
 
     ScrollRect scroll = gameObject.GetComponentInChildren<ScrollRect>();
     scroll.verticalNormalizedPosition = 1.0f;
@@ -161,64 +136,32 @@ public class SpellbookDialog : MonoBehaviour
 
   private void CloseIfClickedOutside(GameObject panel)
   {
-    if (Input.GetMouseButtonDown(0) && panel.activeSelf &&
+    if (Input.GetMouseButtonDown(0) && panel.activeSelf && !shopDialog.IsOpened() &&
         !RectTransformUtility.RectangleContainsScreenPoint(panel.GetComponent<RectTransform>(), Input.mousePosition, null))
     {
       Close();
     }
   }
 
-  private Sprite GetSprite(Magic magic) 
+  private void UpdateUserSpells()
   {
-    switch (magic) 
+    if (this.profileData != null)
     {
-      case Magic.FIRE:
-        return this.fireIconSprite;
-      case Magic.WATER:
-        return this.waterIconSprite;
-      case Magic.AIR:
-        return this.airIconSprite;
-      case Magic.EARTH:
-        return this.earthIconSprite;
-      case Magic.NATURE:
-        return this.natureIconSprite;
-      case Magic.LIGHT:
-        return this.lightIconSprite;
-      case Magic.DARKNESS:
-        return this.darknessIconSprite;
-      case Magic.BLOOD:
-        return this.bloodIconSprite;
-      case Magic.ILLUSION:
-        return this.illusionIconSprite;
+      for (int i = 0; i < allSpells.Length; i++)
+      {
+        bool hasSpell = ((from s in this.profileData.spells where s == allSpells[i].Code select s).Count() > 0);
+        var buyButton = (from t in spellInfos[i].GetComponentsInChildren<Button>(true) where t.gameObject.name == "BuyButton" select t).Single();
+        var buyButtonText = (from t in buyButton.GetComponentsInChildren<Text>(true) where t.gameObject.name == "Text" select t).Single();
+        buyButtonText.text = LanguageManager.Instance.GetTextValue("Spell.Learn");
+        buyButton.gameObject.SetActive(!hasSpell);
+        Spell sp = allSpells[i];
+        buyButton.onClick.AddListener(() => { this.OnBuy(sp); });
+      }
     }
-    return null;
   }
 
-  private Sprite GetSprite(Spell spell) 
+  private void OnBuy(Spell spell)
   {
-    switch (spell.SpellType) 
-    {
-      case Spell.Type.BLEEDING:
-        return this.bleedingSprite;
-      case Spell.Type.BLESSING:
-        return this.blessingSprite;
-      case Spell.Type.DEATH_LOOK:
-        return this.deathLookSprite;
-      case Spell.Type.DOPPELGANGER:
-        return this.doppelgangerSprite;
-      case Spell.Type.FIREBALL:
-        return this.fireballSprite;
-      case Spell.Type.ICE_SPEAR:
-        return this.iceSpearSprite;
-      case Spell.Type.LIGHTNING:
-        return this.lightningSprite;
-      case Spell.Type.NATURE_CALL:
-        return this.natureCallSprite;
-      case Spell.Type.STONESKIN:
-        return this.stoneskinSprite;
-      case Spell.Type.METEORITE:
-        return this.meteoriteSprite;
-    }
-    return null;
+    shopDialog.Open(Persistence.gameConfig.profile, spell, () => { UpdateUserSpells(); });
   }
 }

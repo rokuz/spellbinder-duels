@@ -1,9 +1,13 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Analytics;
+using UnityEngine.Advertisements;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using SmartLocalization;
+using GoogleMobileAds;
+using GoogleMobileAds.Api;
 
 public class MainMenuController : MonoBehaviour
 {
@@ -24,6 +28,8 @@ public class MainMenuController : MonoBehaviour
   public Button leaderboardButton;
   public Text subtitleText;
 
+  private BannerView bannerView;
+
 	public void Start()
   {
     SmartCultureInfo systemLanguage = LanguageManager.Instance.GetDeviceCultureIfSupported();
@@ -32,6 +38,10 @@ public class MainMenuController : MonoBehaviour
 
     Application.runInBackground = true;
     Persistence.Load();
+
+    InitializeAds();
+
+    GetComponent<AudioSource>().volume = Persistence.gameConfig.musicVolume;
 
     #if !UNITY_EDITOR
     if (Persistence.gameConfig.profile != null && Persistence.gameConfig.profile.facebookId.Length != 0)
@@ -54,6 +64,10 @@ public class MainMenuController : MonoBehaviour
     settingsDialog.Setup();
     characterDialog.Setup();
     spellbookDialog.Setup();
+
+    shopDialog.onRemovedAds = () => {
+      DestroyBanner();
+    };
 
     InitProfile();
 	}
@@ -96,7 +110,11 @@ public class MainMenuController : MonoBehaviour
   public void OnShopButtonClicked()
   {
     this.shopButton.interactable = false;
-    shopDialog.Open(Persistence.gameConfig.profile, () => { this.shopButton.interactable = true; UpdatePlayerUI(); });
+    shopDialog.Open(Persistence.gameConfig.profile, null, () =>
+    {
+      this.shopButton.interactable = true;
+      UpdatePlayerUI();
+    });
   }
 
   public void OnPlayerInfoClicked()
@@ -140,5 +158,40 @@ public class MainMenuController : MonoBehaviour
     leaderboardDialog.Setup();
 
     this.shopButton.interactable = true;
+  }
+
+  private void InitializeAds()
+  {
+    #if UNITY_ANDROID
+      string adUnitId = "ca-app-pub-8904882368983998/8500008022";
+      string appId = "ca-app-pub-8904882368983998~7590428642";
+      string gameId = "1590383";
+    #elif UNITY_IPHONE
+      string adUnitId = "ca-app-pub-8904882368983998/3926338199";
+      string appId = "ca-app-pub-8904882368983998~2864537965";
+      string gameId = "1590384";
+    #else
+      string adUnitId = "unexpected_platform";
+      string appId = "unexpected_platform";
+      string gameId = "unexpected_platform";
+    #endif
+
+    MobileAds.Initialize(appId);
+
+    if (Advertisement.isSupported)
+      Advertisement.Initialize(gameId, false);
+
+    if (!Persistence.gameConfig.removedAds && bannerView != null)
+    {
+      bannerView = new BannerView(adUnitId, AdSize.Banner, 0, 0);
+      AdRequest request = new AdRequest.Builder().Build();
+      bannerView.LoadAd(request);
+    }
+  }
+
+  private void DestroyBanner()
+  {
+    if (bannerView != null)
+      bannerView.Destroy();
   }
 }

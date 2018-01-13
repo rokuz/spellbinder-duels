@@ -53,4 +53,15 @@ class ShopItem
     this.levelsUp = levelsUp;
     this.spell = null;
   }
+
+  public ShopItem(ShopItemType type, string title, string description, int coinsCount, Spell spell)
+  {
+    this.type = type;
+    this.title = title;
+    this.description = description;
+    this.storePriceId = "";
+    this.coinsCount = coinsCount;
+    this.levelsUp = 0;
+    this.spell = spell;
+  }
 }

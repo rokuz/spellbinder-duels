@@ -137,6 +137,12 @@
 	<data name="Char.WRB" xml:space="preserve">
 		<value>Сопротивление магии воды</value>
 	</data>
+	<data name="Defeat.Leave" xml:space="preserve">
+		<value>Выйти</value>
+	</data>
+	<data name="Defeat.Replay" xml:space="preserve">
+		<value>Переиграть</value>
+	</data>
 	<data name="Game.FinishTurn" xml:space="preserve">
 		<value>Завершить ход</value>
 	</data>
@@ -212,8 +218,14 @@
 	<data name="Message.ConnectionLost" xml:space="preserve">
 		<value>Сетевое соединение потеряно</value>
 	</data>
+	<data name="Message.Error" xml:space="preserve">
+		<value>Ошибка</value>
+	</data>
 	<data name="Message.Lose" xml:space="preserve">
 		<value>Вы проиграли</value>
+	</data>
+	<data name="Message.No" xml:space="preserve">
+		<value>Нет</value>
 	</data>
 	<data name="Message.OpponentDisconnected" xml:space="preserve">
 		<value>Противник вышел из игры</value>
@@ -232,6 +244,9 @@
 	</data>
 	<data name="Message.Win" xml:space="preserve">
 		<value>Победа</value>
+	</data>
+	<data name="Message.Yes" xml:space="preserve">
+		<value>Да</value>
 	</data>
 	<data name="Message.YouSurrender" xml:space="preserve">
 		<value>Вы признали поражение</value>
@@ -302,14 +317,53 @@
 	<data name="Settings.Title" xml:space="preserve">
 		<value>Настройки</value>
 	</data>
+	<data name="Shop.BigBag" xml:space="preserve">
+		<value>Большая сумка монет</value>
+	</data>
+	<data name="Shop.BigBag.Desc" xml:space="preserve">
+		<value>1000 монет</value>
+	</data>
 	<data name="Shop.BuyCheck" xml:space="preserve">
 		<value>Вы уверены, что хотите купить</value>
 	</data>
 	<data name="Shop.BuyMessage" xml:space="preserve">
 		<value>Покупка</value>
 	</data>
+	<data name="Shop.LevelUp" xml:space="preserve">
+		<value>Повышение уровня</value>
+	</data>
+	<data name="Shop.LevelUp.Desc" xml:space="preserve">
+		<value>Мгновенное повышение вашего уровеня на 1</value>
+	</data>
+	<data name="Shop.MediumBag" xml:space="preserve">
+		<value>Средняя сумка монет</value>
+	</data>
+	<data name="Shop.MediumBag.Desc" xml:space="preserve">
+		<value>500 монет</value>
+	</data>
 	<data name="Shop.NotEnoughCoins" xml:space="preserve">
 		<value>Недостаточно монет для покупки</value>
+	</data>
+	<data name="Shop.RemoveAds" xml:space="preserve">
+		<value>Удаление рекламы</value>
+	</data>
+	<data name="Shop.RemoveAds.Desc" xml:space="preserve">
+		<value>Полностью удаляет рекламу из игры</value>
+	</data>
+	<data name="Shop.RequiredLevel" xml:space="preserve">
+		<value>Требуемый уровень:</value>
+	</data>
+	<data name="Shop.SmallBag" xml:space="preserve">
+		<value>Малая сумка монет</value>
+	</data>
+	<data name="Shop.SmallBag.Desc" xml:space="preserve">
+		<value>200 монет</value>
+	</data>
+	<data name="Shop.Spell" xml:space="preserve">
+		<value>Заклинание</value>
+	</data>
+	<data name="Shop.StoreFailure" xml:space="preserve">
+		<value>Покупка была отклонена</value>
 	</data>
 	<data name="Spell.BLEEDING" xml:space="preserve">
 		<value>Кровотечение</value>
@@ -346,6 +400,9 @@
 	</data>
 	<data name="Spell.INVISIBLE_FIRE" xml:space="preserve">
 		<value>Невидимый огонь</value>
+	</data>
+	<data name="Spell.Learn" xml:space="preserve">
+		<value>Выучить</value>
 	</data>
 	<data name="Spell.LIGHTNING" xml:space="preserve">
 		<value>Молния</value>
@@ -468,9 +525,12 @@
 		<value>Снимает защиту с противника</value>
 	</data>
 	<data name="Temp.Shop" xml:space="preserve">
-		<value>Магазин временно недоступен</value>
+		<value />
 	</data>
 	<data name="Temp.Tournament" xml:space="preserve">
 		<value>Турнир временно недоступен</value>
+	</data>
+	<data name="Victory.Finish" xml:space="preserve">
+		<value>Выйти</value>
 	</data>
 </root>

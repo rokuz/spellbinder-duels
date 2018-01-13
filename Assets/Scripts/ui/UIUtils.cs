@@ -85,6 +85,21 @@ public static class UIUtils
 		return builder.ToString();
 	}
 
+  public static string GetShopSpellDescription(ProfileData profile, Spell spellObject)
+  {
+    StringBuilder builder = new StringBuilder();
+    if (profile.level < spellObject.minLevel)
+      builder.Append("<color=red>");
+    builder.Append(i18n("Shop.RequiredLevel"));
+    builder.Append(" ");
+    builder.Append(spellObject.minLevel);
+    if (profile.level < spellObject.minLevel)
+      builder.Append("</color>");
+    builder.Append("\n\n");
+    builder.Append(GetSpellDescription(spellObject));
+    return builder.ToString();
+  }
+
   private static string i18n(string s)
   {
     return LanguageManager.Instance.GetTextValue(s);

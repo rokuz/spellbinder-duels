@@ -137,6 +137,12 @@
 	<data name="Char.WRB" xml:space="preserve">
 		<value>Water resistance bonus</value>
 	</data>
+	<data name="Defeat.Leave" xml:space="preserve">
+		<value>Leave</value>
+	</data>
+	<data name="Defeat.Replay" xml:space="preserve">
+		<value>Replay</value>
+	</data>
 	<data name="Game.FinishTurn" xml:space="preserve">
 		<value>Finish turn</value>
 	</data>
@@ -212,8 +218,14 @@
 	<data name="Message.ConnectionLost" xml:space="preserve">
 		<value>The connection was lost</value>
 	</data>
+	<data name="Message.Error" xml:space="preserve">
+		<value>Error</value>
+	</data>
 	<data name="Message.Lose" xml:space="preserve">
 		<value>Opponent wins</value>
+	</data>
+	<data name="Message.No" xml:space="preserve">
+		<value>No</value>
 	</data>
 	<data name="Message.OpponentDisconnected" xml:space="preserve">
 		<value>Opponent disconnected</value>
@@ -232,6 +244,9 @@
 	</data>
 	<data name="Message.Win" xml:space="preserve">
 		<value>Victory</value>
+	</data>
+	<data name="Message.Yes" xml:space="preserve">
+		<value>Yes</value>
 	</data>
 	<data name="Message.YouSurrender" xml:space="preserve">
 		<value>You surrender</value>
@@ -302,14 +317,53 @@
 	<data name="Settings.Title" xml:space="preserve">
 		<value>Settings</value>
 	</data>
+	<data name="Shop.BigBag" xml:space="preserve">
+		<value>Big bag of coins</value>
+	</data>
+	<data name="Shop.BigBag.Desc" xml:space="preserve">
+		<value>1000 coins</value>
+	</data>
 	<data name="Shop.BuyCheck" xml:space="preserve">
 		<value>Would you like to buy</value>
 	</data>
 	<data name="Shop.BuyMessage" xml:space="preserve">
 		<value>Buy</value>
 	</data>
+	<data name="Shop.LevelUp" xml:space="preserve">
+		<value>Level up</value>
+	</data>
+	<data name="Shop.LevelUp.Desc" xml:space="preserve">
+		<value>Increase your level immediately</value>
+	</data>
+	<data name="Shop.MediumBag" xml:space="preserve">
+		<value>Medium bag of coins</value>
+	</data>
+	<data name="Shop.MediumBag.Desc" xml:space="preserve">
+		<value>500 coins</value>
+	</data>
 	<data name="Shop.NotEnoughCoins" xml:space="preserve">
 		<value>Not enough coins for the purchase</value>
+	</data>
+	<data name="Shop.RemoveAds" xml:space="preserve">
+		<value>Remove Ads</value>
+	</data>
+	<data name="Shop.RemoveAds.Desc" xml:space="preserve">
+		<value>Remove ads from the game completely</value>
+	</data>
+	<data name="Shop.RequiredLevel" xml:space="preserve">
+		<value>Required level:</value>
+	</data>
+	<data name="Shop.SmallBag" xml:space="preserve">
+		<value>Small bag of coins</value>
+	</data>
+	<data name="Shop.SmallBag.Desc" xml:space="preserve">
+		<value>200 coins</value>
+	</data>
+	<data name="Shop.Spell" xml:space="preserve">
+		<value>Spell</value>
+	</data>
+	<data name="Shop.StoreFailure" xml:space="preserve">
+		<value>Purchase was rejected by the store</value>
 	</data>
 	<data name="Spell.BLEEDING" xml:space="preserve">
 		<value>Bleeding</value>
@@ -346,6 +400,9 @@
 	</data>
 	<data name="Spell.INVISIBLE_FIRE" xml:space="preserve">
 		<value>Invisible fire</value>
+	</data>
+	<data name="Spell.Learn" xml:space="preserve">
+		<value>Learn</value>
 	</data>
 	<data name="Spell.LIGHTNING" xml:space="preserve">
 		<value>Lightning</value>
@@ -468,9 +525,12 @@
 		<value>Resets opponent's defense</value>
 	</data>
 	<data name="Temp.Shop" xml:space="preserve">
-		<value>Shop will be available soon</value>
+		<value />
 	</data>
 	<data name="Temp.Tournament" xml:space="preserve">
 		<value>Tournament will be available soon</value>
+	</data>
+	<data name="Victory.Finish" xml:space="preserve">
+		<value>Finish</value>
 	</data>
 </root>

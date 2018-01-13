@@ -17,6 +17,8 @@ public class MatchingDialog : MonoBehaviour
   public GameObject opponent;
   public Text versusText;
 
+  public AudioSource backgroundMusic;
+
   public delegate void OnClose();
   private OnClose onCloseHandler;
 
@@ -111,6 +113,7 @@ public class MatchingDialog : MonoBehaviour
 
   private IEnumerator LoadLevelDeferred()
   {
+    StartCoroutine(AudioFadeOut.FadeOut(backgroundMusic, 2.0f));
     yield return new WaitForSeconds(3.0f);
     SceneManager.LoadScene("CoreGame");
   }

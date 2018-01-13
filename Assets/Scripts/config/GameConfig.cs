@@ -10,13 +10,15 @@ public class GameConfig
   public float sfxVolume;
   public List<ProfileData> rivals = new List<ProfileData>();
   public bool showSpellbookWidget;
+  public bool removedAds;
 
   public GameConfig()
   {
     this.profile = null;
-    this.musicVolume = 1.0f;
-    this.sfxVolume = 1.0f;
+    this.musicVolume = 0.25f;
+    this.sfxVolume = 0.25f;
     this.showSpellbookWidget = true;
+    this.removedAds = false;
 
     string[] names = new string[]{ "Corvin", "Rosa", "Melissa", "Christian", "Zed",
                                    "Olivia", "Alatel", "Desmond", "Servin", "Olaf",

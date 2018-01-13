@@ -17,6 +17,8 @@ public class SettingsDialog : MonoBehaviour
   public SetNameDialog setNameDialog;
   public Text playerName;
 
+  public AudioSource musicSource;
+
   public delegate void OnClose();
   private OnClose onCloseHandler;
 
@@ -97,8 +99,8 @@ public class SettingsDialog : MonoBehaviour
     });
   }
 
-  /*public void OnFacebookLoginClicked()
+  public void OnChangedMusicVolume()
   {
-
-   }*/
+    musicSource.volume = volumeSlider.value;
+  }
 }

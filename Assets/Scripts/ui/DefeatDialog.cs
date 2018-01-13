@@ -7,6 +7,9 @@ public class DefeatDialog : MonoBehaviour
 {
   public Text messageText;
 
+  public Text leaveText;
+  public Text replayText;
+
   public delegate void OnAction();
   private OnAction onCloseHandler;
   private OnAction onReplayHandler;
@@ -16,6 +19,9 @@ public class DefeatDialog : MonoBehaviour
     messageText.text = message;
     this.onCloseHandler = onCloseHandler;
     this.onReplayHandler = onReplayHandler;
+
+    leaveText.text = LanguageManager.Instance.GetTextValue("Defeat.Leave");
+    replayText.text = LanguageManager.Instance.GetTextValue("Defeat.Replay");
 
     gameObject.SetActive(true);
   }

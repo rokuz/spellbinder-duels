@@ -1,11 +1,14 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.Advertisements;
 using System.Collections;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using SmartLocalization;
+using GoogleMobileAds;
+using GoogleMobileAds.Api;
 
 public class GameController : MonoBehaviour
 {
@@ -116,6 +119,8 @@ public class GameController : MonoBehaviour
 
   private Bot bot;
 
+  private BannerView bannerView;
+
   void Start()
   {
     SmartCultureInfo systemLanguage = LanguageManager.Instance.GetDeviceCultureIfSupported();
@@ -123,6 +128,22 @@ public class GameController : MonoBehaviour
       LanguageManager.Instance.ChangeLanguage(systemLanguage);
 
     Persistence.Load();
+
+    if (!Persistence.gameConfig.removedAds)
+    {
+    #if UNITY_ANDROID
+      string adUnitId = "ca-app-pub-8904882368983998/5568213619";
+    #elif UNITY_IPHONE
+      string adUnitId = "ca-app-pub-8904882368983998/9567168370";
+    #else
+      string adUnitId = "unexpected_platform";
+    #endif
+      bannerView = new BannerView(adUnitId, AdSize.Banner, 0, 0);
+      AdRequest request = new AdRequest.Builder().Build();
+      bannerView.LoadAd(request);
+    }
+
+    GetComponent<AudioSource>().volume = Persistence.gameConfig.musicVolume;
 
     Spellbook.Init();
 
@@ -931,13 +952,49 @@ public class GameController : MonoBehaviour
 
   private void BackToMainMenu()
   {
+    StartCoroutine(BackToMainMenuRoutine());
+  }
+
+  private IEnumerator BackToMainMenuRoutine()
+  {
+    StartCoroutine(AudioFadeOut.FadeOut(GetComponent<AudioSource>(), 0.25f));
+    yield return new WaitForSeconds(0.5f);
     SceneConnector.Instance.PopMatch();
-    SceneManager.LoadScene("MainMenu");
+
+    if (!Persistence.gameConfig.removedAds)
+    {
+      ShowOptions options = new ShowOptions();
+      options.resultCallback = HandleShowResultMainMenu;
+      Advertisement.Show("video", options);
+    }
+    else
+    {
+      SceneManager.LoadScene("MainMenu");
+    }
   }
 
   private void Replay()
   {
+    if (!Persistence.gameConfig.removedAds)
+    {
+      ShowOptions options = new ShowOptions();
+      options.resultCallback = HandleShowResultCore;
+      Advertisement.Show("video", options);
+    }
+    else
+    {
+      SceneManager.LoadScene("CoreGame");
+    }
+  }
+
+  private void HandleShowResultCore(ShowResult result)
+  {
     SceneManager.LoadScene("CoreGame");
+  }
+
+  private void HandleShowResultMainMenu(ShowResult result)
+  {
+    SceneManager.LoadScene("MainMenu");
   }
 
   public void OnSettingsClicked()
