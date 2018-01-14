@@ -111,7 +111,7 @@ namespace GoogleMobileAds.Api
 
         public event EventHandler<EventArgs> OnAdClosed;
 
-        public event EventHandler<GoogleMobileAds.Api.Reward> OnAdRewarded;
+        public event EventHandler<Reward> OnAdRewarded;
 
         public event EventHandler<EventArgs> OnAdLeavingApplication;
 

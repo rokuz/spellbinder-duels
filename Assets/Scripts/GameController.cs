@@ -24,6 +24,7 @@ public class GameController : MonoBehaviour
   public GameObject crystals1;
   public GameObject crystals2;
   public Text gameInfo;
+  public Text gameInfo2;
   public GameObject[] cards;
   public Sprite fireSprite;
   public Sprite waterSprite;
@@ -138,7 +139,7 @@ public class GameController : MonoBehaviour
     #else
       string adUnitId = "unexpected_platform";
     #endif
-      bannerView = new BannerView(adUnitId, AdSize.Banner, 0, 0);
+      bannerView = new BannerView(adUnitId, AdSize.Banner, AdPosition.Top);
       AdRequest request = new AdRequest.Builder().Build();
       bannerView.LoadAd(request);
     }
@@ -173,6 +174,7 @@ public class GameController : MonoBehaviour
     }
 
     gameInfo.gameObject.SetActive(false);
+    gameInfo2.gameObject.SetActive(false);
 
     InitPlayerInfo(player1, player1Info);
     InitPlayerInfo(player2, player2Info);
@@ -455,15 +457,27 @@ public class GameController : MonoBehaviour
     StartCoroutine(InitialShowCardsRoutine());
   }
 
+  private Text GetGameInfo()
+  {
+    if (Persistence.gameConfig.removedAds)
+    {
+      if (gameInfo2.gameObject.activeSelf)
+        gameInfo2.gameObject.SetActive(false);
+      return gameInfo;
+    }
+    return gameInfo2;
+  }
+
   private IEnumerator InitialShowCardsRoutine()
   {
-    gameInfo.text = LanguageManager.Instance.GetTextValue("Game.Toss");
-    gameInfo.gameObject.SetActive(true);
+    var gi = GetGameInfo();
+    gi.text = LanguageManager.Instance.GetTextValue("Game.Toss");
+    gi.gameObject.SetActive(true);
     yield return new WaitForSeconds(2.0f);
     yourTurn = this.matchData.User.hasFirstTurn;
-    gameInfo.text = LanguageManager.Instance.GetTextValue(yourTurn ? "Game.YourTurnFirst" : "Game.OpponentTurnFirst");
+    gi.text = LanguageManager.Instance.GetTextValue(yourTurn ? "Game.YourTurnFirst" : "Game.OpponentTurnFirst");
     yield return new WaitForSeconds(2.0f);
-    gameInfo.gameObject.SetActive(false);
+    gi.gameObject.SetActive(false);
     crystals1.SetActive(true);
     crystals2.SetActive(true);
     UpdateManaUI();
@@ -604,10 +618,11 @@ public class GameController : MonoBehaviour
 
   private IEnumerator ShowGameInfo(string text, float time)
   {
-    gameInfo.text = text;
-    gameInfo.gameObject.SetActive(true);
+    var gi = GetGameInfo();
+    gi.text = text;
+    gi.gameObject.SetActive(true);
     yield return new WaitForSeconds(time);
-    gameInfo.gameObject.SetActive(false);
+    gi.gameObject.SetActive(false);
   }
 
   private void UpdatePlayersStats()
@@ -851,9 +866,7 @@ public class GameController : MonoBehaviour
   {
     if (spell.SpellType == Spell.Type.FIREBALL)
     {
-      CastInstantSpell(meteoritePrefab, userCasted, userCasted ? playerInfo2Pos : playerInfo1Pos,
-                       userCasted ? 80.0f : -80.0f, false, 3.5f, onFinished);
-      //CastProjectileSpell(fireballPrefab, userCasted ? playerInfo2Pos : playerInfo1Pos, onFinished);
+      CastProjectileSpell(fireballPrefab, userCasted ? playerInfo2Pos : playerInfo1Pos, onFinished);
     }
     else if (spell.SpellType == Spell.Type.ICE_SPEAR)
     {
@@ -975,6 +988,7 @@ public class GameController : MonoBehaviour
 
   private void Replay()
   {
+    SceneConnector.Instance.Replay();
     if (!Persistence.gameConfig.removedAds)
     {
       ShowOptions options = new ShowOptions();

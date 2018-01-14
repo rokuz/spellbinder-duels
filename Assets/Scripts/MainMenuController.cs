@@ -43,10 +43,10 @@ public class MainMenuController : MonoBehaviour
 
     GetComponent<AudioSource>().volume = Persistence.gameConfig.musicVolume;
 
-    #if !UNITY_EDITOR
-    if (Persistence.gameConfig.profile != null && Persistence.gameConfig.profile.facebookId.Length != 0)
-      facebookHolder.Login(null);
-    #endif
+    //#if !UNITY_EDITOR
+    //if (Persistence.gameConfig.profile != null && Persistence.gameConfig.profile.facebookId.Length != 0)
+    //  facebookHolder.Login(null);
+    //#endif
 
     Spellbook.Init();
 
@@ -181,9 +181,9 @@ public class MainMenuController : MonoBehaviour
     if (Advertisement.isSupported)
       Advertisement.Initialize(gameId, false);
 
-    if (!Persistence.gameConfig.removedAds && bannerView != null)
+    if (!Persistence.gameConfig.removedAds && bannerView == null)
     {
-      bannerView = new BannerView(adUnitId, AdSize.Banner, 0, 0);
+      bannerView = new BannerView(adUnitId, AdSize.Banner, AdPosition.Top);
       AdRequest request = new AdRequest.Builder().Build();
       bannerView.LoadAd(request);
     }

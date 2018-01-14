@@ -23,6 +23,13 @@ public class SceneConnector
     match = new Match(player, opponent);
   }
 
+  public void Replay()
+  {
+    ProfileData player = match.User.profile;
+    ProfileData opponent = match.Opponent.profile;
+    match = new Match(player, opponent);
+  }
+
   public Match GetMatch()
   {
     return match;

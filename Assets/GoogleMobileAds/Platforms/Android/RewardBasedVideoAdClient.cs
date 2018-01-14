@@ -31,7 +31,7 @@ namespace GoogleMobileAds.Android
         public event EventHandler<EventArgs> OnAdOpening = delegate { };
         public event EventHandler<EventArgs> OnAdStarted = delegate { };
         public event EventHandler<EventArgs> OnAdClosed = delegate { };
-        public event EventHandler<GoogleMobileAds.Api.Reward> OnAdRewarded = delegate { };
+        public event EventHandler<Reward> OnAdRewarded = delegate { };
         public event EventHandler<EventArgs> OnAdLeavingApplication = delegate { };
 
         public RewardBasedVideoAdClient()
