@@ -195,8 +195,6 @@ public class GameController : MonoBehaviour
     #endif
     if (matchData != null)
     {
-      matchData.Opponent.data.health.Value = 2;
-
       spellbookWidget.Setup(matchData.User.profile);
       if (Persistence.gameConfig.showSpellbookWidget)
         spellbookWidget.Open();
