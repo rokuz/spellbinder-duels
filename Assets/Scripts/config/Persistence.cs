@@ -26,4 +26,16 @@ public static class Persistence
       file.Close();
     }
   }
+
+  public static void LoadWithProfileData(ProfileData profile)
+  {
+    if(File.Exists(Application.persistentDataPath + kConfigName))
+    {
+      BinaryFormatter bf = new BinaryFormatter();
+      FileStream file = File.Open(Application.persistentDataPath + kConfigName, FileMode.Open);
+      gameConfig = (GameConfig)bf.Deserialize(file);
+      gameConfig.profile = profile;
+      file.Close();
+    }
+  }
 }

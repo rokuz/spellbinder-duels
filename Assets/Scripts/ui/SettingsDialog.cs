@@ -1,11 +1,13 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System.Linq;
 using SmartLocalization;
 
 public class SettingsDialog : MonoBehaviour
 {
   public FBHolder facebookHolder;
+  public Purchaser purchaser;
   public Image splash;
   public Text title;
   public Text changeNameText;
@@ -16,11 +18,16 @@ public class SettingsDialog : MonoBehaviour
   public Slider sfxSlider;
   public SetNameDialog setNameDialog;
   public Text playerName;
+  public Button restorePurchases;
+  public Button otherGames;
 
   public AudioSource musicSource;
 
   public delegate void OnClose();
   private OnClose onCloseHandler;
+
+  public delegate void OnRemovedAds();
+  public OnRemovedAds onRemovedAds;
 
   private ProfileData profileData;
 
@@ -31,6 +38,12 @@ public class SettingsDialog : MonoBehaviour
     changeNameButton.GetComponentInChildren<Text>().text = LanguageManager.Instance.GetTextValue("Settings.ChangeNameButton");
     volumeText.text = LanguageManager.Instance.GetTextValue("Settings.MusicVolume");
     sfxText.text = LanguageManager.Instance.GetTextValue("Settings.SfxVolume");
+
+    var restorePurchasesText = (from t in restorePurchases.GetComponentsInChildren<Text>() where t.gameObject.name == "Text" select t).Single();
+    restorePurchasesText.text = LanguageManager.Instance.GetTextValue("Settings.RestorePurchase");
+
+    var otherGamesText = (from t in otherGames.GetComponentsInChildren<Text>() where t.gameObject.name == "Text" select t).Single();
+    otherGamesText.text = LanguageManager.Instance.GetTextValue("Settings.OtherGames");
 
     volumeSlider.value = Persistence.gameConfig.musicVolume;
     sfxSlider.value = Persistence.gameConfig.sfxVolume;
@@ -46,11 +59,12 @@ public class SettingsDialog : MonoBehaviour
     CloseIfClickedOutside(this.gameObject);
   }
 
-  public void Open(ProfileData profileData, OnClose onCloseHandler)
+  public void Open(ProfileData profileData, OnClose onCloseHandler, OnRemovedAds onRemovedAds)
   {
     this.profileData = profileData;
     changeNameButton.interactable = (this.profileData != null);
     this.onCloseHandler = onCloseHandler;
+    this.onRemovedAds = onRemovedAds;
 
     this.gameObject.SetActive(true);
     if (splash != null && !splash.IsActive())
@@ -102,5 +116,18 @@ public class SettingsDialog : MonoBehaviour
   public void OnChangedMusicVolume()
   {
     musicSource.volume = volumeSlider.value;
+  }
+
+  public void OnRestorePurchases()
+  {
+    purchaser.RestorePurchases(() => {
+      if (this.onRemovedAds != null && Persistence.gameConfig.removedAds)
+        this.onRemovedAds();
+    });
+  }
+
+  public void OnMoreGames()
+  {
+    //TODO
   }
 }

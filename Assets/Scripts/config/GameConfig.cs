@@ -11,6 +11,8 @@ public class GameConfig
   public List<ProfileData> rivals = new List<ProfileData>();
   public bool showSpellbookWidget;
   public bool removedAds;
+  public bool tutorialMainMenuShown;
+  public bool tutorialCoreGameShown;
 
   public GameConfig()
   {
@@ -19,7 +21,12 @@ public class GameConfig
     this.sfxVolume = 0.25f;
     this.showSpellbookWidget = true;
     this.removedAds = false;
+    this.tutorialMainMenuShown = false;
+    this.tutorialCoreGameShown = false;
+  }
 
+  public void InitRivals()
+  {
     string[] names = new string[]{ "Corvin", "Rosa", "Melissa", "Christian", "Zed",
                                    "Olivia", "Alatel", "Desmond", "Servin", "Olaf",
                                    "Richard", "Jacob", "Chi", "Bastila", "Anya",

@@ -311,6 +311,12 @@
 	<data name="Settings.MusicVolume" xml:space="preserve">
 		<value>Громкость музыки</value>
 	</data>
+	<data name="Settings.OtherGames" xml:space="preserve">
+		<value>Другие игры разработчика</value>
+	</data>
+	<data name="Settings.RestorePurchase" xml:space="preserve">
+		<value>Восстановить покупки</value>
+	</data>
 	<data name="Settings.SfxVolume" xml:space="preserve">
 		<value>Громкость звуковых эффектов</value>
 	</data>
@@ -529,6 +535,48 @@
 	</data>
 	<data name="Temp.Tournament" xml:space="preserve">
 		<value>Турнир временно недоступен</value>
+	</data>
+	<data name="Tutorial.Battle.1" xml:space="preserve">
+		<value>Добро пожаловать на первую дуэль! Сегодня я буду твоим секундантом. Ничего не бойся, противник - слабак. Рассказать правила дуэли?</value>
+	</data>
+	<data name="Tutorial.Battle.2" xml:space="preserve">
+		<value>Колдуете по очереди. Жребий решил, что первым начнешь ты.</value>
+	</data>
+	<data name="Tutorial.Battle.3" xml:space="preserve">
+		<value>На столе выложены карты магических школ, разрешенных в этой дуэли. Постарайся запомнить расположение карт. Когда начнется дуэль, карты перевернутся, и можно будет рассчитывать только на свою память.</value>
+	</data>
+	<data name="Tutorial.Battle.4" xml:space="preserve">
+		<value>Смотри, загорелся первый кристалл маны. Переверни эти карты и сотвори</value>
+	</data>
+	<data name="Tutorial.Battle.5.1" xml:space="preserve">
+		<value>Отлично, молодец, то что надо. Дальше, думаю, сам прекрасно справишься!</value>
+	</data>
+	<data name="Tutorial.Battle.5.2" xml:space="preserve">
+		<value>О, ну, тебе самому виднее, что колдовать. Дальше, думаю, справишься сам!</value>
+	</data>
+	<data name="Tutorial.Battle.5.3" xml:space="preserve">
+		<value>Ну, вот, промах. Ничего страшного, в другой раз получится. Сейчас у меня дела, увидимся!</value>
+	</data>
+	<data name="Tutorial.Battle.6" xml:space="preserve">
+		<value>А, чуть не забыл. Последний совет. Дуэль заканчивается, когда один из противников теряет сознание. Следи за собственным самочувствием и не пренебрегай целебной магией.</value>
+	</data>
+	<data name="Tutorial.MainMenu.1" xml:space="preserve">
+		<value>Приветствую тебя, Чародей! Добро пожаловать на турнир волшебников. Меня зовут Мерлин. На правах чемпиона 10 предыдущих лет разреши показать тебе турнир.</value>
+	</data>
+	<data name="Tutorial.MainMenu.2" xml:space="preserve">
+		<value>Здесь у нас библиотека, где ты сможешь ознакомиться со всеми заклинаниями, когда-либо придуманными волшебниками.</value>
+	</data>
+	<data name="Tutorial.MainMenu.3" xml:space="preserve">
+		<value>На турнире мы не только соревнуемся в волшебстве, но и учимся. Здесь у нас лавка, где ты сможешь купить свитки с новыми для тебя заклинаниями. Здесь же работают тренеры, которые на умеренную плату быстро подтянут тебя.</value>
+	</data>
+	<data name="Tutorial.MainMenu.4" xml:space="preserve">
+		<value>А это доска почёта. Угадай, кто на первом месте?</value>
+	</data>
+	<data name="Tutorial.MainMenu.5" xml:space="preserve">
+		<value>Ты ведь уже зарегистрировался? Ах, да, это же теперь требуют на входе. Здесь лежит магическая книга, где тебе надо перечислить твои характеристики. Книга будет сама их обновлять по мере твоего развития.</value>
+	</data>
+	<data name="Tutorial.MainMenu.6" xml:space="preserve">
+		<value>Если захочешь зарегистрироваться под другим именем и со всеми прочими вопросами, вернись к регистрационному столу. А сейчас мне пора, увидимся на твоей первой дуэли. Удачи!</value>
 	</data>
 	<data name="Victory.Finish" xml:space="preserve">
 		<value>Выйти</value>

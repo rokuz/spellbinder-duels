@@ -311,6 +311,12 @@
 	<data name="Settings.MusicVolume" xml:space="preserve">
 		<value>Music volume</value>
 	</data>
+	<data name="Settings.OtherGames" xml:space="preserve">
+		<value>More games</value>
+	</data>
+	<data name="Settings.RestorePurchase" xml:space="preserve">
+		<value>Restore purchases</value>
+	</data>
 	<data name="Settings.SfxVolume" xml:space="preserve">
 		<value>Sound effects volume</value>
 	</data>
@@ -529,6 +535,48 @@
 	</data>
 	<data name="Temp.Tournament" xml:space="preserve">
 		<value>Tournament will be available soon</value>
+	</data>
+	<data name="Tutorial.Battle.1" xml:space="preserve">
+		<value>Welcome to your first duel! Today I will be your second. Do not be afraid of anything, the enemy is a weakling. Do you know rules of the duel?</value>
+	</data>
+	<data name="Tutorial.Battle.2" xml:space="preserve">
+		<value>Cast spells by turns. The toss has decided that you are the first.</value>
+	</data>
+	<data name="Tutorial.Battle.3" xml:space="preserve">
+		<value>On the table are laid out the cards of the magical schools allowed in this duel. Try to remember the position of the cards. When the duel begins, the cards will turn over, and you will be able to count on your memory.</value>
+	</data>
+	<data name="Tutorial.Battle.4" xml:space="preserve">
+		<value>Look, the first mana crystal fired. Turn these cards over and cast</value>
+	</data>
+	<data name="Tutorial.Battle.5.1" xml:space="preserve">
+		<value>Excellent, well done! I think you will win without my support.</value>
+	</data>
+	<data name="Tutorial.Battle.5.2" xml:space="preserve">
+		<value>Oh, well, you know better what to cast. I think you will win without my support.</value>
+	</data>
+	<data name="Tutorial.Battle.5.3" xml:space="preserve">
+		<value>Well, you missed. It's okay, next time it will turn out. I have things to do, see you!</value>
+	</data>
+	<data name="Tutorial.Battle.6" xml:space="preserve">
+		<value>Ah, I almost forgot. The last tip. The duel ends when one of the opponents loses consciousness. Watch your own health and do not neglect healing magic.</value>
+	</data>
+	<data name="Tutorial.MainMenu.1" xml:space="preserve">
+		<value>Greetings, the Spellbinder. Welcome to the Wizards Tournament. You can call me Merlin. I am the champion of the previous 10 years, let me show you the tournament.</value>
+	</data>
+	<data name="Tutorial.MainMenu.2" xml:space="preserve">
+		<value>It is the library where you can find all spells ever invented by wizards.</value>
+	</data>
+	<data name="Tutorial.MainMenu.3" xml:space="preserve">
+		<value>At the tournament we not only compete in magic, but we also study. Here we have a shop where you can buy scrolls with new spells. Here also trainers work who at a moderate fee will quickly train you.</value>
+	</data>
+	<data name="Tutorial.MainMenu.4" xml:space="preserve">
+		<value>It is the leaderboard. Guess, who is at the top?</value>
+	</data>
+	<data name="Tutorial.MainMenu.5" xml:space="preserve">
+		<value>Have you already registered? Oh, yeah, this is now required at the entrance. Here lies the magic book, where you need to list your characteristics. The book will update them as you develop.</value>
+	</data>
+	<data name="Tutorial.MainMenu.6" xml:space="preserve">
+		<value>If you would like to register under another nickname or by other questions, go back to the registration desk. Now I have to leave you. See you on your first duel. Good luck!</value>
 	</data>
 	<data name="Victory.Finish" xml:space="preserve">
 		<value>Finish</value>

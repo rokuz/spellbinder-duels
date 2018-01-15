@@ -218,6 +218,9 @@
 	<data name="Message.ConnectionLost" xml:space="preserve">
 		<value />
 	</data>
+	<data name="Message.Error" xml:space="preserve">
+		<value />
+	</data>
 	<data name="Message.Lose" xml:space="preserve">
 		<value />
 	</data>
@@ -306,6 +309,12 @@
 		<value />
 	</data>
 	<data name="Settings.MusicVolume" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Settings.OtherGames" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Settings.RestorePurchase" xml:space="preserve">
 		<value />
 	</data>
 	<data name="Settings.SfxVolume" xml:space="preserve">
@@ -527,10 +536,49 @@
 	<data name="Temp.Tournament" xml:space="preserve">
 		<value />
 	</data>
-	<data name="Victory.Finish" xml:space="preserve">
+	<data name="Tutorial.Battle.1" xml:space="preserve">
 		<value />
 	</data>
-	<data name="Message.Error" xml:space="preserve">
+	<data name="Tutorial.Battle.2" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Tutorial.Battle.3" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Tutorial.Battle.4" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Tutorial.Battle.5.1" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Tutorial.Battle.5.2" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Tutorial.Battle.5.3" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Tutorial.Battle.6" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Tutorial.MainMenu.1" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Tutorial.MainMenu.2" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Tutorial.MainMenu.3" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Tutorial.MainMenu.4" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Tutorial.MainMenu.5" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Tutorial.MainMenu.6" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Victory.Finish" xml:space="preserve">
 		<value />
 	</data>
 </root>

@@ -128,7 +128,12 @@ public class GameController : MonoBehaviour
     if (systemLanguage != null)
       LanguageManager.Instance.ChangeLanguage(systemLanguage);
 
-    Persistence.Load();
+    matchData = SceneConnector.Instance.GetMatch();
+
+    if (matchData != null)
+      Persistence.LoadWithProfileData(matchData.User.profile);
+    else
+      Persistence.Load();
 
     if (!Persistence.gameConfig.removedAds)
     {
@@ -184,13 +189,14 @@ public class GameController : MonoBehaviour
     crystals1.SetActive(false);
     crystals2.SetActive(false);
 
-    matchData = SceneConnector.Instance.GetMatch();
     #if UNITY_EDITOR
     if (matchData == null)
       matchData = new Match(new ProfileData("Player1", 12, 0), new ProfileData("Player2", 12, 0));
     #endif
     if (matchData != null)
     {
+      matchData.Opponent.data.health.Value = 2;
+
       spellbookWidget.Setup(matchData.User.profile);
       if (Persistence.gameConfig.showSpellbookWidget)
         spellbookWidget.Open();

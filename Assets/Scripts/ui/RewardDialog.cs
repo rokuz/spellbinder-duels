@@ -11,6 +11,8 @@ public class RewardDialog : MonoBehaviour
   public Text coinsText;
   public Text finishText;
 
+  public Image splash;
+
   public delegate void OnClose();
   private OnClose onCloseHandler;
 
@@ -43,9 +45,9 @@ public class RewardDialog : MonoBehaviour
       string coinsStr = "+" + winner.data.experienceCalculator.Coins + " ";
       if (LanguageManager.Instance.GetSystemLanguageEnglishName() == "Russian")
       {
-        if (winner.data.experienceCalculator.Coins == 1)
+        if (winner.data.experienceCalculator.Coins == 21)
           coinsStr += LanguageManager.Instance.GetTextValue("Reward.CoinsForm1");
-        else if (winner.data.experienceCalculator.Coins >= 2 && winner.data.experienceCalculator.Coins <= 4)
+        else if (winner.data.experienceCalculator.Coins >= 22 && winner.data.experienceCalculator.Coins <= 24)
           coinsStr += LanguageManager.Instance.GetTextValue("Reward.CoinsForm2");
         else
           coinsStr += LanguageManager.Instance.GetTextValue("Reward.CoinsForm3");
@@ -64,6 +66,9 @@ public class RewardDialog : MonoBehaviour
     finishText.text = LanguageManager.Instance.GetTextValue("Victory.Finish");
 
     gameObject.SetActive(true);
+
+    if (splash != null && !splash.IsActive())
+      splash.gameObject.SetActive(true);
   }
 
   public bool IsOpened()
@@ -73,6 +78,9 @@ public class RewardDialog : MonoBehaviour
 
   public void Close()
   {
+    if (splash != null && splash.IsActive())
+      splash.gameObject.SetActive(false);
+
     gameObject.SetActive(false);
 
     if (onCloseHandler != null)

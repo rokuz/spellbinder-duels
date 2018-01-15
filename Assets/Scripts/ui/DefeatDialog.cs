@@ -10,6 +10,8 @@ public class DefeatDialog : MonoBehaviour
   public Text leaveText;
   public Text replayText;
 
+  public Image splash;
+
   public delegate void OnAction();
   private OnAction onCloseHandler;
   private OnAction onReplayHandler;
@@ -24,6 +26,9 @@ public class DefeatDialog : MonoBehaviour
     replayText.text = LanguageManager.Instance.GetTextValue("Defeat.Replay");
 
     gameObject.SetActive(true);
+
+    if (splash != null && !splash.IsActive())
+      splash.gameObject.SetActive(true);
   }
 
   public bool IsOpened()
@@ -33,6 +38,9 @@ public class DefeatDialog : MonoBehaviour
 
   public void Close()
   {
+    if (splash != null && splash.IsActive())
+      splash.gameObject.SetActive(false);
+
     gameObject.SetActive(false);
 
     if (onCloseHandler != null)

@@ -101,10 +101,8 @@ public class MainMenuController : MonoBehaviour
       return;
 
     this.settingsButton.interactable = false;
-    settingsDialog.Open(Persistence.gameConfig.profile, () => 
-    {
-      this.settingsButton.interactable = true;
-    });
+    settingsDialog.Open(Persistence.gameConfig.profile, () => { this.settingsButton.interactable = true; },
+      () => { UpdatePlayerUI(); DestroyBanner(); });
   }
 
   public void OnShopButtonClicked()
@@ -135,6 +133,7 @@ public class MainMenuController : MonoBehaviour
     if (Persistence.gameConfig.profile == null)
     {
       Persistence.gameConfig.profile = new ProfileData();
+      Persistence.gameConfig.InitRivals();
       Persistence.Save();
     }
 

@@ -15,6 +15,7 @@ public class Purchaser : MonoBehaviour, IStoreListener
   public static string kProductIDCoinsPack3 = "com.rokuz.spellbinder.coinspack3";
 
   public delegate void OnButEvent(string productId, bool success);
+  public delegate void OnRestorePurchases();
 
   public OnButEvent onBuy;
 
@@ -62,7 +63,7 @@ public class Purchaser : MonoBehaviour, IStoreListener
       storeController.InitiatePurchase(product);
   }
 
-  public void RestorePurchases()
+  public void RestorePurchases(OnRestorePurchases onRestorePurchases)
   {
     if (!IsInitialized())
       return;
@@ -71,7 +72,11 @@ public class Purchaser : MonoBehaviour, IStoreListener
         Application.platform == RuntimePlatform.OSXPlayer)
     {
       var apple = storeExtensionProvider.GetExtension<IAppleExtensions>();
-      apple.RestoreTransactions((result) => {});
+      apple.RestoreTransactions((result) => {
+        print(result ? "Transactions restored" : "Transactions are not restored");
+        if (result && onRestorePurchases != null)
+          onRestorePurchases();
+      });
     }
   }
 
@@ -88,7 +93,7 @@ public class Purchaser : MonoBehaviour, IStoreListener
     print("Purchaser not initialized");
   }
 
-  public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs args) 
+  public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs args)
   {
     string id = "";
     if (String.Equals(args.purchasedProduct.definition.id, kProductIDRemoveAds, StringComparison.Ordinal))
@@ -106,6 +111,13 @@ public class Purchaser : MonoBehaviour, IStoreListener
       p.Add("product", id);
       Analytics.CustomEvent("SuccessfulPurchase", p);
       Debug.Log("Successful Purchase: " + id);
+
+      if (id == kProductIDRemoveAds)
+      {
+        Persistence.gameConfig.removedAds = true;
+        Persistence.Save();
+      }
+
       if (this.onBuy != null)
         this.onBuy(id, true);
     }
