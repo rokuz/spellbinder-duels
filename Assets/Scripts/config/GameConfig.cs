@@ -13,6 +13,8 @@ public class GameConfig
   public bool removedAds;
   public bool tutorialMainMenuShown;
   public bool tutorialCoreGameShown;
+  public int tutorialMainMenuStep;
+  public int tutorialCoreGameStep;
 
   public GameConfig()
   {
@@ -23,6 +25,8 @@ public class GameConfig
     this.removedAds = false;
     this.tutorialMainMenuShown = false;
     this.tutorialCoreGameShown = false;
+    this.tutorialMainMenuStep = 0;
+    this.tutorialCoreGameStep = 0;
   }
 
   public void InitRivals()
