@@ -27,6 +27,7 @@ public class MainMenuController : MonoBehaviour
   public Button shopButton;
   public Button leaderboardButton;
   public Text subtitleText;
+  public TutorialMainMenu tutorialMainMenu;
 
   private BannerView bannerView;
 
@@ -81,18 +82,21 @@ public class MainMenuController : MonoBehaviour
   {
     this.playButton.interactable = false;
     matchingDialog.Open(Persistence.gameConfig.profile, () => { this.playButton.interactable = true; });
+    tutorialMainMenu.OnPlayClicked();
   }
 
   public void OnSpellbookButtonClicked()
   {
     this.spellbookButton.interactable = false;
     spellbookDialog.Open(Persistence.gameConfig.profile, () => { this.spellbookButton.interactable = true; });
+    tutorialMainMenu.OnSpellbookClicked();
   }
 
   public void OnLeaderboardButtonClicked()
   {
     this.leaderboardButton.interactable = false;
     leaderboardDialog.Open(Persistence.gameConfig.profile, () => { this.leaderboardButton.interactable = true; });
+    tutorialMainMenu.OnLeaderboardClicked();
   }
 
   public void OnSettingsButtonClicked()
@@ -103,6 +107,8 @@ public class MainMenuController : MonoBehaviour
     this.settingsButton.interactable = false;
     settingsDialog.Open(Persistence.gameConfig.profile, () => { this.settingsButton.interactable = true; },
       () => { UpdatePlayerUI(); DestroyBanner(); });
+
+    tutorialMainMenu.OnSettingsClicked();
   }
 
   public void OnShopButtonClicked()
@@ -113,6 +119,8 @@ public class MainMenuController : MonoBehaviour
       this.shopButton.interactable = true;
       UpdatePlayerUI();
     });
+
+    tutorialMainMenu.OnShopClicked();
   }
 
   public void OnPlayerInfoClicked()
@@ -126,6 +134,8 @@ public class MainMenuController : MonoBehaviour
     {
       this.playerLogo.gameObject.GetComponentInChildren<Button>().interactable = true;
     });
+
+    tutorialMainMenu.OnCharacterClicked();
   }
 
   private void InitProfile()
@@ -157,6 +167,8 @@ public class MainMenuController : MonoBehaviour
     leaderboardDialog.Setup();
 
     this.shopButton.interactable = true;
+
+    tutorialMainMenu.InitTutorial();
   }
 
   private void InitializeAds()

@@ -581,4 +581,10 @@
 	<data name="Victory.Finish" xml:space="preserve">
 		<value />
 	</data>
+	<data name="Message.Next" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Message.Finish" xml:space="preserve">
+		<value />
+	</data>
 </root>

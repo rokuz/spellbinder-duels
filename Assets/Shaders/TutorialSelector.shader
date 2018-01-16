@@ -1,8 +1,9 @@
-﻿Shader "Spellbinder/PlayerLogoMask"
+﻿Shader "Spellbinder/TutorialSelector"
 {
 	Properties
 	{
 		[PerRendererData] _MainTex ("Sprite Texture", 2D) = "white" {}
+		_RingColor ("Ring color", Color) = (1.0, 1.0, 1.0, 1.0)
 	}
 
 	SubShader
@@ -54,14 +55,15 @@
 			}
 
 			sampler2D _MainTex;
+			fixed4 _RingColor;
 
 			fixed4 frag(v2f IN) : SV_Target
 			{
-				fixed4 c = tex2D(_MainTex, IN.texcoord) * IN.color;
+				float k = cos(_Time.w) * 0.05 + 0.05;
 				float2 uv = IN.texcoord - float2(0.5, 0.5);
 				float r = uv.x * uv.x + uv.y * uv.y;
-				c.rgb = lerp(c.rgb, fixed3(0.08, 0.08, 0.08), smoothstep(0.22, 0.23, r));
-				c.a *= (1.0 - smoothstep(0.23, 0.25, r));
+				fixed4 c = lerp(fixed4(_RingColor.rgb, 0.0), fixed4(_RingColor.rgb, 1.0), smoothstep(0.15 - k, 0.2 - k, r));
+				c.a *= (1.0 - smoothstep(0.15 - k, 0.25 - k, r));
 				return c;
 			}
 		ENDCG

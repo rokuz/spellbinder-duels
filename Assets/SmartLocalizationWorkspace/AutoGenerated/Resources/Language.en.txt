@@ -221,8 +221,14 @@
 	<data name="Message.Error" xml:space="preserve">
 		<value>Error</value>
 	</data>
+	<data name="Message.Finish" xml:space="preserve">
+		<value>Finish</value>
+	</data>
 	<data name="Message.Lose" xml:space="preserve">
 		<value>Opponent wins</value>
+	</data>
+	<data name="Message.Next" xml:space="preserve">
+		<value>Next</value>
 	</data>
 	<data name="Message.No" xml:space="preserve">
 		<value>No</value>
