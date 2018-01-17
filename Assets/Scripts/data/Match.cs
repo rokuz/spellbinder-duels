@@ -38,7 +38,7 @@ public class Match
     this.timestamp = Time.time;
     this.matchStatus = MatchStatus.PREPARED;
     this.gameField = new GameField();
-    this.user.hasFirstTurn = (UnityEngine.Random.Range(0, 2) == 0);
+    this.user.hasFirstTurn = Persistence.gameConfig.tutorialCoreGameShown ? (UnityEngine.Random.Range(0, 2) == 0) : true;
     this.opponent.hasFirstTurn = !this.user.hasFirstTurn;
     this.user.data.mana = this.user.hasFirstTurn ? 0 : 1;
     this.opponent.data.mana = this.opponent.hasFirstTurn ? 0 : 1;

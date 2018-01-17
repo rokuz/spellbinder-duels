@@ -21,6 +21,8 @@ public class PlayerData
 
   public PlayerData(ProfileData profile)
   {
+    if (!Persistence.gameConfig.tutorialCoreGameShown)
+      health = new Attribute<int>(Constants.HEALTH_POINTS / 2);
     this.spellCalculator = new SpellCalculator(profile.bonuses, profile.resistance);
     this.experienceCalculator = new ExperienceCalculator(profile.experience, profile.level);
   }

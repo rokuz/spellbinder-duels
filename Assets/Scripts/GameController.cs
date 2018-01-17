@@ -55,6 +55,8 @@ public class GameController : MonoBehaviour
 
   public SpellbookWidget spellbookWidget;
 
+  public TutorialCoreGame tutorialCoreGame;
+
   class PlayerInfo
   {
     public Text name;
@@ -234,6 +236,8 @@ public class GameController : MonoBehaviour
     finishTurnButton.GetComponentInChildren<Text>().text = LanguageManager.Instance.GetTextValue("Game.FinishTurn");
     surrenderButton.GetComponentInChildren<Text>().text = LanguageManager.Instance.GetTextValue("Game.Surrender");
     spellbookButton.GetComponentInChildren<Text>().text = LanguageManager.Instance.GetTextValue("Spellbook.Title");
+
+    tutorialCoreGame.InitTutorial();
 
     StartMatch();
   }
@@ -474,6 +478,8 @@ public class GameController : MonoBehaviour
 
   private IEnumerator InitialShowCardsRoutine()
   {
+    yield return new WaitUntil(() => { return this.tutorialCoreGame.EnabledToss(); });
+        
     var gi = GetGameInfo();
     gi.text = LanguageManager.Instance.GetTextValue("Game.Toss");
     gi.gameObject.SetActive(true);
@@ -488,6 +494,9 @@ public class GameController : MonoBehaviour
 
     SwapAllCards();
     yield return new WaitForSeconds(Constants.CARDS_SHOW_TIME);
+
+    yield return new WaitUntil(() => { return this.tutorialCoreGame.EnabledTurnOverAll(); });
+
     SwapAllCards();
     yield return new WaitForSeconds(kAnimationTimeSec);
     matchData.Status = Match.MatchStatus.STARTED;
@@ -569,6 +578,8 @@ public class GameController : MonoBehaviour
     matchData.StartTurn(yourTurn ? matchData.User : matchData.Opponent);
     surrenderButton.interactable = true;
     finishTurnButton.interactable = yourTurn;
+
+    //OnCrystalActivated
 
     UpdateManaUI();
     StartCoroutine(ShowGameInfo(LanguageManager.Instance.GetTextValue(yourTurn ? "Game.YourTurn" : "Game.OpponentTurn"), 1.0f));
