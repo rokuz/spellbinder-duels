@@ -80,14 +80,21 @@ public class TutorialCoreGame : MonoBehaviour
   {
     if (Persistence.gameConfig.tutorialCoreGameShown)
       return true;
-    return Persistence.gameConfig.tutorialCoreGameStep == 1;
+    return Persistence.gameConfig.tutorialCoreGameStep >= 1;
+  }
+
+  public bool EnabledShowCards()
+  {
+    if (Persistence.gameConfig.tutorialCoreGameShown)
+      return true;
+    return Persistence.gameConfig.tutorialCoreGameStep >= 2;
   }
 
   public bool EnabledTurnOverAll()
   {
     if (Persistence.gameConfig.tutorialCoreGameShown)
       return true;
-    return Persistence.gameConfig.tutorialCoreGameStep == 3;
+    return Persistence.gameConfig.tutorialCoreGameStep >= 3;
   }
 
   private string GetTutorialText(int step)

@@ -479,7 +479,7 @@ public class GameController : MonoBehaviour
   private IEnumerator InitialShowCardsRoutine()
   {
     yield return new WaitUntil(() => { return this.tutorialCoreGame.EnabledToss(); });
-        
+
     var gi = GetGameInfo();
     gi.text = LanguageManager.Instance.GetTextValue("Game.Toss");
     gi.gameObject.SetActive(true);
@@ -487,6 +487,9 @@ public class GameController : MonoBehaviour
     yourTurn = this.matchData.User.hasFirstTurn;
     gi.text = LanguageManager.Instance.GetTextValue(yourTurn ? "Game.YourTurnFirst" : "Game.OpponentTurnFirst");
     yield return new WaitForSeconds(2.0f);
+
+    yield return new WaitUntil(() => { return this.tutorialCoreGame.EnabledShowCards(); });
+
     gi.gameObject.SetActive(false);
     crystals1.SetActive(true);
     crystals2.SetActive(true);
