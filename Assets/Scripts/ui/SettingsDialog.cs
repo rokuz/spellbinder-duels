@@ -20,6 +20,7 @@ public class SettingsDialog : MonoBehaviour
   public Text playerName;
   public Button restorePurchases;
   public Button otherGames;
+  public MoreGamesDialog moreGamesDialog;
 
   public AudioSource musicSource;
 
@@ -47,6 +48,8 @@ public class SettingsDialog : MonoBehaviour
 
     volumeSlider.value = Persistence.gameConfig.musicVolume;
     sfxSlider.value = Persistence.gameConfig.sfxVolume;
+
+    moreGamesDialog.Setup();
   }
 
   public bool IsOpened()
@@ -88,7 +91,7 @@ public class SettingsDialog : MonoBehaviour
 
   private void CloseIfClickedOutside(GameObject panel)
   {
-    if (setNameDialog.IsOpened() || facebookHolder.FacebookLoginInProgress)
+    if (setNameDialog.IsOpened() || moreGamesDialog.IsOpened() || facebookHolder.FacebookLoginInProgress)
       return;
 
     if (Input.GetMouseButtonDown(0) && panel.activeSelf && 
@@ -128,6 +131,7 @@ public class SettingsDialog : MonoBehaviour
 
   public void OnMoreGames()
   {
-    //TODO
+    this.otherGames.interactable = false;
+    moreGamesDialog.Open(() => { this.otherGames.interactable = true; });
   }
 }

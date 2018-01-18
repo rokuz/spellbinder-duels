@@ -3,9 +3,10 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.Advertisements;
 using UnityEngine.Analytics;
+using System;
 using System.Collections;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using SmartLocalization;
 using GoogleMobileAds;
@@ -124,6 +125,11 @@ public class GameController : MonoBehaviour
   private Bot bot;
 
   private BannerView bannerView;
+
+  private List<int> tappedCards = new List<int>();
+
+  private Spell[] allUserSpells3;
+  private Spell[] allOpponentSpells3;
 
   void Start()
   {
@@ -335,9 +341,15 @@ public class GameController : MonoBehaviour
     if (matchData.Status == Match.MatchStatus.STARTED && yourTurn && matchData.User.data.RestMana != 0 && !cardsOpened)
     {
       if (openedCards[cardIndex].isBackShowing && !openedCards[cardIndex].isSwapping)
+      {
         SwapCard(cardIndex);
+        tappedCards.Add(cardIndex);
+      }
 
-      int[] cards = GetOpenCards();
+      int[] cards = tappedCards.ToArray();
+      if (cards.Length > 3)
+        throw new UnityException("Bad logic");
+
       if (cards.Length == 2)
       {
         if (matchData != null && matchData.Field.Cards[cards[0]] == matchData.Field.Cards[cards[1]])
@@ -345,7 +357,19 @@ public class GameController : MonoBehaviour
           cardsOpened = true;
           bot.OnOpponentOpenedCards(cards);
           spellInProgress = true;
+          tappedCards.Clear();
           StartCoroutine(CastSpellWithDelay(cards, matchData.User, kAnimationTimeSec));
+        }
+        else
+        {
+          if (!HasSpellWith3Components(allUserSpells3, cards))
+          {
+            cardsOpened = true;
+            bot.OnOpponentOpenedCards(cards);
+            spellInProgress = true;
+            tappedCards.Clear();
+            StartCoroutine(CastSpellWithDelay(cards, matchData.User, kAnimationTimeSec));
+          }
         }
       }
       else if (cards.Length == 3)
@@ -353,9 +377,20 @@ public class GameController : MonoBehaviour
         cardsOpened = true;
         bot.OnOpponentOpenedCards(cards);
         spellInProgress = true;
+        tappedCards.Clear();
         StartCoroutine(CastSpellWithDelay(cards, matchData.User, kAnimationTimeSec));
       }
     }
+  }
+
+  private bool HasSpellWith3Components(Spell[] spells, int[] cards)
+  {
+    foreach (Spell s in spells)
+    {
+      if (s.Combination[0] == matchData.Field.Cards[cards[0]] && s.Combination[1] == matchData.Field.Cards[cards[1]])
+        return true;
+    }
+    return false;
   }
 
   private void SwapCard(int index)
@@ -368,14 +403,6 @@ public class GameController : MonoBehaviour
       cards[index].transform.rotation = Quaternion.AngleAxis(info.isBackShowing ? 180.0f : 0.0f, Vector3.up);
       info.isSwapping = true;
     }
-  }
-
-  private int[] GetOpenCards()
-  {
-    List<int> cards = new List<int>();
-    for (int i = 0; i < openedCards.Length; i++)
-      if (!openedCards[i].isBackShowing) cards.Add(i);
-    return cards.ToArray();
   }
 
   private IEnumerator CastSpellWithDelay(int[] indices, Match.Player caster, float delay)
@@ -489,6 +516,13 @@ public class GameController : MonoBehaviour
     Analytics.CustomEvent("Match_Started", p);
 
     SetupGameField();
+
+    allUserSpells3 = (from s in Spellbook.Spells 
+                      where Array.Exists(matchData.User.profile.spells, x => x == s.Code) && s.Combination.Length == 3
+                      select s).ToArray();
+    allOpponentSpells3 = (from s in Spellbook.Spells
+                          where Array.Exists(matchData.Opponent.profile.spells, x => x == s.Code) && s.Combination.Length == 3
+                          select s).ToArray();
     
     StartCoroutine(InitialShowCardsRoutine());
   }
@@ -643,9 +677,19 @@ public class GameController : MonoBehaviour
 
     if (indices != null)
     {
+      bool needToFinish = false;
       for (int i = 0; i < indices.Length; i++)
       {
+        if (needToFinish)
+          break;
+
         SwapCard(indices[i]);
+        if (i == 1 && !HasSpellWith3Components(allOpponentSpells3, indices))
+        {
+          int[] newIndices = new int[2] { indices[0], indices[1] };
+          indices = newIndices;
+          needToFinish = true;
+        }
         yield return new WaitForSeconds(kAnimationTimeSec); 
       }
     }

@@ -257,6 +257,12 @@
 	<data name="Message.YouSurrender" xml:space="preserve">
 		<value>Вы признали поражение</value>
 	</data>
+	<data name="MoreGames.ShowInStore" xml:space="preserve">
+		<value>Посмотреть в магазине</value>
+	</data>
+	<data name="MoreGames.Title" xml:space="preserve">
+		<value>Другие игры разработчика</value>
+	</data>
 	<data name="Player.Level" xml:space="preserve">
 		<value>Уровень</value>
 	</data>
@@ -376,6 +382,9 @@
 	</data>
 	<data name="Shop.StoreFailure" xml:space="preserve">
 		<value>Покупка была отклонена</value>
+	</data>
+	<data name="SpaceShippers.Desc" xml:space="preserve">
+		<value>Бесплатная стратегическая аркада в Sci-Fi сеттинге. Добывай редкие минералы на далёких планетах, отправляй космические корабли, производи уникальные ресурсы в условиях ограниченного времени и остерегайся коварных космических пиратов. Управляй временем и покори космос!</value>
 	</data>
 	<data name="Spell.BLEEDING" xml:space="preserve">
 		<value>Кровотечение</value>
