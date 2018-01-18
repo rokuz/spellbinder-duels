@@ -9,7 +9,7 @@ public class TutorialCoreGame : MonoBehaviour
 {
   public GameObject tutorial1;
   public GameObject tutorial2;
-  //public GameObject markers;
+  public GameObject[] markers = new GameObject[GameField.CARDS_COUNT];
 
   private Spell spellToCast;
 
@@ -24,6 +24,12 @@ public class TutorialCoreGame : MonoBehaviour
       Persistence.Save();
       return;
     }
+
+    if (Persistence.gameConfig.tutorialCoreGameStep == 3)
+      Persistence.gameConfig.tutorialCoreGameStep = 2;
+    else if (Persistence.gameConfig.tutorialCoreGameStep == 4)
+      Persistence.gameConfig.tutorialCoreGameStep = 5;
+    Persistence.Save();
 
     GetButtonText(tutorial1, "ButtonYes").text = LanguageManager.Instance.GetTextValue("Message.Yes");
     GetButtonText(tutorial1, "ButtonNo").text = LanguageManager.Instance.GetTextValue("Message.No");
