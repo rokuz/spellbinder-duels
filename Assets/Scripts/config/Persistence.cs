@@ -27,14 +27,16 @@ public static class Persistence
     }
   }
 
-  public static void LoadWithProfileData(ProfileData profile)
+  public static void LoadWithProfilesData(ProfileData user, ProfileData opponent)
   {
     if(File.Exists(Application.persistentDataPath + kConfigName))
     {
       BinaryFormatter bf = new BinaryFormatter();
       FileStream file = File.Open(Application.persistentDataPath + kConfigName, FileMode.Open);
       gameConfig = (GameConfig)bf.Deserialize(file);
-      gameConfig.profile = profile;
+      gameConfig.profile = user;
+      gameConfig.rivals.RemoveAll(x => x.name == opponent.name && x.facebookId == opponent.facebookId);
+      gameConfig.rivals.Add(opponent);
       file.Close();
     }
   }

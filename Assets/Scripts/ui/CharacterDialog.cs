@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Analytics;
 using System.Collections;
 using System.Linq;
 using SmartLocalization;
@@ -48,6 +49,8 @@ public class CharacterDialog : MonoBehaviour
 
   public void Open(ProfileData profileData, OnClose onCloseHandler)
   {
+    Analytics.CustomEvent("Character_Open");
+
     this.profileData = profileData;
     if (this.profileData != null)
     {

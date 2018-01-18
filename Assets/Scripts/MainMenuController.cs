@@ -80,6 +80,8 @@ public class MainMenuController : MonoBehaviour
 	   
   public void OnPlayButtonClicked()
   {
+    Analytics.CustomEvent("Play_Clicked");
+
     this.playButton.interactable = false;
     matchingDialog.Open(Persistence.gameConfig.profile, () => { this.playButton.interactable = true; });
     tutorialMainMenu.OnPlayClicked();

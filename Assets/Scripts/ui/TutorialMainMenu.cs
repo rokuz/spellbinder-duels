@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Analytics;
 using SmartLocalization;
 
 public class TutorialMainMenu : MonoBehaviour
@@ -49,6 +50,8 @@ public class TutorialMainMenu : MonoBehaviour
     Persistence.Save();
 
     SetActive();
+
+    Analytics.CustomEvent("Tutorial_MainMenu_Started");
   }
 
   private void SetActive()
@@ -79,6 +82,8 @@ public class TutorialMainMenu : MonoBehaviour
     Persistence.gameConfig.tutorialMainMenuStep = 0;
     Persistence.gameConfig.tutorialMainMenuShown = true;
     Persistence.Save();
+
+    Analytics.CustomEvent("Tutorial_MainMenu_Discarded");
   }
 
   public void OnNextClicked()
@@ -90,6 +95,7 @@ public class TutorialMainMenu : MonoBehaviour
     {
       Persistence.gameConfig.tutorialMainMenuStep = 0;
       Persistence.gameConfig.tutorialMainMenuShown = true;
+      Analytics.CustomEvent("Tutorial_MainMenu_Finished");
     }
     else if (Persistence.gameConfig.tutorialMainMenuStep == 5)
     {

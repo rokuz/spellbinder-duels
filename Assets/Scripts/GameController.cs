@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.Advertisements;
+using UnityEngine.Analytics;
 using System.Collections;
 using System.Linq;
 using System.Collections.Generic;
@@ -133,7 +134,7 @@ public class GameController : MonoBehaviour
     matchData = SceneConnector.Instance.GetMatch();
 
     if (matchData != null)
-      Persistence.LoadWithProfileData(matchData.User.profile);
+      Persistence.LoadWithProfilesData(matchData.User.profile, matchData.Opponent.profile);
     else
       Persistence.Load();
 
@@ -388,6 +389,14 @@ public class GameController : MonoBehaviour
 
     if (s != null)
     {
+      if (youAreCaster)
+      {
+        var p = new Dictionary<string, object>();
+        p.Add("spell", s.SpellType);
+        p.Add("caster_level", caster.profile.level);
+        Analytics.CustomEvent("Spell_Casted", p);
+      }
+
       AnimateCastedSpell(s, youAreCaster, () => 
       {
         StartCoroutine(ApplySpellWithDelay(indices, s, caster, 1.0f));
@@ -399,6 +408,13 @@ public class GameController : MonoBehaviour
     }
     else
     {
+      if (youAreCaster)
+      {
+        var p = new Dictionary<string, object>();
+        p.Add("caster_level", caster.profile.level);
+        Analytics.CustomEvent("Spell_Miscasted", p);
+      }
+
       // Miscast
       MiscastSpell(() =>
       {
@@ -463,6 +479,14 @@ public class GameController : MonoBehaviour
   {
     if (matchData == null)
       return;
+
+    matchData.User.profile.matchCounter++;
+    matchData.Opponent.profile.matchCounter++;
+    Persistence.Save();
+
+    var p = new Dictionary<string, object>();
+    p.Add("match_counter", matchData.User.profile.matchCounter);
+    Analytics.CustomEvent("Match_Started", p);
 
     SetupGameField();
     
@@ -988,11 +1012,19 @@ public class GameController : MonoBehaviour
   {
     if (winner == matchData.User)
     {
+      var p = new Dictionary<string, object>();
+      p.Add("match_counter", matchData.User.profile.matchCounter);
+      Analytics.CustomEvent("Match_Win", p);
+
       if (!rewardDialog.IsOpened())
         rewardDialog.Open(winner, () => { this.BackToMainMenu(); });
     }
     else
     {
+      var p = new Dictionary<string, object>();
+      p.Add("match_counter", matchData.User.profile.matchCounter);
+      Analytics.CustomEvent("Match_Lose", p);
+
       if (!defeatDialog.IsOpened())
         defeatDialog.Open(LanguageManager.Instance.GetTextValue("Message.Lose"), () => { this.BackToMainMenu(); }, () => { this.Replay(); });
     }
@@ -1023,6 +1055,8 @@ public class GameController : MonoBehaviour
 
   private void Replay()
   {
+    Analytics.CustomEvent("Match_Replay");
+
     SceneConnector.Instance.Replay();
     if (!Persistence.gameConfig.removedAds)
     {
@@ -1078,6 +1112,8 @@ public class GameController : MonoBehaviour
 
     if (defeatDialog.IsOpened())
       return;
+
+    Analytics.CustomEvent("Match_Surrender");
 
     matchData.Surrender();
     defeatDialog.Open(LanguageManager.Instance.GetTextValue("Message.YouSurrender"),

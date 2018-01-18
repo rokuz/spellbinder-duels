@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Analytics;
 using System.Collections;
 using System.Collections.Generic;
 using SmartLocalization;
@@ -86,6 +87,8 @@ public class SetNameDialog : MonoBehaviour
   {
     if (!facebookHolder.FacebookInitialized || facebookHolder.FacebookLoggedIn)
       return;
+
+    Analytics.CustomEvent("SetName_FB");
 
     fbButton.interactable = false;
     facebookHolder.Login((bool success) =>

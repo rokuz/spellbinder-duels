@@ -16,6 +16,7 @@ public class ProfileData
   public int victories;
   public int defeats;
   public string[] spells;
+  public int matchCounter = 0;
 
   public ProfileData()
   {
@@ -31,6 +32,7 @@ public class ProfileData
     this.victories = 0;
     this.defeats = 0;
     this.spells = (from s in Spellbook.Spells where s.minLevel <= this.level select s.Code).ToArray();
+    this.matchCounter = 0;
   }
 
   public ProfileData(string name, int level, int experience)
@@ -47,6 +49,7 @@ public class ProfileData
     this.victories = 0;
     this.defeats = 0;
     this.spells = (from s in Spellbook.Spells where s.minLevel <= this.level select s.Code).ToArray();
+    this.matchCounter = 0;
   }
 
   public void ApplyExperience(int experience)

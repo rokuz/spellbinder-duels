@@ -109,7 +109,7 @@ public class Purchaser : MonoBehaviour, IStoreListener
     {
       var p = new Dictionary<string, object>();
       p.Add("product", id);
-      Analytics.CustomEvent("SuccessfulPurchase", p);
+      Analytics.CustomEvent("Purchase_Successful", p);
       Debug.Log("Successful Purchase: " + id);
 
       if (id == kProductIDRemoveAds)
@@ -147,5 +147,9 @@ public class Purchaser : MonoBehaviour, IStoreListener
     Debug.Log(string.Format("OnPurchaseFailed: FAIL. Product: '{0}', PurchaseFailureReason: {1}", id, failureReason));
     if (this.onBuy != null)
       this.onBuy(id, false);
+
+    var p = new Dictionary<string, object>();
+    p.Add("product", id);
+    Analytics.CustomEvent("Purchase_Failed", p);
   }
 }

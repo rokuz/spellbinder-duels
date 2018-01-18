@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Analytics;
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using SmartLocalization;
 
 public class RewardDialog : MonoBehaviour
@@ -26,6 +29,10 @@ public class RewardDialog : MonoBehaviour
       rewardText.gameObject.SetActive(true);
       if (winner.data.experienceCalculator.LevelsUp > 0)
       {
+        var p = new Dictionary<string, object>();
+        p.Add("level", winner.profile.level);
+        Analytics.CustomEvent("Match_Level_Up", p);
+
         rewardText.text = LanguageManager.Instance.GetTextValue("Reward.NewLevel");
       }
       else

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Analytics;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -93,6 +94,8 @@ public class LeaderboardDialog : MonoBehaviour
 
   public void Open(ProfileData profileData, OnClose onCloseHandler)
   {
+    Analytics.CustomEvent("Leaderboard_Open");
+
     this.onCloseHandler = onCloseHandler;
 
     ScrollRect scroll = gameObject.GetComponentInChildren<ScrollRect>();

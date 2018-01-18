@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Analytics;
 using SmartLocalization;
 
 public class TutorialCoreGame : MonoBehaviour
@@ -135,6 +136,8 @@ public class TutorialCoreGame : MonoBehaviour
     Persistence.Save();
 
     SetActive();
+
+    Analytics.CustomEvent("Tutorial_CoreGame_Started");
   }
 
   private void SetActive()
@@ -157,6 +160,8 @@ public class TutorialCoreGame : MonoBehaviour
     Persistence.gameConfig.tutorialCoreGameStep = 0;
     Persistence.gameConfig.tutorialCoreGameShown = true;
     Persistence.Save();
+
+    Analytics.CustomEvent("Tutorial_CoreGame_Discarded");
   }
 
   public void OnNextClicked()
@@ -173,6 +178,7 @@ public class TutorialCoreGame : MonoBehaviour
     {
       Persistence.gameConfig.tutorialCoreGameStep = 0;
       Persistence.gameConfig.tutorialCoreGameShown = true;
+      Analytics.CustomEvent("Tutorial_CoreGame_Finished");
     }
     else if (Persistence.gameConfig.tutorialCoreGameStep == 5)
     {
