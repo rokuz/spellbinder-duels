@@ -136,4 +136,14 @@ public static class Spellbook
     }
     return null;
   }
+
+  public static Spell Find(Spell.Type type)
+  {
+    foreach (var s in Spells)
+    {
+      if (s.SpellType == type)
+        return s;
+    }
+    return null;
+  }
 }

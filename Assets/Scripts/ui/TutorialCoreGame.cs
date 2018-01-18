@@ -10,8 +10,10 @@ public class TutorialCoreGame : MonoBehaviour
   public GameObject tutorial1;
   public GameObject tutorial2;
   public GameObject[] markers = new GameObject[GameField.CARDS_COUNT];
+  public GameObject tutorialCrystalSelector;
 
   private Spell spellToCast;
+  private Button nextButton;
 
   public void InitTutorial()
   {
@@ -53,8 +55,12 @@ public class TutorialCoreGame : MonoBehaviour
     string spellName = LanguageManager.Instance.GetTextValue("Spell." + spellToCast.SpellType.ToString());
     GetText(tut).text = GetTutorialText(Persistence.gameConfig.tutorialCoreGameStep) + " \"" + spellName+ "\".";
 
-    var b = (from t in tut.GetComponentsInChildren<Button>() where t.gameObject.name == "ButtonNext" select t).Single();
-    b.gameObject.SetActive(false);
+    nextButton = (from t in tut.GetComponentsInChildren<Button>() where t.gameObject.name == "ButtonNext" select t).Single();
+    nextButton.gameObject.SetActive(false);
+
+    this.markers[index1].SetActive(true);
+    this.markers[index2].SetActive(true);
+    tutorialCrystalSelector.SetActive(true);
   }
 
   public void OnSpellCasted(Spell spell)
@@ -63,6 +69,12 @@ public class TutorialCoreGame : MonoBehaviour
       return;
     if (Persistence.gameConfig.tutorialCoreGameStep != 3)
       return;
+
+    if (nextButton != null)
+    {
+      nextButton.gameObject.SetActive(true);
+      nextButton = null;
+    }
 
     ResetCurrent();
 
@@ -78,8 +90,9 @@ public class TutorialCoreGame : MonoBehaviour
     else
       GetText(tut).text = LanguageManager.Instance.GetTextValue("Tutorial.Battle.5.2");
 
-    var b = (from t in tut.GetComponentsInChildren<Button>() where t.gameObject.name == "ButtonNext" select t).Single();
-    b.gameObject.SetActive(true);
+    foreach (var m in this.markers)
+      m.SetActive(false);
+    tutorialCrystalSelector.SetActive(false);
   }
 
   public bool EnabledToss()
@@ -129,20 +142,12 @@ public class TutorialCoreGame : MonoBehaviour
     var tut = GetTutorial(Persistence.gameConfig.tutorialCoreGameStep);
     tut.SetActive(true);
     GetText(tut).text = GetTutorialText(Persistence.gameConfig.tutorialCoreGameStep);
-
-    //var m = GetMarker(Persistence.gameConfig.tutorialCoreGameStep);
-    //if (m != null)
-    //  m.SetActive(true);
   }
 
   private void ResetCurrent()
   {
     var tut = GetTutorial(Persistence.gameConfig.tutorialCoreGameStep);
     tut.SetActive(false);
-
-    //var m = GetMarker(Persistence.gameConfig.tutorialCoreGameStep);
-    //if (m != null)
-    //  m.SetActive(false);
   }
 
   public void OnNoClicked()
@@ -150,7 +155,7 @@ public class TutorialCoreGame : MonoBehaviour
     ResetCurrent();
 
     Persistence.gameConfig.tutorialCoreGameStep = 0;
-    //Persistence.gameConfig.tutorialCoreGameShown = true;
+    Persistence.gameConfig.tutorialCoreGameShown = true;
     Persistence.Save();
   }
 
@@ -167,11 +172,11 @@ public class TutorialCoreGame : MonoBehaviour
     else if (Persistence.gameConfig.tutorialCoreGameStep > 5)
     {
       Persistence.gameConfig.tutorialCoreGameStep = 0;
-      //Persistence.gameConfig.tutorialCoreGameShown = true;
+      Persistence.gameConfig.tutorialCoreGameShown = true;
     }
     else if (Persistence.gameConfig.tutorialCoreGameStep == 5)
     {
-      GetButtonText(tutorial2, "Button").text = LanguageManager.Instance.GetTextValue("Message.Finish");
+      GetButtonText(tutorial2, "ButtonNext").text = LanguageManager.Instance.GetTextValue("Message.Finish");
     }
     Persistence.Save();
 
@@ -188,14 +193,5 @@ public class TutorialCoreGame : MonoBehaviour
   {
     var b = (from t in tutorial.GetComponentsInChildren<Button>() where t.gameObject.name == buttonName select t).Single();
     return (from t in b.GetComponentsInChildren<Text>() where t.gameObject.name == "Text" select t).Single();
-  }
-
-  private GameObject GetMarker(int step)
-  {
-    int i = step + 1;
-    Transform t = null;//markers.gameObject.transform.Find("Marker" + i);
-    if (t == null)
-      return null;
-    return t.gameObject;
   }
 }

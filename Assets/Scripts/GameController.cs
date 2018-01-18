@@ -382,6 +382,10 @@ public class GameController : MonoBehaviour
     yield return new WaitForSeconds(delay);
     Spell s = this.matchData.CastSpell(indices, caster);
     bool youAreCaster = caster == matchData.User;
+
+    if (!Persistence.gameConfig.tutorialCoreGameShown)
+      tutorialCoreGame.OnSpellCasted(s);
+
     if (s != null)
     {
       AnimateCastedSpell(s, youAreCaster, () => 
@@ -582,7 +586,20 @@ public class GameController : MonoBehaviour
     surrenderButton.interactable = true;
     finishTurnButton.interactable = yourTurn;
 
-    //OnCrystalActivated
+    if (!Persistence.gameConfig.tutorialCoreGameShown)
+    {
+      Spell[] spells = new Spell[] { Spellbook.Find(Spell.Type.FIREBALL), Spellbook.Find(Spell.Type.LIGHTNING),
+                                     Spellbook.Find(Spell.Type.ICE_SPEAR), Spellbook.Find(Spell.Type.DEATH_LOOK) };
+      foreach (var s in spells)
+      {
+        var indices = matchData.Field.FindSpell(s);
+        if (indices != null)
+        {
+          tutorialCoreGame.OnCrystalActivated(indices[0], indices[1], s);
+          break;
+        }
+      }     
+    }
 
     UpdateManaUI();
     StartCoroutine(ShowGameInfo(LanguageManager.Instance.GetTextValue(yourTurn ? "Game.YourTurn" : "Game.OpponentTurn"), 1.0f));

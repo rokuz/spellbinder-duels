@@ -123,4 +123,27 @@ public class GameField
     }
     return indices;
   }
+
+  public List<int> FindSpell(Spell spell)
+  {
+    List<int> result = new List<int>();
+    foreach (Magic m in spell.Combination)
+    {
+      bool nothingAdded = true;
+      for (int i = 0; i < CARDS_COUNT; i++)
+      {
+        if (result.Exists(x => x == i))
+          continue;
+        if (cards[i] == m)
+        {
+          result.Add(i);
+          nothingAdded = false;
+          break;
+        }
+      }
+      if (nothingAdded)
+        return null;
+    }
+    return result;
+  }
 }

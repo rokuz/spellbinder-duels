@@ -543,16 +543,16 @@
 		<value>Tournament will be available soon</value>
 	</data>
 	<data name="Tutorial.Battle.1" xml:space="preserve">
-		<value>Welcome to your first duel! Today I will be your second. Do not be afraid of anything, the enemy is a weakling. Do you know rules of the duel?</value>
+		<value>Welcome to your first duel! Today I will be your second. Do not be afraid of anything, the enemy is a weakling. Can I tell you rules of the duel?</value>
 	</data>
 	<data name="Tutorial.Battle.2" xml:space="preserve">
 		<value>Cast spells by turns. The toss has decided that you are the first.</value>
 	</data>
 	<data name="Tutorial.Battle.3" xml:space="preserve">
-		<value>On the table are laid out the cards of the magical schools allowed in this duel. Try to remember the position of the cards. When the duel begins, the cards will turn over, and you will be able to count on your memory.</value>
+		<value>On the table are laid out the cards of the magical schools. Try to remember the positions of the cards. The cards will turn over soon, and you will be able to count on your memory.</value>
 	</data>
 	<data name="Tutorial.Battle.4" xml:space="preserve">
-		<value>Look, the first mana crystal fired. Turn these cards over and cast</value>
+		<value>Look, the first mana crystal activated. You have to spend all crystals on each turn. Turn the highlighted cards over and cast</value>
 	</data>
 	<data name="Tutorial.Battle.5.1" xml:space="preserve">
 		<value>Excellent, well done! I think you will win without my support.</value>
@@ -564,7 +564,7 @@
 		<value>Well, you missed. It's okay, next time it will turn out. I have things to do, see you!</value>
 	</data>
 	<data name="Tutorial.Battle.6" xml:space="preserve">
-		<value>Ah, I almost forgot. The last tip. The duel ends when one of the opponents loses consciousness. Watch your own health and do not neglect healing magic.</value>
+		<value>Ah, I almost forgot. The duel ends when one of the opponents loses consciousness. Watch your own health and do not neglect healing magic.</value>
 	</data>
 	<data name="Tutorial.MainMenu.1" xml:space="preserve">
 		<value>Greetings, the Spellbinder. Welcome to the Wizards Tournament. You can call me Merlin. I am the champion of the previous 10 years, let me show you the tournament.</value>
