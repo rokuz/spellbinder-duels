@@ -121,6 +121,11 @@ public class SettingsDialog : MonoBehaviour
     musicSource.volume = volumeSlider.value;
   }
 
+  public void OnChangedSfxVolume()
+  {
+    Persistence.gameConfig.sfxVolume = sfxSlider.value;
+  }
+
   public void OnRestorePurchases()
   {
     purchaser.RestorePurchases(() => {
