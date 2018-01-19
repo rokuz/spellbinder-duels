@@ -191,6 +191,18 @@
 	<data name="Leaderboard.Defeats" xml:space="preserve">
 		<value>Defeats</value>
 	</data>
+	<data name="Leaderboard.Duel" xml:space="preserve">
+		<value>Duel</value>
+	</data>
+	<data name="Leaderboard.Invite" xml:space="preserve">
+		<value>Invite and get</value>
+	</data>
+	<data name="Leaderboard.InviteError" xml:space="preserve">
+		<value>Can not invite friends now. Please, try to do it later.</value>
+	</data>
+	<data name="Leaderboard.NoNewFriends" xml:space="preserve">
+		<value>You have not invited any new friend.</value>
+	</data>
 	<data name="Leaderboard.Victories" xml:space="preserve">
 		<value>Victories</value>
 	</data>

@@ -4,6 +4,7 @@ using System.Collections;
 using Facebook.Unity;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 public class FBHolder : MonoBehaviour
 {
@@ -17,7 +18,7 @@ public class FBHolder : MonoBehaviour
   public delegate void OnLoginFinished(bool success);
   private OnLoginFinished loginCallback;
 
-  public delegate void OnInviteFinished(bool success);
+  public delegate void OnInviteFinished(bool success, string[] friends);
   private OnInviteFinished onInviteFinished;
 
   private class PictureHandler
@@ -51,7 +52,17 @@ public class FBHolder : MonoBehaviour
     }
   }
 
+  private class CachedRequest
+  {
+    public Image image;
+    public string id;
+  }
+
+  private List<CachedRequest> cachedRequests = new List<CachedRequest>();
+
   private Dictionary<string, Sprite> picturesCache = new Dictionary<string, Sprite>();
+
+  private Dictionary<string, string> friendNames = new Dictionary<string, string>();
 
   public bool FacebookInitialized
   {
@@ -85,8 +96,17 @@ public class FBHolder : MonoBehaviour
 
   public void GetPicture(Image image, string id)
   {
-    if (!facebookInitialized || image == null || id == null || id.Length == 0)
+    if (image == null || id == null || id.Length == 0)
       return;
+
+    if (!facebookInitialized)
+    {
+      var req = new CachedRequest();
+      req.id = id;
+      req.image = image;
+      cachedRequests.Add(req);
+      return;
+    }
 
     if (picturesCache.ContainsKey(id))
     {
@@ -166,6 +186,10 @@ public class FBHolder : MonoBehaviour
   {
     Debug.Log("Facebook Initialized");
     facebookInitialized = true;
+
+    foreach (var r in cachedRequests)
+      GetPicture(r.image, r.id);
+    cachedRequests.Clear();
   }
 
   private static string GetPicturePath(string id)
@@ -200,20 +224,60 @@ public class FBHolder : MonoBehaviour
 
   private void InviteCallback(IAppRequestResult result)
   {
-    if (result.Error != null && result.Error.Length != 0)
+    if (result == null || result.Error != null || (result.Error != null && result.Error.Length != 0) || result.To == null)
     {
-      Debug.Log(result.Error);
+      if (result != null)
+        Debug.Log(result.Error);
       Debug.Log("Friends were not invited");
       if (this.onInviteFinished != null)
-        this.onInviteFinished(false);
+        this.onInviteFinished(false, null);
+      this.onInviteFinished = null;
     }
     else
     {
-      Debug.Log("Friends were invited");
-      if (this.onInviteFinished != null)
-        this.onInviteFinished(true);
+      StartCoroutine(RequestNamesOfFriends((from f in result.To select f).ToArray()));
     }
+  }
+
+  private IEnumerator RequestNamesOfFriends(string[] ids)
+  {
+    foreach (var friendId in ids)
+    {
+      if (!friendNames.ContainsKey(friendId))
+      {
+        string req = "/" + friendId + "?fields=first_name";
+        FB.API(req, HttpMethod.GET, FriendNameCallback);
+        string fid = friendId;
+        yield return new WaitUntil(() => { return friendNames.ContainsKey(fid); });
+      }
+    }
+
+    Debug.Log("Friends were invited");
+    if (this.onInviteFinished != null)
+      this.onInviteFinished(true, ids);
     this.onInviteFinished = null;
+  }
+
+  public string GetFriendName(string id)
+  {
+    if (friendNames.ContainsKey(id))
+      return friendNames[id];
+    return "NoName";
+  }
+
+  private void FriendNameCallback(IGraphResult result)
+  {
+    if (result != null && result.Error != null)
+      Debug.Log(result.Error);
+
+    var fid = result.ResultDictionary["id"].ToString();
+    string name = result.ResultDictionary["first_name"].ToString();
+    if (name == null)
+      name = "Friend";
+    if (!friendNames.ContainsKey(fid))
+      friendNames.Add(fid, name);
+    else
+      friendNames[fid] = name;
   }
 
   public void Invite(OnInviteFinished onInviteFinished)
@@ -221,7 +285,14 @@ public class FBHolder : MonoBehaviour
     this.onInviteFinished = onInviteFinished;
     Login((bool success) => {
       if (success)
+      {
         InviteFriends();
+      }
+      else
+      {
+        if (onInviteFinished != null)
+          onInviteFinished(false, null);
+      }
     });
   }
 }

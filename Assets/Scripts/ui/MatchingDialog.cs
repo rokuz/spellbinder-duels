@@ -30,7 +30,7 @@ public class MatchingDialog : MonoBehaviour
   private int textAnimationIndex = 0;
   private float animationStartTime;
 
-  public void Start()
+  public void Setup()
   {
     lookingForText.text = LanguageManager.Instance.GetTextValue("Matching.LookingFor");
     if (LanguageManager.Instance.GetSystemLanguageEnglishName() == "Russian")
@@ -66,6 +66,8 @@ public class MatchingDialog : MonoBehaviour
 
   public void Open(ProfileData profileData, OnClose onCloseHandler)
   {
+    Setup();
+
     this.profileData = profileData;
     this.onCloseHandler = onCloseHandler;
     gameObject.SetActive(true);
@@ -76,6 +78,19 @@ public class MatchingDialog : MonoBehaviour
     facebookHolder.GetPicture(player.GetComponent<Image>(), profileData.facebookId);
 
     StartCoroutine(StartFinding(2.0f));
+  }
+
+  public void Open(ProfileData profileData, ProfileData rivalData, OnClose onCloseHandler)
+  {
+    Setup();
+
+    this.profileData = profileData;
+    this.onCloseHandler = onCloseHandler;
+    gameObject.SetActive(true);
+
+    facebookHolder.GetPicture(player.GetComponent<Image>(), profileData.facebookId);
+
+    OnMatchingSuccess(rivalData);
   }
 
   public void Close()

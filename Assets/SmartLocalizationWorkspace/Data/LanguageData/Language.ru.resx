@@ -191,6 +191,18 @@
 	<data name="Leaderboard.Defeats" xml:space="preserve">
 		<value>Поражения</value>
 	</data>
+	<data name="Leaderboard.Duel" xml:space="preserve">
+		<value>Бросить вызов</value>
+	</data>
+	<data name="Leaderboard.Invite" xml:space="preserve">
+		<value>Пригласи и получи</value>
+	</data>
+	<data name="Leaderboard.InviteError" xml:space="preserve">
+		<value>Не могу пригласить друзей сейчас. Пожалуйста, попробуйте позже.</value>
+	</data>
+	<data name="Leaderboard.NoNewFriends" xml:space="preserve">
+		<value>Вы не пригласили ни одного нового друга.</value>
+	</data>
 	<data name="Leaderboard.Victories" xml:space="preserve">
 		<value>Победы</value>
 	</data>

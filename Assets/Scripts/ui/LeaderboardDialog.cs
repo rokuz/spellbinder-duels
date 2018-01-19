@@ -13,6 +13,9 @@ public class LeaderboardDialog : MonoBehaviour
   public GameObject content;
   public AvatarHolder avatarHolder;
   public FBHolder facebookHolder;
+  public Text inviteButtonText;
+  public MessageDialog messageDialog;
+  public MatchingDialog matchingDialog;
 
   public Text title;
 
@@ -68,18 +71,43 @@ public class LeaderboardDialog : MonoBehaviour
           spellIcon.sprite = avatarSprite;
       }
 
-      Text title = (from t in profileInfo.GetComponentsInChildren<Text>() where t.gameObject.name == "Name" select t).Single();
+      Text title = (from t in profileInfo.GetComponentsInChildren<Text>()
+                       where t.gameObject.name == "Name"
+                       select t).Single();
       title.text = profiles[i].name;
 
-      Text desc = (from t in profileInfo.GetComponentsInChildren<Text>() where t.gameObject.name == "ProfileDesc" select t).Single();
+      Text desc = (from t in profileInfo.GetComponentsInChildren<Text>()
+                      where t.gameObject.name == "ProfileDesc"
+                      select t).Single();
       desc.text = UIUtils.GetProfileDesc(profiles[i]);
 
-      Text posText = (from t in profileInfo.GetComponentsInChildren<Text>() where t.gameObject.name == "PositionValue" select t).Single();
+      Text posText = (from t in profileInfo.GetComponentsInChildren<Text>()
+                         where t.gameObject.name == "PositionValue"
+                         select t).Single();
       posText.text = "" + (i + 1);
+
+      Button btn = (from t in profileInfo.GetComponentsInChildren<Button>()
+                       where t.gameObject.name == "DuelButton"
+                       select t).Single();
+      if (profiles[i] != Persistence.gameConfig.profile && !(profiles[i].name == "Merlin" && !Persistence.gameConfig.tutorialCoreGameShown))
+      {
+        int buttonIndex = i;
+        btn.onClick.AddListener(() => { this.OnDuel(buttonIndex); });
+        Text btnText = (from t in btn.GetComponentsInChildren<Text>()
+                         where t.gameObject.name == "Text"
+                         select t).Single();
+        btnText.text = LanguageManager.Instance.GetTextValue("Leaderboard.Duel");
+      }
+      else
+      {
+        btn.gameObject.SetActive(false);
+      }
 		}
 		height += kSpacing;
 		content.GetComponent<RectTransform>().SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
     this.title.text = LanguageManager.Instance.GetTextValue("MainMenu.Leaderboard");
+    inviteButtonText.text = LanguageManager.Instance.GetTextValue("Leaderboard.Invite") + " " + 
+                            Constants.INVITE_PRICE + " " + LanguageManager.Instance.GetTextValue("Reward.CoinsForm3");
 	}
 
   public void Update()
@@ -98,6 +126,15 @@ public class LeaderboardDialog : MonoBehaviour
 
     this.onCloseHandler = onCloseHandler;
 
+    ScrollToPlayer();
+
+    gameObject.SetActive(true);
+    if (splash != null && !splash.IsActive())
+      splash.gameObject.SetActive(true);
+  }
+
+  private void ScrollToPlayer()
+  {
     ScrollRect scroll = gameObject.GetComponentInChildren<ScrollRect>();
     Vector3[] corners = new Vector3[4];
     content.GetComponent<RectTransform>().GetWorldCorners(corners);
@@ -116,10 +153,6 @@ public class LeaderboardDialog : MonoBehaviour
       if (p >= ymax)
         break;
     }
-
-    gameObject.SetActive(true);
-    if (splash != null && !splash.IsActive())
-      splash.gameObject.SetActive(true);
   }
 
   public void Close()
@@ -133,9 +166,59 @@ public class LeaderboardDialog : MonoBehaviour
       onCloseHandler();
   }
 
+  public void OnInvite()
+  {
+    Analytics.CustomEvent("Leaderboard_Invite");
+    facebookHolder.Invite((bool success, string[] friends) => {
+      if (success && friends != null)
+      {
+        var newFriends = Persistence.gameConfig.GetNewFriends(friends);
+
+        var p = new Dictionary<string, object>();
+        p.Add("new_friends", newFriends.Length);
+        Analytics.CustomEvent("Leaderboard_Invite_Success", p);
+
+        if (newFriends != null)
+        {
+          Persistence.gameConfig.AddFriends(newFriends, facebookHolder);
+          Persistence.gameConfig.profile.coins += (newFriends.Length * Constants.INVITE_PRICE);
+          Persistence.Save();
+          Setup();
+          ScrollToPlayer();
+        }
+        else
+        {
+          messageDialog.Open(LanguageManager.Instance.GetTextValue("Message.Error"),
+            LanguageManager.Instance.GetTextValue("Leaderboard.NoNewFriends"), null);
+        }
+      }
+      else
+      {
+        var p = new Dictionary<string, object>();
+        p.Add("no_auth", Persistence.gameConfig.profile.facebookId.Length == 0);
+        Analytics.CustomEvent("Leaderboard_Invite_Failure", p);
+
+        messageDialog.Open(LanguageManager.Instance.GetTextValue("Message.Error"),
+          LanguageManager.Instance.GetTextValue("Leaderboard.InviteError"), null);
+      }
+    });
+  }
+
+  public void OnDuel(int profileIndex)
+  {
+    var p = new Dictionary<string, object>();
+    p.Add("is_friend", profiles[profileIndex].facebookId.Length != 0);
+    p.Add("player_level", Persistence.gameConfig.profile.level);
+    p.Add("opponent_level", profiles[profileIndex].level);
+    Analytics.CustomEvent("Leaderboard_Duel", p);
+
+    Close();
+    matchingDialog.Open(Persistence.gameConfig.profile, profiles[profileIndex], null);
+  }
+
   private void CloseIfClickedOutside(GameObject panel)
   {
-    if (Input.GetMouseButtonDown(0) && panel.activeSelf &&
+    if (Input.GetMouseButtonDown(0) && panel.activeSelf && !messageDialog.IsOpened() &&
         !RectTransformUtility.RectangleContainsScreenPoint(panel.GetComponent<RectTransform>(), Input.mousePosition, null))
     {
       Close();

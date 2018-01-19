@@ -97,7 +97,7 @@ public class MainMenuController : MonoBehaviour
   public void OnLeaderboardButtonClicked()
   {
     this.leaderboardButton.interactable = false;
-    leaderboardDialog.Open(Persistence.gameConfig.profile, () => { this.leaderboardButton.interactable = true; });
+    leaderboardDialog.Open(Persistence.gameConfig.profile, () => { this.leaderboardButton.interactable = true; UpdatePlayerUI(); });
     tutorialMainMenu.OnLeaderboardClicked();
   }
 

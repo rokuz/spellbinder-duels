@@ -191,6 +191,15 @@
 	<data name="Leaderboard.Defeats" xml:space="preserve">
 		<value />
 	</data>
+	<data name="Leaderboard.Invite" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Leaderboard.InviteError" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Leaderboard.NoNewFriends" xml:space="preserve">
+		<value />
+	</data>
 	<data name="Leaderboard.Victories" xml:space="preserve">
 		<value />
 	</data>
@@ -383,6 +392,9 @@
 	<data name="Shop.StoreFailure" xml:space="preserve">
 		<value />
 	</data>
+	<data name="SpaceShippers.Desc" xml:space="preserve">
+		<value />
+	</data>
 	<data name="Spell.BLEEDING" xml:space="preserve">
 		<value />
 	</data>
@@ -542,9 +554,6 @@
 	<data name="SpellDesc.RemoveDef" xml:space="preserve">
 		<value />
 	</data>
-	<data name="SpaceShippers.Desc" xml:space="preserve">
-		<value />
-	</data>
 	<data name="Temp.Shop" xml:space="preserve">
 		<value />
 	</data>
@@ -594,6 +603,9 @@
 		<value />
 	</data>
 	<data name="Victory.Finish" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Leaderboard.Duel" xml:space="preserve">
 		<value />
 	</data>
 </root>

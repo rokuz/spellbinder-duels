@@ -60,6 +60,49 @@ public class GameConfig
       {
         rival.victories = rival.level * 4 + UnityEngine.Random.Range(0, 10);
         rival.defeats = rival.level + UnityEngine.Random.Range(0, 10);
+        if (rival.level == 12)
+        {
+          rival.victories = rival.level * 4 + 10;
+          rival.defeats = rival.level;
+        }
+      }
+    }
+  }
+
+  public string[] GetNewFriends(string[] friends)
+  {
+    List<string> result = new List<string>();
+    foreach (var s in friends)
+    {
+      if (this.rivals.Find(x => x.facebookId == s) == null)
+        result.Add(s);
+    }
+    return result.Count > 0 ? result.ToArray() : null;
+  }
+
+  public void AddFriends(string[] friends, FBHolder fb)
+  {
+    for (int i = 0; i < friends.Length; i++)
+    {
+      int level = profile.level + UnityEngine.Random.Range(-1, 2);
+      if (level < 1)
+        level = 1;
+      var friend = new ProfileData(fb.GetFriendName(friends[i]), level, level > 1 ? Constants.LEVEL_EXP[level - 2] : 0);
+      friend.facebookId = friends[i];
+      rivals.Add(friend);
+
+      if (friend.level == 7)
+      {
+        friend.bonuses[UnityEngine.Random.Range(0, 3)] = 1;
+      }
+      else if (friend.level == 8)
+      {
+        friend.resistance[UnityEngine.Random.Range(0, 3)] = 1;
+      }
+      else if (friend.level > 8)
+      {
+        friend.bonuses[UnityEngine.Random.Range(0, 3)] = 1;
+        friend.resistance[UnityEngine.Random.Range(0, 3)] = 1;
       }
     }
   }

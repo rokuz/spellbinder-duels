@@ -18,6 +18,8 @@ public static class Constants
   public static int COINS_MIN = 10;
   public static int COINS_MAX = 30;
 
+  public static int INVITE_PRICE = 10;
+
   //                                             Level:   1     2     3     4     5     6     7     8     9     10    11    12
   public static float[] OPEN_RANDOM_CARDS = new float[] { 0.3f, 0.3f, 0.3f, 0.3f, 0.2f, 0.2f, 0.2f, 0.1f, 0.1f, 0.1f, 0.0f, 0.0f };
 
