@@ -17,6 +17,9 @@ public class FBHolder : MonoBehaviour
   public delegate void OnLoginFinished(bool success);
   private OnLoginFinished loginCallback;
 
+  public delegate void OnInviteFinished(bool success);
+  private OnInviteFinished onInviteFinished;
+
   private class PictureHandler
   {
     private Dictionary<string, Sprite> picturesCache;
@@ -66,9 +69,15 @@ public class FBHolder : MonoBehaviour
 
   public void Login(OnLoginFinished callback)
   {
+    if (FB.IsLoggedIn && callback != null)
+    {
+      callback(true);
+      return;
+    }
+
     if (!FB.IsLoggedIn && !loginInProgress)
     {
-      loginCallback = callback;
+      this.loginCallback = callback;
       loginInProgress = true;
       FB.LogInWithReadPermissions(new List<string>(){ "public_profile", "user_friends" }, AuthCallback);
     }
@@ -97,9 +106,7 @@ public class FBHolder : MonoBehaviour
   public void Logout()
   {
     if (FB.IsLoggedIn)
-    {
       FB.LogOut();
-    }
   }
 
   public bool FacebookLoggedIn
@@ -149,7 +156,8 @@ public class FBHolder : MonoBehaviour
     if (name != null)
       this.facebookName = name;
 
-    if (loginCallback != null) loginCallback(true);
+    if (loginCallback != null)
+      loginCallback(true);
     loginInProgress = false;
     loginCallback = null;
   }
@@ -181,5 +189,39 @@ public class FBHolder : MonoBehaviour
       else
         picturesCache[id] = image.sprite;
     }
+  }
+
+  private void InviteFriends()
+  {
+    string friendSelectorMessage = "Invite friends to play";
+    string[] friendSelectorFilters = new string[]{"app_non_users"};
+    FB.AppRequest(friendSelectorMessage, null, friendSelectorFilters, null, 5, "", "", InviteCallback);
+  }
+
+  private void InviteCallback(IAppRequestResult result)
+  {
+    if (result.Error != null && result.Error.Length != 0)
+    {
+      Debug.Log(result.Error);
+      Debug.Log("Friends were not invited");
+      if (this.onInviteFinished != null)
+        this.onInviteFinished(false);
+    }
+    else
+    {
+      Debug.Log("Friends were invited");
+      if (this.onInviteFinished != null)
+        this.onInviteFinished(true);
+    }
+    this.onInviteFinished = null;
+  }
+
+  public void Invite(OnInviteFinished onInviteFinished)
+  {
+    this.onInviteFinished = onInviteFinished;
+    Login((bool success) => {
+      if (success)
+        InviteFriends();
+    });
   }
 }
