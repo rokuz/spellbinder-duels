@@ -152,7 +152,7 @@ public class Bot
 
       // Heal yourself.
       index = FindHealSpell(spells, player, opponent);
-      if (index >= 0)
+      if (index >= 0 && player.data.health.Value < Constants.HEALTH_POINTS)
         return index;
     }
 

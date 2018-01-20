@@ -11,6 +11,16 @@ public class CoreGameAudio : MonoBehaviour
   public AudioSource toss;
 
   public AudioSource miscast;
+  public AudioSource bleeding;
+  public AudioSource blessing;
+  public AudioSource deathLook;
+  public AudioSource doppelganger;
+  public AudioSource fireball;
+  public AudioSource iceSpear;
+  public AudioSource lightning;
+  public AudioSource natureCall;
+  public AudioSource stoneskin;
+  public AudioSource meteorite;
 
   public enum Type
   {
@@ -40,18 +50,16 @@ public class CoreGameAudio : MonoBehaviour
 
     switch (s.SpellType) 
     {
-      case Spell.Type.BLEEDING:
-      case Spell.Type.BLESSING:
-      case Spell.Type.DEATH_LOOK:
-      case Spell.Type.DOPPELGANGER:
-      case Spell.Type.FIREBALL:
-      case Spell.Type.ICE_SPEAR:
-      case Spell.Type.LIGHTNING:
-      case Spell.Type.NATURE_CALL:
-      case Spell.Type.STONESKIN:
-        return null;
-      case Spell.Type.METEORITE:
-        return null;
+      case Spell.Type.BLEEDING: case Spell.Type.BLOOD_SIGN: return bleeding;
+      case Spell.Type.BLESSING: return blessing;
+      case Spell.Type.DEATH_LOOK: case Spell.Type.POISONING: return deathLook;
+      case Spell.Type.DOPPELGANGER: return doppelganger;
+      case Spell.Type.FIREBALL: return fireball;
+      case Spell.Type.ICE_SPEAR: case Spell.Type.ICE_RAIN: return iceSpear;
+      case Spell.Type.LIGHTNING: case Spell.Type.STORM: return lightning;
+      case Spell.Type.NATURE_CALL: return natureCall;
+      case Spell.Type.STONESKIN: case Spell.Type.DARKNESS_SHIELD: return stoneskin;
+      case Spell.Type.METEORITE: return meteorite;
     }
     return null;
   }

@@ -416,8 +416,14 @@
 	<data name="Spell.BLESSING" xml:space="preserve">
 		<value>Blessing</value>
 	</data>
+	<data name="Spell.BLOOD_SIGN" xml:space="preserve">
+		<value>Blood sign</value>
+	</data>
 	<data name="Spell.BURNING_SHIELD" xml:space="preserve">
 		<value>Burning shield</value>
+	</data>
+	<data name="Spell.DARKNESS_SHIELD" xml:space="preserve">
+		<value>Shield of Darkness</value>
 	</data>
 	<data name="Spell.DEATH_LOOK" xml:space="preserve">
 		<value>Death look</value>
@@ -440,6 +446,9 @@
 	<data name="Spell.FIREBALL" xml:space="preserve">
 		<value>Fireball</value>
 	</data>
+	<data name="Spell.ICE_RAIN" xml:space="preserve">
+		<value>Ice rain</value>
+	</data>
 	<data name="Spell.ICE_SPEAR" xml:space="preserve">
 		<value>Ice spear</value>
 	</data>
@@ -458,8 +467,14 @@
 	<data name="Spell.NATURE_CALL" xml:space="preserve">
 		<value>Nature call</value>
 	</data>
+	<data name="Spell.POISONING" xml:space="preserve">
+		<value>Poisoning</value>
+	</data>
 	<data name="Spell.STONESKIN" xml:space="preserve">
 		<value>Stoneskin</value>
+	</data>
+	<data name="Spell.STORM" xml:space="preserve">
+		<value>Storm</value>
 	</data>
 	<data name="Spell.WILDFIRE" xml:space="preserve">
 		<value>Wildfire</value>

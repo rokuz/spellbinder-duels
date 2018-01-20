@@ -49,6 +49,7 @@ public class GameController : MonoBehaviour
   public GameObject doppelgangerPrefab;
   public GameObject miscastPrefab;
   public GameObject meteoritePrefab;
+  public GameObject iceRainPrefab;
 
   public Button settingsButton;
   public Button finishTurnButton;
@@ -1048,7 +1049,7 @@ public class GameController : MonoBehaviour
     {
       CastProjectileSpell(iceSpearPrefab, userCasted ? playerInfo2Pos : playerInfo1Pos, onFinished);
     }
-    else if (spell.SpellType == Spell.Type.LIGHTNING)
+    else if (spell.SpellType == Spell.Type.LIGHTNING || spell.SpellType == Spell.Type.STORM)
     {
       CastInstantSpell(lightningPrefab, userCasted, userCasted ? playerInfo2Pos : playerInfo1Pos,
                        90.0f, true, 0.5f, onFinished);
@@ -1062,16 +1063,16 @@ public class GameController : MonoBehaviour
       Vector3 offset = new Vector3(0.0f, 10.0f, 0.0f);
       CastTargetedSpell(blessingPrefab, userCasted ? (playerInfo1Pos + offset) : (playerInfo2Pos + offset), 2.5f, onFinished);
     }
-    else if (spell.SpellType == Spell.Type.BLEEDING)
+    else if (spell.SpellType == Spell.Type.BLEEDING || spell.SpellType == Spell.Type.BLOOD_SIGN)
     {
       Vector3 offset = new Vector3(0.0f, 10.0f, 0.0f);
       CastTargetedSpell(bleedingPrefab, userCasted ? (playerInfo2Pos + offset) : (playerInfo1Pos + offset), 2.5f, onFinished);
     }
-    else if (spell.SpellType == Spell.Type.DEATH_LOOK)
+    else if (spell.SpellType == Spell.Type.DEATH_LOOK || spell.SpellType == Spell.Type.POISONING)
     {
       CastTargetedSpell(blindnessPrefab, userCasted ? playerInfo2Pos : playerInfo1Pos, 2.5f, onFinished);
     }
-    else if (spell.SpellType == Spell.Type.STONESKIN)
+    else if (spell.SpellType == Spell.Type.STONESKIN || spell.SpellType == Spell.Type.DARKNESS_SHIELD)
     {
       CastTargetedSpell(stoneskinPrefab, userCasted ? playerInfo1Pos : playerInfo2Pos, 1.5f, onFinished);
     }
@@ -1082,6 +1083,11 @@ public class GameController : MonoBehaviour
     else if (spell.SpellType == Spell.Type.METEORITE)
     {
       CastInstantSpell(meteoritePrefab, userCasted, userCasted ? playerInfo2Pos : playerInfo1Pos,
+                       userCasted ? 80.0f : -80.0f, false, 3.5f, onFinished);
+    }
+    else if (spell.SpellType == Spell.Type.ICE_RAIN)
+    {
+      CastInstantSpell(iceRainPrefab, userCasted, userCasted ? playerInfo2Pos : playerInfo1Pos,
                        userCasted ? 80.0f : -80.0f, false, 3.5f, onFinished);
     }
     else

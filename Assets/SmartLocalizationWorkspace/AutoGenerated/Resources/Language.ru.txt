@@ -416,8 +416,14 @@
 	<data name="Spell.BLESSING" xml:space="preserve">
 		<value>Благословление</value>
 	</data>
+	<data name="Spell.BLOOD_SIGN" xml:space="preserve">
+		<value>Знак крови</value>
+	</data>
 	<data name="Spell.BURNING_SHIELD" xml:space="preserve">
 		<value>Горящий щит</value>
+	</data>
+	<data name="Spell.DARKNESS_SHIELD" xml:space="preserve">
+		<value>Щит тьмы</value>
 	</data>
 	<data name="Spell.DEATH_LOOK" xml:space="preserve">
 		<value>Взгляд смерти</value>
@@ -440,6 +446,9 @@
 	<data name="Spell.FIREBALL" xml:space="preserve">
 		<value>Огненный шар</value>
 	</data>
+	<data name="Spell.ICE_RAIN" xml:space="preserve">
+		<value>Ледяной дождь</value>
+	</data>
 	<data name="Spell.ICE_SPEAR" xml:space="preserve">
 		<value>Ледяное копье</value>
 	</data>
@@ -458,8 +467,14 @@
 	<data name="Spell.NATURE_CALL" xml:space="preserve">
 		<value>Зов природы</value>
 	</data>
+	<data name="Spell.POISONING" xml:space="preserve">
+		<value>Отравление</value>
+	</data>
 	<data name="Spell.STONESKIN" xml:space="preserve">
 		<value>Каменная кожа</value>
+	</data>
+	<data name="Spell.STORM" xml:space="preserve">
+		<value>Буря</value>
 	</data>
 	<data name="Spell.WILDFIRE" xml:space="preserve">
 		<value>Лесной пожар</value>

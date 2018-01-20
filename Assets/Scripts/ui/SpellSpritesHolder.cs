@@ -24,6 +24,11 @@ public class SpellSpritesHolder : MonoBehaviour
   public Sprite natureCallSprite;
   public Sprite stoneskinSprite;
   public Sprite meteoriteSprite;
+  public Sprite iceRainSprite;
+  public Sprite stormSprite;
+  public Sprite darknessShieldSprite;
+  public Sprite bloodSignSprite;
+  public Sprite poisoningSprite;
 
   public Sprite GetSprite(Magic magic) 
   {
@@ -75,6 +80,16 @@ public class SpellSpritesHolder : MonoBehaviour
         return this.stoneskinSprite;
       case Spell.Type.METEORITE:
         return this.meteoriteSprite;
+      case Spell.Type.ICE_RAIN:
+        return this.iceRainSprite;
+      case Spell.Type.STORM:
+        return this.stormSprite;
+      case Spell.Type.DARKNESS_SHIELD:
+        return this.darknessShieldSprite;
+      case Spell.Type.BLOOD_SIGN:
+        return this.bloodSignSprite;
+      case Spell.Type.POISONING:
+        return this.poisoningSprite;
     }
     return null;
   }

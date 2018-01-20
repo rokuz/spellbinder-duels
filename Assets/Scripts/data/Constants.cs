@@ -39,6 +39,16 @@ public static class Constants
         return 0;
       case Spell.Type.METEORITE:
         return 100;
+      case Spell.Type.ICE_RAIN:
+        return 100;
+      case Spell.Type.STORM:
+        return 200;
+      case Spell.Type.DARKNESS_SHIELD:
+        return 300;
+      case Spell.Type.BLOOD_SIGN:
+        return 500;
+      case Spell.Type.POISONING:
+        return 600;
     }
     return 0;
   }
