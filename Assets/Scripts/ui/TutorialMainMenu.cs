@@ -11,6 +11,7 @@ public class TutorialMainMenu : MonoBehaviour
   public GameObject tutorial1;
   public GameObject tutorial2;
   public GameObject markers;
+  public ButtonAudio buttonAudio;
 
   public void InitTutorial()
   {
@@ -52,6 +53,8 @@ public class TutorialMainMenu : MonoBehaviour
     SetActive();
 
     Analytics.CustomEvent("Tutorial_MainMenu_Started");
+
+    buttonAudio.Play(ButtonAudio.Type.Yes);
   }
 
   private void SetActive()
@@ -84,6 +87,8 @@ public class TutorialMainMenu : MonoBehaviour
     Persistence.Save();
 
     Analytics.CustomEvent("Tutorial_MainMenu_Discarded");
+
+    buttonAudio.Play(ButtonAudio.Type.No);
   }
 
   public void OnNextClicked()
@@ -105,6 +110,8 @@ public class TutorialMainMenu : MonoBehaviour
 
     if (!Persistence.gameConfig.tutorialMainMenuShown)
       SetActive();
+
+    buttonAudio.Play(ButtonAudio.Type.Default);
   }
 
   public void OnSpellbookClicked()

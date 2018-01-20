@@ -15,6 +15,7 @@ public class SetNameDialog : MonoBehaviour
   public Image splash;
   public Text placeholderText;
   public Button fbButton;
+  public ButtonAudio buttonAudio;
 
   public delegate void OnClose();
 
@@ -64,6 +65,8 @@ public class SetNameDialog : MonoBehaviour
 
   public void OnOkButtonClicked()
   {
+    buttonAudio.Play(ButtonAudio.Type.Default);
+
     string name = nameEditbox.text;
     if (name.Length == 0)
     {
@@ -85,6 +88,8 @@ public class SetNameDialog : MonoBehaviour
 
   public void OnFbButtonClicked()
   {
+    buttonAudio.Play(ButtonAudio.Type.Default);
+
     if (!facebookHolder.FacebookInitialized || facebookHolder.FacebookLoggedIn)
       return;
 

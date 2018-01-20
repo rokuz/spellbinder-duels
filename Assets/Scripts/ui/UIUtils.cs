@@ -95,7 +95,7 @@ public static class UIUtils
     builder.Append(spellObject.minLevel);
     if (profile.level < spellObject.minLevel)
       builder.Append("</color>");
-    builder.Append("\n\n");
+    builder.Append("\n");
     builder.Append(GetSpellDescription(spellObject));
     return builder.ToString();
   }

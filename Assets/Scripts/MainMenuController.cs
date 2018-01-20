@@ -44,11 +44,6 @@ public class MainMenuController : MonoBehaviour
 
     GetComponent<AudioSource>().volume = Persistence.gameConfig.musicVolume;
 
-    //#if !UNITY_EDITOR
-    //if (Persistence.gameConfig.profile != null && Persistence.gameConfig.profile.facebookId.Length != 0)
-    //  facebookHolder.Login(null);
-    //#endif
-
     Spellbook.Init();
 
     this.playerLogo.gameObject.SetActive(false);

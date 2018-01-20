@@ -10,6 +10,7 @@ public class MessageYesNoDialog : MonoBehaviour
   public Image splash;
   public Text yesText;
   public Text noText;
+  public ButtonAudio buttonAudio;
 
   public delegate void OnClose(bool yes);
   private OnClose onCloseHandler;
@@ -45,11 +46,13 @@ public class MessageYesNoDialog : MonoBehaviour
 
   public void OnYesButtonClicked()
   {
+    buttonAudio.Play(ButtonAudio.Type.Yes);
     Close(true);
   }
 
   public void OnNoButtonClicked()
   {
+    buttonAudio.Play(ButtonAudio.Type.No);
     Close(false);
   }
 }

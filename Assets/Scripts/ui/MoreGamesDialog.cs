@@ -12,6 +12,7 @@ public class MoreGamesDialog : MonoBehaviour
   public GameObject gameItemPrefab;
   public Image splash;
   public GameObject content;
+  public ButtonAudio buttonAudio;
 
   public Sprite spaceShippersScreen;
 
@@ -130,6 +131,8 @@ public class MoreGamesDialog : MonoBehaviour
 
   public void OnShowInStoreClicked(int index)
   {
+    buttonAudio.Play(ButtonAudio.Type.Default);
+
     var p = new Dictionary<string, object>();
     p.Add("game", games[index].game);
     Analytics.CustomEvent("MoreGames_ShowInStore", p);

@@ -9,6 +9,7 @@ public class MessageDialog : MonoBehaviour
   public Text text;
   public Button okButton;
   public Image splash;
+  public ButtonAudio buttonAudio;
 
   public delegate void OnClose();
   private OnClose onCloseHandler;
@@ -42,6 +43,7 @@ public class MessageDialog : MonoBehaviour
 
   public void OnOkButtonClicked()
   {
+    buttonAudio.Play(ButtonAudio.Type.Default);
     Close();
   }
 }

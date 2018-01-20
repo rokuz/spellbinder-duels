@@ -92,7 +92,7 @@ public class LeaderboardDialog : MonoBehaviour
       if (profiles[i] != Persistence.gameConfig.profile && !(profiles[i].name == "Merlin" && !Persistence.gameConfig.tutorialCoreGameShown))
       {
         int buttonIndex = i;
-        btn.onClick.AddListener(() => { this.OnDuel(buttonIndex); });
+        btn.onClick.AddListener(() => { btn.GetComponent<AudioSource>().Play(); this.OnDuel(buttonIndex); });
         Text btnText = (from t in btn.GetComponentsInChildren<Text>()
                          where t.gameObject.name == "Text"
                          select t).Single();
@@ -169,7 +169,12 @@ public class LeaderboardDialog : MonoBehaviour
   public void OnInvite()
   {
     Analytics.CustomEvent("Leaderboard_Invite");
-    facebookHolder.Invite((bool success, string[] friends) => {
+    facebookHolder.Invite((bool success, string[] friends, bool cancelled) => {
+      if (cancelled)
+      {
+        Analytics.CustomEvent("Leaderboard_Invite_Cancel");
+        return;
+      }
       if (success && friends != null)
       {
         var newFriends = Persistence.gameConfig.GetNewFriends(friends);
@@ -211,6 +216,12 @@ public class LeaderboardDialog : MonoBehaviour
     p.Add("opponent_level", profiles[profileIndex].level);
     Analytics.CustomEvent("Leaderboard_Duel", p);
 
+    StartCoroutine(StartDuel(profileIndex));
+  }
+
+  IEnumerator StartDuel(int profileIndex)
+  {
+    yield return new WaitForSeconds(0.1f);
     Close();
     matchingDialog.Open(Persistence.gameConfig.profile, profiles[profileIndex], null);
   }

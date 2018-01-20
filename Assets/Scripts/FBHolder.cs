@@ -18,7 +18,7 @@ public class FBHolder : MonoBehaviour
   public delegate void OnLoginFinished(bool success);
   private OnLoginFinished loginCallback;
 
-  public delegate void OnInviteFinished(bool success, string[] friends);
+  public delegate void OnInviteFinished(bool success, string[] friends, bool cancelled);
   private OnInviteFinished onInviteFinished;
 
   private class PictureHandler
@@ -231,7 +231,7 @@ public class FBHolder : MonoBehaviour
         Debug.Log(result.Error);
       Debug.Log("Friends were not invited");
       if (this.onInviteFinished != null)
-        this.onInviteFinished(false, null);
+        this.onInviteFinished(false, null, result != null ? result.Cancelled : false);
       this.onInviteFinished = null;
     }
     else
@@ -255,7 +255,7 @@ public class FBHolder : MonoBehaviour
 
     Debug.Log("Friends were invited");
     if (this.onInviteFinished != null)
-      this.onInviteFinished(true, ids);
+      this.onInviteFinished(true, ids, false);
     this.onInviteFinished = null;
   }
 
@@ -292,7 +292,7 @@ public class FBHolder : MonoBehaviour
       else
       {
         if (this.onInviteFinished != null)
-          this.onInviteFinished(false, null);
+          this.onInviteFinished(false, null, false);
       }
     });
   }

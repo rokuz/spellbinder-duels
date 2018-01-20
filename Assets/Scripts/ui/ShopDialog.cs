@@ -28,6 +28,8 @@ public class ShopDialog : MonoBehaviour
 
   public SpellSpritesHolder spellSpritesHolder;
 
+  public ButtonAudio buttonAudio;
+
   private ShopItem[] items;
   private GameObject[] itemInfos;
 
@@ -192,6 +194,8 @@ public class ShopDialog : MonoBehaviour
 
   public void OnBuy(int index)
   {
+    buttonAudio.Play(ButtonAudio.Type.Default);
+
     string s = i18n("Shop.BuyCheck") + " \"" + items[index].title + "\"?";
     messageYesNoDialog.Open(i18n("Shop.BuyMessage"), s, (bool yes) =>
     {

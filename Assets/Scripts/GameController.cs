@@ -59,6 +59,8 @@ public class GameController : MonoBehaviour
 
   public TutorialCoreGame tutorialCoreGame;
 
+  public CoreGameAudio audio;
+
   class PlayerInfo
   {
     public Text name;
@@ -429,6 +431,7 @@ public class GameController : MonoBehaviour
 
   private void SwapCard(int index)
   {
+    audio.Play(CoreGameAudio.Type.CardFlip);
     SwappingInfo info = openedCards[index];
     if (!info.isSwapping)
     {
@@ -449,6 +452,8 @@ public class GameController : MonoBehaviour
 
     if (!Persistence.gameConfig.tutorialCoreGameShown)
       tutorialCoreGame.OnSpellCasted(s);
+
+    audio.PlayForSpell(s);
 
     if (s != null)
     {
@@ -506,6 +511,7 @@ public class GameController : MonoBehaviour
 
   private IEnumerator ApplySpellWithDelay(int[] indices, Spell spell, Match.Player caster, float delay)
   {
+    audio.OnFinishSpell(spell);
     yield return new WaitForSeconds(delay);
 
     Magic[] substitutes = matchData.ApplySpell(spell, indices, caster);
@@ -550,7 +556,10 @@ public class GameController : MonoBehaviour
       else
       {
         if (this.recommendationEnabled)
+        {
+          tutorialCoreGame.DeactivateMarkers();
           tutorialCoreGame.ActivateMarkers(bot.RecommendationForPlayer());
+        }
       }
     }
     spellInProgress = false;
@@ -594,6 +603,7 @@ public class GameController : MonoBehaviour
 
   private IEnumerator InitialShowCardsRoutine()
   {
+    this.audio.Play(CoreGameAudio.Type.Toss);
     yield return new WaitUntil(() => { return this.tutorialCoreGame.EnabledToss(); });
 
     var gi = GetGameInfo();
@@ -627,6 +637,7 @@ public class GameController : MonoBehaviour
   {
     if (!allCardsSwapping.isSwapping)
     {
+      this.audio.Play(CoreGameAudio.Type.CardFlip);
       allCardsSwapping.swapRequestTime = Time.time;
       allCardsSwapping.isBackShowing = !allCardsSwapping.isBackShowing;
       for (int i = 0; i < cards.Length; i++)
@@ -831,7 +842,8 @@ public class GameController : MonoBehaviour
 
     AnimateCardsSwapping();
 
-    if (yourTurn && (Time.time - this.lastCastTime) > 10.0f)
+    if (Persistence.gameConfig.tutorialCoreGameShown && matchData.Status == Match.MatchStatus.STARTED && 
+        yourTurn && (Time.time - this.lastCastTime) > 10.0f)
     {
       this.lastCastTime = Time.time;
       StartCoroutine(ShowGameInfo(LanguageManager.Instance.GetTextValue("Game.YouHaveMana"), 3.0f));
@@ -1187,6 +1199,7 @@ public class GameController : MonoBehaviour
 
   public void OnSettingsClicked()
   {
+    this.audio.Play(CoreGameAudio.Type.ButtonDefault);
     bool active = finishTurnButton.gameObject.activeSelf;
     finishTurnButton.gameObject.SetActive(!active);
     surrenderButton.gameObject.SetActive(!active);
@@ -1195,6 +1208,7 @@ public class GameController : MonoBehaviour
 
   public void OnFinishTurnClicked()
   {
+    this.audio.Play(CoreGameAudio.Type.ButtonDefault);
     if (spellInProgress)
       return;
 
@@ -1211,6 +1225,7 @@ public class GameController : MonoBehaviour
 
   public void OnSurrenderClicked()
   {
+    this.audio.Play(CoreGameAudio.Type.ButtonDefault);
     finishTurnButton.gameObject.SetActive(false);
     surrenderButton.gameObject.SetActive(false);
     spellbookButton.gameObject.SetActive(false);
@@ -1227,6 +1242,7 @@ public class GameController : MonoBehaviour
 
   public void OnSpellbookClicked()
   {
+    this.audio.Play(CoreGameAudio.Type.ButtonDefault);
     finishTurnButton.gameObject.SetActive(false);
     surrenderButton.gameObject.SetActive(false);
     spellbookButton.gameObject.SetActive(false);
