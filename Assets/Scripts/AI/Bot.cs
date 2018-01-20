@@ -32,6 +32,14 @@ public class Bot
     return indices;
   }
 
+  public int[] RecommendationForPlayer()
+  {
+    Spell[] availableSpells = (from sp in this.matchData.User.profile.spells select Spellbook.Find(sp)).ToArray();
+    var spellsOnField = FindSpellsOnField(availableSpells, this.matchData.User.data.RestMana, true);
+    var spellIndex = GetChosenSpellIndex(spellsOnField, this.matchData.User, this.matchData.Opponent);
+    return spellsOnField[spellIndex].Value;
+  }
+
   public void OnOpponentOpenedCards(int[] indices)
   {
     if (memory == null)
@@ -107,7 +115,7 @@ public class Bot
   {
     int[] resultIndices = null;
 
-    var spellsOnField = FindSpellsOnField(availableSpells, caster.data.RestMana);
+    var spellsOnField = FindSpellsOnField(availableSpells, caster.data.RestMana, false);
     if (CheckOpenRandomCardsProbability(spellsOnField.Count))
     {
       // Open random cards.
@@ -117,7 +125,7 @@ public class Bot
       return resultIndices;
     }
 
-    var spellIndex = GetChosenSpellIndex(spellsOnField, opponent);
+    var spellIndex = GetChosenSpellIndex(spellsOnField, caster, opponent);
     resultIndices = spellsOnField[spellIndex].Value;
 
     if (resultIndices != null)
@@ -128,27 +136,27 @@ public class Bot
     return resultIndices;
   }
 
-  private int GetChosenSpellIndex(List<KeyValuePair<Spell, int[]>> spells, Match.Player opponent)
+  private int GetChosenSpellIndex(List<KeyValuePair<Spell, int[]>> spells, Match.Player player, Match.Player opponent)
   {
     // Clear damage curse.
-    if (this.caster.data.blockedDamageTurns > 0)
+    if (player.data.blockedDamageTurns > 0)
     {
       int index = spells.FindIndex(x => x.Key.clearDamageCurse);
-      if (index >= 0)
+      if (index >= 0 && (player.data.RestMana - spells[index].Key.manaCost) > 0)
         return index;
 
       // Increase defense.
-      index = FindDefenseSpell(spells, opponent);
+      index = FindDefenseSpell(spells, player, opponent);
       if (index >= 0)
         return index;
 
       // Heal yourself.
-      index = FindHealSpell(spells, opponent);
+      index = FindHealSpell(spells, player, opponent);
       if (index >= 0)
         return index;
     }
 
-    if (caster.data.health.Value < 10)
+    if (player.data.health.Value < 10)
     {
       // Cast damage curse.
       if (opponent.data.blockedDamageTurns == 0)
@@ -160,24 +168,24 @@ public class Bot
 
       {
         // Increase defense.
-        int index = FindDefenseSpell(spells, opponent);
+        int index = FindDefenseSpell(spells, player, opponent);
         if (index >= 0)
           return index;
 
         // Heal yourself.
-        index = FindHealSpell(spells, opponent);
+        index = FindHealSpell(spells, player, opponent);
         if (index >= 0)
           return index;
       }
     }
 
     int maxDamage = 0;
-    int maxDamageSpellIndex = FindSpellWithMaxDamage(spells, opponent, out maxDamage);
+    int maxDamageSpellIndex = FindSpellWithMaxDamage(spells, player, opponent, out maxDamage);
 
     // Try to do maximum damage.
     if (maxDamageSpellIndex >= 0)
     {
-      if (spells[maxDamageSpellIndex].Key.manaCost == caster.data.RestMana)
+      if (spells[maxDamageSpellIndex].Key.manaCost == player.data.RestMana)
       {
         if (opponent.data.health.Value <= maxDamage)
           return maxDamageSpellIndex;
@@ -217,9 +225,9 @@ public class Bot
     return Random.Range(0, spells.Count);
   }
 
-  private int FindDefenseSpell(List<KeyValuePair<Spell, int[]>> spells, Match.Player opponent)
+  private int FindDefenseSpell(List<KeyValuePair<Spell, int[]>> spells, Match.Player player, Match.Player opponent)
   {
-    if (this.caster.data.blockedDefenseTurns == 0)
+    if (player.data.blockedDefenseTurns == 0)
     {
       int index = spells.FindIndex(x => x.Key.defense > 0);
       if (index >= 0)
@@ -234,9 +242,9 @@ public class Bot
     return -1;
   }
 
-  private int FindHealSpell(List<KeyValuePair<Spell, int[]>> spells, Match.Player opponent)
+  private int FindHealSpell(List<KeyValuePair<Spell, int[]>> spells, Match.Player player, Match.Player opponent)
   {
-    if (this.caster.data.blockedHealingTurns == 0)
+    if (player.data.blockedHealingTurns == 0)
     {
       int index = spells.FindIndex(x => x.Key.healing > 0);
       if (index >= 0)
@@ -251,7 +259,7 @@ public class Bot
     return -1;
   }
 
-  private int FindSpellWithMaxDamage(List<KeyValuePair<Spell, int[]>> spells, Match.Player opponent, out int maxDamage)
+  private int FindSpellWithMaxDamage(List<KeyValuePair<Spell, int[]>> spells, Match.Player player, Match.Player opponent, out int maxDamage)
   {
     int index = -1;
     maxDamage = 0;
@@ -262,9 +270,9 @@ public class Bot
         continue;
       var elemIndex = spells[i].Key.Index;
       if (spells[i].Key.Index >= 0)
-        dmg += ((caster.profile.bonuses[elemIndex] - opponent.profile.resistance[elemIndex]) / 1000);
+        dmg += ((player.profile.bonuses[elemIndex] - opponent.profile.resistance[elemIndex]) / 1000);
 
-      if (dmg > maxDamage && spells[i].Key.manaCost <= caster.data.RestMana)
+      if (dmg > maxDamage && spells[i].Key.manaCost <= player.data.RestMana)
       {
         maxDamage = spells[i].Key.damage;
         index = i;
@@ -273,12 +281,12 @@ public class Bot
     return index;
   }
 
-  private List<KeyValuePair<Spell, int[]>> FindSpellsOnField(Spell[] spells, int availableMana)
+  private List<KeyValuePair<Spell, int[]>> FindSpellsOnField(Spell[] spells, int availableMana, bool forceMemory)
   {
     var availableMagic = new List<KeyValuePair<Magic, int>>();
     for (int i = 0; i < GameField.CARDS_COUNT; i++)
     {
-      if (memory[i] > 0)
+      if (forceMemory || memory[i] > 0)
         availableMagic.Add(new KeyValuePair<Magic, int>(matchData.Field.Cards[i], i));
     }
 

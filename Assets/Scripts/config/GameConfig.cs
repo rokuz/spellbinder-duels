@@ -44,16 +44,16 @@ public class GameConfig
 
       if (rival.level == 7)
       {
-        rival.bonuses[UnityEngine.Random.Range(0, 3)] = 1;
+        rival.bonuses[UnityEngine.Random.Range(0, 3)] = 1000;
       }
       else if (rival.level == 8)
       {
-        rival.resistance[UnityEngine.Random.Range(0, 3)] = 1;
+        rival.resistance[UnityEngine.Random.Range(0, 3)] = 1000;
       }
       else if (rival.level > 8)
       {
-        rival.bonuses[UnityEngine.Random.Range(0, 3)] = 1;
-        rival.resistance[UnityEngine.Random.Range(0, 3)] = 1;
+        rival.bonuses[UnityEngine.Random.Range(0, 3)] = 1000;
+        rival.resistance[UnityEngine.Random.Range(0, 3)] = 1000;
       }
 
       if (rival.level > 1)
@@ -74,7 +74,7 @@ public class GameConfig
     List<string> result = new List<string>();
     foreach (var s in friends)
     {
-      if (this.rivals.Find(x => x.facebookId == s) == null)
+      if (this.rivals.FindIndex(x => x.facebookId == s) < 0)
         result.Add(s);
     }
     return result.Count > 0 ? result.ToArray() : null;
@@ -93,16 +93,16 @@ public class GameConfig
 
       if (friend.level == 7)
       {
-        friend.bonuses[UnityEngine.Random.Range(0, 3)] = 1;
+        friend.bonuses[UnityEngine.Random.Range(0, 3)] = 1000;
       }
       else if (friend.level == 8)
       {
-        friend.resistance[UnityEngine.Random.Range(0, 3)] = 1;
+        friend.resistance[UnityEngine.Random.Range(0, 3)] = 1000;
       }
       else if (friend.level > 8)
       {
-        friend.bonuses[UnityEngine.Random.Range(0, 3)] = 1;
-        friend.resistance[UnityEngine.Random.Range(0, 3)] = 1;
+        friend.bonuses[UnityEngine.Random.Range(0, 3)] = 1000;
+        friend.resistance[UnityEngine.Random.Range(0, 3)] = 1000;
       }
     }
   }

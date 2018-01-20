@@ -191,6 +191,9 @@
 	<data name="Leaderboard.Defeats" xml:space="preserve">
 		<value />
 	</data>
+	<data name="Leaderboard.Duel" xml:space="preserve">
+		<value />
+	</data>
 	<data name="Leaderboard.Invite" xml:space="preserve">
 		<value />
 	</data>
@@ -270,6 +273,15 @@
 		<value />
 	</data>
 	<data name="MoreGames.Title" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Player.AttackBlocked" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Player.DefenseBlocked" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Player.HealingBlocked" xml:space="preserve">
 		<value />
 	</data>
 	<data name="Player.Level" xml:space="preserve">
@@ -605,7 +617,7 @@
 	<data name="Victory.Finish" xml:space="preserve">
 		<value />
 	</data>
-	<data name="Leaderboard.Duel" xml:space="preserve">
+	<data name="Game.YouHaveMana" xml:space="preserve">
 		<value />
 	</data>
 </root>

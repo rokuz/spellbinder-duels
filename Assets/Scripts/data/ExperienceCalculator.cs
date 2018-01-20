@@ -33,9 +33,9 @@ public class ExperienceCalculator
     get { return coins; }
   }
 
-  public void OnWin()
+  public void OnWin(int oppopentLevel)
   {
-    AddExperience(100);
+    AddExperience(100 + 100 * Math.Abs(initialLevel - oppopentLevel));
     coins = UnityEngine.Random.Range(Constants.COINS_MIN, Constants.COINS_MAX + 1);
   }
 

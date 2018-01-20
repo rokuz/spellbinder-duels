@@ -173,13 +173,12 @@ public class LeaderboardDialog : MonoBehaviour
       if (success && friends != null)
       {
         var newFriends = Persistence.gameConfig.GetNewFriends(friends);
-
-        var p = new Dictionary<string, object>();
-        p.Add("new_friends", newFriends.Length);
-        Analytics.CustomEvent("Leaderboard_Invite_Success", p);
-
-        if (newFriends != null)
+        if (newFriends != null && newFriends.Length > 0)
         {
+          var p = new Dictionary<string, object>();
+          p.Add("new_friends", newFriends.Length);
+          Analytics.CustomEvent("Leaderboard_Invite_Success", p);
+
           Persistence.gameConfig.AddFriends(newFriends, facebookHolder);
           Persistence.gameConfig.profile.coins += (newFriends.Length * Constants.INVITE_PRICE);
           Persistence.Save();

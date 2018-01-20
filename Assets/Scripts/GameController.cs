@@ -70,6 +70,9 @@ public class GameController : MonoBehaviour
     public Text blockedAttack;
     public Text blockedHealing;
     public Text blockedDefense;
+    public GameObject fireObj;
+    public GameObject waterObj;
+    public GameObject airObj;
 
     public Animator healthPlus;
     public Animator healthMinus;
@@ -130,6 +133,10 @@ public class GameController : MonoBehaviour
 
   private Spell[] allUserSpells3;
   private Spell[] allOpponentSpells3;
+
+  private bool recommendationEnabled = true;
+
+  private float lastCastTime = 0.0f;
 
   void Start()
   {
@@ -257,6 +264,9 @@ public class GameController : MonoBehaviour
     info.fire = (from r in obj.GetComponentsInChildren<Text>() where r.gameObject.name == "FireText" select r).Single();
     info.water = (from r in obj.GetComponentsInChildren<Text>() where r.gameObject.name == "WaterText" select r).Single();
     info.air = (from r in obj.GetComponentsInChildren<Text>() where r.gameObject.name == "AirText" select r).Single();
+    info.fireObj = obj.transform.Find("BgImage").gameObject;
+    info.waterObj = obj.transform.Find("BgImage2").gameObject;
+    info.airObj = obj.transform.Find("BgImage3").gameObject;
     info.blockedAttack = (from r in obj.GetComponentsInChildren<Text>() where r.gameObject.name == "AttackText" select r).Single();
     info.blockedAttack.gameObject.SetActive(false);
     info.positions[0] = info.blockedAttack.GetComponent<RectTransform>().anchoredPosition;
@@ -274,6 +284,13 @@ public class GameController : MonoBehaviour
     info.defenseChanged.gameObject.SetActive(false);
   }
 
+  private bool HasBonusResistance(Match.Player player)
+  {
+    return player.profile.bonuses[Spell.FIRE_INDEX] >= 1000 || player.profile.resistance[Spell.FIRE_INDEX] >= 1000 ||
+           player.profile.bonuses[Spell.WATER_INDEX] >= 1000 || player.profile.resistance[Spell.WATER_INDEX] >= 1000 ||
+           player.profile.bonuses[Spell.AIR_INDEX] >= 1000 || player.profile.resistance[Spell.AIR_INDEX] >= 1000;
+  }
+
   private void UpdatePlayerInfo(Match.Player player, PlayerInfo info)
   { 
     if (player == null)
@@ -281,17 +298,30 @@ public class GameController : MonoBehaviour
 
     info.health.text = "" + player.data.health;
     info.defense.text = "" + player.data.defense;
-    info.fire.text = GetBonus(player, Spell.FIRE_INDEX) + "/" + GetResistance(player, Spell.FIRE_INDEX);
-    info.water.text = GetBonus(player, Spell.WATER_INDEX) + "/" + GetResistance(player, Spell.WATER_INDEX);
-    info.air.text = GetBonus(player, Spell.AIR_INDEX) + "/" + GetResistance(player, Spell.AIR_INDEX);
 
-    string blockedStr = LanguageManager.Instance.GetTextValue("Player.SmthBlocked");
+    if (HasBonusResistance(player))
+    {
+      info.fireObj.SetActive(true);
+      info.waterObj.SetActive(true);
+      info.airObj.SetActive(true);
+      info.fire.text = GetBonus(player, Spell.FIRE_INDEX) + "/" + GetResistance(player, Spell.FIRE_INDEX);
+      info.water.text = GetBonus(player, Spell.WATER_INDEX) + "/" + GetResistance(player, Spell.WATER_INDEX);
+      info.air.text = GetBonus(player, Spell.AIR_INDEX) + "/" + GetResistance(player, Spell.AIR_INDEX);
+    }
+    else
+    {
+      info.fireObj.SetActive(false);
+      info.waterObj.SetActive(false);
+      info.airObj.SetActive(false);
+    }
+
     info.freePosition = 0;
     if (player.data.blockedDamageTurns > 0)
     {
+      string blockedStr = LanguageManager.Instance.GetTextValue("Player.AttackBlocked");
       info.blockedAttack.gameObject.SetActive(true);
       info.blockedAttack.GetComponent<RectTransform>().anchoredPosition = info.positions[info.freePosition++];
-      info.blockedAttack.text = blockedStr + " (" + player.data.blockedDamageTurns + ")";
+      info.blockedAttack.text = blockedStr + (player.data.blockedDamageTurns > 1 ? " (" + player.data.blockedDamageTurns + ")" : "");
     }
     else
     {
@@ -300,9 +330,10 @@ public class GameController : MonoBehaviour
 
     if (player.data.blockedHealingTurns > 0)
     {
+      string blockedStr = LanguageManager.Instance.GetTextValue("Player.HealingBlocked");
       info.blockedHealing.gameObject.SetActive(true);
       info.blockedHealing.GetComponent<RectTransform>().anchoredPosition = info.positions[info.freePosition++];
-      info.blockedHealing.text = blockedStr + " (" + player.data.blockedHealingTurns + ")";
+      info.blockedHealing.text = blockedStr + (player.data.blockedHealingTurns > 1 ? " (" + player.data.blockedHealingTurns + ")" : "");
     }
     else
     {
@@ -311,9 +342,10 @@ public class GameController : MonoBehaviour
 
     if (player.data.blockedDefenseTurns > 0)
     {
+      string blockedStr = LanguageManager.Instance.GetTextValue("Player.DefenseBlocked");
       info.blockedDefense.gameObject.SetActive(true);
       info.blockedDefense.GetComponent<RectTransform>().anchoredPosition = info.positions[info.freePosition++];
-      info.blockedDefense.text = blockedStr + " (" + player.data.blockedDefenseTurns + ")";
+      info.blockedDefense.text = blockedStr + (player.data.blockedDefenseTurns > 1 ? " (" + player.data.blockedDefenseTurns + ")" : "");
     }
     else
     {
@@ -345,6 +377,8 @@ public class GameController : MonoBehaviour
         SwapCard(cardIndex);
         tappedCards.Add(cardIndex);
       }
+
+      tutorialCoreGame.DeactivateMarker(cardIndex);
 
       int[] cards = tappedCards.ToArray();
       if (cards.Length > 3)
@@ -411,6 +445,8 @@ public class GameController : MonoBehaviour
     Spell s = this.matchData.CastSpell(indices, caster);
     bool youAreCaster = caster == matchData.User;
 
+    this.lastCastTime = Time.time;
+
     if (!Persistence.gameConfig.tutorialCoreGameShown)
       tutorialCoreGame.OnSpellCasted(s);
 
@@ -422,6 +458,9 @@ public class GameController : MonoBehaviour
         p.Add("spell", s.SpellType);
         p.Add("caster_level", caster.profile.level);
         Analytics.CustomEvent("Spell_Casted", p);
+
+        this.recommendationEnabled = false;
+        tutorialCoreGame.DeactivateMarkers();
       }
 
       AnimateCastedSpell(s, youAreCaster, () => 
@@ -440,6 +479,13 @@ public class GameController : MonoBehaviour
         var p = new Dictionary<string, object>();
         p.Add("caster_level", caster.profile.level);
         Analytics.CustomEvent("Spell_Miscasted", p);
+
+        this.recommendationEnabled = true;
+      }
+      else
+      {
+        this.recommendationEnabled = false;
+        tutorialCoreGame.DeactivateMarkers();
       }
 
       // Miscast
@@ -483,6 +529,9 @@ public class GameController : MonoBehaviour
     yield return new WaitForSeconds(kAnimationTimeSec);
     if (caster.data.RestMana == 0)
     {
+      this.recommendationEnabled = false;
+      tutorialCoreGame.DeactivateMarkers();
+
       if (!yourTurn)
         bot.Forget();
 
@@ -497,6 +546,11 @@ public class GameController : MonoBehaviour
       {
         var turn = bot.MakeTurn();
         StartCoroutine(MakeOpponentTurn(turn));
+      }
+      else
+      {
+        if (this.recommendationEnabled)
+          tutorialCoreGame.ActivateMarkers(bot.RecommendationForPlayer());
       }
     }
     spellInProgress = false;
@@ -643,6 +697,7 @@ public class GameController : MonoBehaviour
     matchData.StartTurn(yourTurn ? matchData.User : matchData.Opponent);
     surrenderButton.interactable = true;
     finishTurnButton.interactable = yourTurn;
+    this.lastCastTime = Time.time;
 
     if (!Persistence.gameConfig.tutorialCoreGameShown)
     {
@@ -775,6 +830,12 @@ public class GameController : MonoBehaviour
     UpdateMiscastedSpell();
 
     AnimateCardsSwapping();
+
+    if (yourTurn && (Time.time - this.lastCastTime) > 10.0f)
+    {
+      this.lastCastTime = Time.time;
+      StartCoroutine(ShowGameInfo(LanguageManager.Instance.GetTextValue("Game.YouHaveMana"), 3.0f));
+    }
   }
 
   private void UpdateShiver(GameObject playerInfo, Vector3 playerInfoPos, float startShiverTime)

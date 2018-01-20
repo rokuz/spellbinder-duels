@@ -173,6 +173,9 @@
 	<data name="Game.YouCasted" xml:space="preserve">
 		<value>You casted</value>
 	</data>
+	<data name="Game.YouHaveMana" xml:space="preserve">
+		<value>You have some mana crystals. Cast a spell!</value>
+	</data>
 	<data name="Game.YouMiscasted" xml:space="preserve">
 		<value>You miscasted</value>
 	</data>
@@ -274,6 +277,15 @@
 	</data>
 	<data name="MoreGames.Title" xml:space="preserve">
 		<value>More games</value>
+	</data>
+	<data name="Player.AttackBlocked" xml:space="preserve">
+		<value>Attack blocked</value>
+	</data>
+	<data name="Player.DefenseBlocked" xml:space="preserve">
+		<value>Defense blocked</value>
+	</data>
+	<data name="Player.HealingBlocked" xml:space="preserve">
+		<value>Healing blocked</value>
 	</data>
 	<data name="Player.Level" xml:space="preserve">
 		<value>Level</value>

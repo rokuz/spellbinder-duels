@@ -224,7 +224,8 @@ public class FBHolder : MonoBehaviour
 
   private void InviteCallback(IAppRequestResult result)
   {
-    if (result == null || result.Error != null || (result.Error != null && result.Error.Length != 0) || result.To == null)
+    if (result == null || result.Error != null || (result.Error != null && result.Error.Length != 0) || 
+        result.To == null || result.To.Count() == 0)
     {
       if (result != null)
         Debug.Log(result.Error);
@@ -290,8 +291,8 @@ public class FBHolder : MonoBehaviour
       }
       else
       {
-        if (onInviteFinished != null)
-          onInviteFinished(false, null);
+        if (this.onInviteFinished != null)
+          this.onInviteFinished(false, null);
       }
     });
   }

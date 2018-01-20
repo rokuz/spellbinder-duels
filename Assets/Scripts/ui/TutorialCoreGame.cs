@@ -91,8 +91,7 @@ public class TutorialCoreGame : MonoBehaviour
     else
       GetText(tut).text = LanguageManager.Instance.GetTextValue("Tutorial.Battle.5.2");
 
-    foreach (var m in this.markers)
-      m.SetActive(false);
+    DeactivateMarkers();
     tutorialCrystalSelector.SetActive(false);
   }
 
@@ -151,6 +150,25 @@ public class TutorialCoreGame : MonoBehaviour
   {
     var tut = GetTutorial(Persistence.gameConfig.tutorialCoreGameStep);
     tut.SetActive(false);
+  }
+
+  public void ActivateMarkers(int[] indices)
+  {
+    if (indices == null)
+      return;
+    foreach (var i in indices)
+      markers[i].SetActive(true);
+  }
+
+  public void DeactivateMarker(int index)
+  {
+    markers[index].SetActive(false);
+  }
+
+  public void DeactivateMarkers()
+  {
+    foreach (var m in this.markers)
+      m.SetActive(false);
   }
 
   public void OnNoClicked()

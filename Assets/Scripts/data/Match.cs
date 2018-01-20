@@ -235,7 +235,7 @@ public class Match
     if (opponent.data.health.Value <= 0)
     {
       this.matchStatus = MatchStatus.FINISHED;
-      user.data.experienceCalculator.OnWin();
+      user.data.experienceCalculator.OnWin(opponent.profile.level);
       opponent.data.experienceCalculator.OnLose();
       ApplyReward();
       if (onFinishedHandler != null)
@@ -246,7 +246,7 @@ public class Match
     {
       this.matchStatus = MatchStatus.FINISHED;
       user.data.experienceCalculator.OnLose();
-      opponent.data.experienceCalculator.OnWin();
+      opponent.data.experienceCalculator.OnWin(user.profile.level);
       ApplyReward();
       if (onFinishedHandler != null)
         onFinishedHandler(opponent);
@@ -271,9 +271,13 @@ public class Match
       this.Opponent.profile.victories++;
     else
       this.Opponent.profile.defeats++;
-    //this.Opponent.profile.ApplyExperience(opponent.data.experienceCalculator.Experience);
-    //this.Opponent.profile.ApplyBonusesAndResistance(opponent.data.spellCalculator.Bonuses,
-    //                                                opponent.data.spellCalculator.Resistance);
+
+    if (this.Opponent.profile.facebookId.Length != 0)
+    {
+      this.Opponent.profile.ApplyExperience(opponent.data.experienceCalculator.Experience);
+      this.Opponent.profile.ApplyBonusesAndResistance(opponent.data.spellCalculator.Bonuses,
+                                                      opponent.data.spellCalculator.Resistance);
+    }
 
     Persistence.Save();
   }
