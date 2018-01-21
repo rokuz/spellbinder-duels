@@ -20,7 +20,7 @@ public class GameConfig
   {
     this.profile = null;
     this.musicVolume = 0.25f;
-    this.sfxVolume = 0.25f;
+    this.sfxVolume = 0.5f;
     this.showSpellbookWidget = true;
     this.removedAds = false;
     this.tutorialMainMenuShown = false;
