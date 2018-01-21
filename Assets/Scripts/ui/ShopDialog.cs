@@ -141,6 +141,9 @@ public class ShopDialog : MonoBehaviour
     this.onCloseHandler = onCloseHandler;
     Setup();
 
+    ScrollRect scroll = gameObject.GetComponentInChildren<ScrollRect>();
+    scroll.verticalNormalizedPosition = 1.0f;
+
     if (selectedSpell != null)
     {
       int selectedIndex = -1;
@@ -155,7 +158,7 @@ public class ShopDialog : MonoBehaviour
 
       if (selectedIndex >= 0)
       {
-        ScrollRect scroll = gameObject.GetComponentInChildren<ScrollRect>();
+        scroll = gameObject.GetComponentInChildren<ScrollRect>();
         Vector3[] corners = new Vector3[4];
         content.GetComponent<RectTransform>().GetWorldCorners(corners);
         float ymax = 0.0f;

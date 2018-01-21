@@ -9,6 +9,8 @@ public class CoreGameAudio : MonoBehaviour
   public AudioSource buttonYes;
   public AudioSource cardFlip;
   public AudioSource toss;
+  public AudioSource victory;
+  public AudioSource defeat;
 
   public AudioSource miscast;
   public AudioSource bleeding;
@@ -28,7 +30,9 @@ public class CoreGameAudio : MonoBehaviour
     ButtonYes,
     ButtonNo,
     CardFlip,
-    Toss
+    Toss,
+    Victory,
+    Defeat
   }
 
   public void Play(Type type)
@@ -40,6 +44,8 @@ public class CoreGameAudio : MonoBehaviour
       case Type.ButtonNo: buttonNo.Play(); break;
       case Type.CardFlip: cardFlip.Play(); break;
       case Type.Toss: toss.Play(); break;
+      case Type.Victory: victory.Play(); break;
+      case Type.Defeat: defeat.Play(); break;
     }
   }
 
@@ -50,16 +56,16 @@ public class CoreGameAudio : MonoBehaviour
 
     switch (s.SpellType) 
     {
-      case Spell.Type.BLEEDING: case Spell.Type.BLOOD_SIGN: return bleeding;
-      case Spell.Type.BLESSING: return blessing;
-      case Spell.Type.DEATH_LOOK: case Spell.Type.POISONING: return deathLook;
-      case Spell.Type.DOPPELGANGER: return doppelganger;
-      case Spell.Type.FIREBALL: return fireball;
-      case Spell.Type.ICE_SPEAR: case Spell.Type.ICE_RAIN: return iceSpear;
+      case Spell.Type.BLEEDING: case Spell.Type.BLOOD_SIGN: case Spell.Type.VAMPIRE: return bleeding;
+      case Spell.Type.BLESSING: case Spell.Type.ASTRAL_PROJECTION: return blessing;
+      case Spell.Type.DEATH_LOOK: case Spell.Type.POISONING: case Spell.Type.SOUL_ABRUPTION: return deathLook;
+      case Spell.Type.DOPPELGANGER: case Spell.Type.PHANTOM: case Spell.Type.HYPNOSIS: return doppelganger;
+      case Spell.Type.FIREBALL: case Spell.Type.BURNING_SHIELD: return fireball;
+      case Spell.Type.ICE_SPEAR: case Spell.Type.ICE_RAIN: case Spell.Type.ICE_FETTERS: return iceSpear;
       case Spell.Type.LIGHTNING: case Spell.Type.STORM: return lightning;
-      case Spell.Type.NATURE_CALL: return natureCall;
+      case Spell.Type.NATURE_CALL: case Spell.Type.TORNADO: case Spell.Type.WILD_VINE: return natureCall;
       case Spell.Type.STONESKIN: case Spell.Type.DARKNESS_SHIELD: return stoneskin;
-      case Spell.Type.METEORITE: return meteorite;
+      case Spell.Type.METEORITE: case Spell.Type.INFERNO: return meteorite;
     }
     return null;
   }

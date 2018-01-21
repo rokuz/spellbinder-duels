@@ -221,6 +221,18 @@ public class Bot
         return index;
     }
 
+    {
+      // Increase defense.
+      int index = FindDefenseSpell(spells, player, opponent);
+      if (index >= 0)
+        return index;
+
+      // Heal yourself.
+      index = FindHealSpell(spells, player, opponent);
+      if (index >= 0 && player.data.health.Value < Constants.HEALTH_POINTS)
+        return index;
+    }
+
     // Cast random spell.
     return Random.Range(0, spells.Count);
   }

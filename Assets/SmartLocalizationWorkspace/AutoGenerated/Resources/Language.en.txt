@@ -410,6 +410,9 @@
 	<data name="SpaceShippers.Desc" xml:space="preserve">
 		<value>Free Sci-fi strategic arcade with time management mechanics. Mine rare minerals at the far planets, launch spaceships, produce unique resources in limited time and beware wicked space pirates. Manage time and conquer the Universe!</value>
 	</data>
+	<data name="Spell.ASTRAL_PROJECTION" xml:space="preserve">
+		<value>Astrak Projection</value>
+	</data>
 	<data name="Spell.BLEEDING" xml:space="preserve">
 		<value>Bleeding</value>
 	</data>
@@ -446,11 +449,20 @@
 	<data name="Spell.FIREBALL" xml:space="preserve">
 		<value>Fireball</value>
 	</data>
+	<data name="Spell.HYPNOSIS" xml:space="preserve">
+		<value>Hypnosis</value>
+	</data>
+	<data name="Spell.ICE_FETTERS" xml:space="preserve">
+		<value>Ice fetters</value>
+	</data>
 	<data name="Spell.ICE_RAIN" xml:space="preserve">
 		<value>Ice rain</value>
 	</data>
 	<data name="Spell.ICE_SPEAR" xml:space="preserve">
 		<value>Ice spear</value>
+	</data>
+	<data name="Spell.INFERNO" xml:space="preserve">
+		<value>Inferno</value>
 	</data>
 	<data name="Spell.INVISIBLE_FIRE" xml:space="preserve">
 		<value>Invisible fire</value>
@@ -467,14 +479,29 @@
 	<data name="Spell.NATURE_CALL" xml:space="preserve">
 		<value>Nature call</value>
 	</data>
+	<data name="Spell.PHANTOM" xml:space="preserve">
+		<value>Phantom</value>
+	</data>
 	<data name="Spell.POISONING" xml:space="preserve">
 		<value>Poisoning</value>
+	</data>
+	<data name="Spell.SOUL_ABRUPTION" xml:space="preserve">
+		<value>Soul abruption</value>
 	</data>
 	<data name="Spell.STONESKIN" xml:space="preserve">
 		<value>Stoneskin</value>
 	</data>
 	<data name="Spell.STORM" xml:space="preserve">
 		<value>Storm</value>
+	</data>
+	<data name="Spell.TORNADO" xml:space="preserve">
+		<value>Tornado</value>
+	</data>
+	<data name="Spell.VAMPIRE" xml:space="preserve">
+		<value>Vampire</value>
+	</data>
+	<data name="Spell.WILD_VINE" xml:space="preserve">
+		<value>Wild vine</value>
 	</data>
 	<data name="Spell.WILDFIRE" xml:space="preserve">
 		<value>Wildfire</value>

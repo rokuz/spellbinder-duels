@@ -410,13 +410,22 @@
 	<data name="SpaceShippers.Desc" xml:space="preserve">
 		<value />
 	</data>
+	<data name="Spell.ASTRAL_PROJECTION" xml:space="preserve">
+		<value />
+	</data>
 	<data name="Spell.BLEEDING" xml:space="preserve">
 		<value />
 	</data>
 	<data name="Spell.BLESSING" xml:space="preserve">
 		<value />
 	</data>
+	<data name="Spell.BLOOD_SIGN" xml:space="preserve">
+		<value />
+	</data>
 	<data name="Spell.BURNING_SHIELD" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Spell.DARKNESS_SHIELD" xml:space="preserve">
 		<value />
 	</data>
 	<data name="Spell.DEATH_LOOK" xml:space="preserve">
@@ -440,10 +449,19 @@
 	<data name="Spell.FIREBALL" xml:space="preserve">
 		<value />
 	</data>
+	<data name="Spell.HYPNOSIS" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Spell.ICE_FETTERS" xml:space="preserve">
+		<value />
+	</data>
 	<data name="Spell.ICE_RAIN" xml:space="preserve">
 		<value />
 	</data>
 	<data name="Spell.ICE_SPEAR" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Spell.INFERNO" xml:space="preserve">
 		<value />
 	</data>
 	<data name="Spell.INVISIBLE_FIRE" xml:space="preserve">
@@ -461,10 +479,28 @@
 	<data name="Spell.NATURE_CALL" xml:space="preserve">
 		<value />
 	</data>
+	<data name="Spell.PHANTOM" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Spell.POISONING" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Spell.SOUL_ABRUPTION" xml:space="preserve">
+		<value />
+	</data>
 	<data name="Spell.STONESKIN" xml:space="preserve">
 		<value />
 	</data>
 	<data name="Spell.STORM" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Spell.TORNADO" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Spell.VAMPIRE" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Spell.WILD_VINE" xml:space="preserve">
 		<value />
 	</data>
 	<data name="Spell.WILDFIRE" xml:space="preserve">
@@ -624,15 +660,6 @@
 		<value />
 	</data>
 	<data name="Victory.Finish" xml:space="preserve">
-		<value />
-	</data>
-	<data name="Spell.DARKNESS_SHIELD" xml:space="preserve">
-		<value />
-	</data>
-	<data name="Spell.BLOOD_SIGN" xml:space="preserve">
-		<value />
-	</data>
-	<data name="Spell.POISONING" xml:space="preserve">
 		<value />
 	</data>
 </root>

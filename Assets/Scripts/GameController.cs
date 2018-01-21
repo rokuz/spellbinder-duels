@@ -1049,7 +1049,7 @@ public class GameController : MonoBehaviour
     {
       CastProjectileSpell(iceSpearPrefab, userCasted ? playerInfo2Pos : playerInfo1Pos, onFinished);
     }
-    else if (spell.SpellType == Spell.Type.LIGHTNING || spell.SpellType == Spell.Type.STORM)
+    else if (spell.SpellType == Spell.Type.LIGHTNING || spell.SpellType == Spell.Type.STORM || spell.SpellType == Spell.Type.TORNADO)
     {
       CastInstantSpell(lightningPrefab, userCasted, userCasted ? playerInfo2Pos : playerInfo1Pos,
                        90.0f, true, 0.5f, onFinished);
@@ -1058,21 +1058,28 @@ public class GameController : MonoBehaviour
     {
       CastTargetedSpell(natureCallPrefab, userCasted ? playerInfo1Pos : playerInfo2Pos, 2.5f, onFinished);
     }
-    else if (spell.SpellType == Spell.Type.BLESSING)
+    else if (spell.SpellType == Spell.Type.WILD_VINE)
+    {
+      CastTargetedSpell(natureCallPrefab, userCasted ? playerInfo2Pos : playerInfo1Pos, 2.5f, onFinished);
+    }
+    else if (spell.SpellType == Spell.Type.BLESSING || spell.SpellType == Spell.Type.HYPNOSIS ||
+             spell.SpellType == Spell.Type.ASTRAL_PROJECTION)
     {
       Vector3 offset = new Vector3(0.0f, 10.0f, 0.0f);
       CastTargetedSpell(blessingPrefab, userCasted ? (playerInfo1Pos + offset) : (playerInfo2Pos + offset), 2.5f, onFinished);
     }
-    else if (spell.SpellType == Spell.Type.BLEEDING || spell.SpellType == Spell.Type.BLOOD_SIGN)
+    else if (spell.SpellType == Spell.Type.BLEEDING || spell.SpellType == Spell.Type.BLOOD_SIGN || spell.SpellType == Spell.Type.VAMPIRE)
     {
       Vector3 offset = new Vector3(0.0f, 10.0f, 0.0f);
       CastTargetedSpell(bleedingPrefab, userCasted ? (playerInfo2Pos + offset) : (playerInfo1Pos + offset), 2.5f, onFinished);
     }
-    else if (spell.SpellType == Spell.Type.DEATH_LOOK || spell.SpellType == Spell.Type.POISONING)
+    else if (spell.SpellType == Spell.Type.DEATH_LOOK || spell.SpellType == Spell.Type.POISONING ||
+             spell.SpellType == Spell.Type.PHANTOM)
     {
       CastTargetedSpell(blindnessPrefab, userCasted ? playerInfo2Pos : playerInfo1Pos, 2.5f, onFinished);
     }
-    else if (spell.SpellType == Spell.Type.STONESKIN || spell.SpellType == Spell.Type.DARKNESS_SHIELD)
+    else if (spell.SpellType == Spell.Type.STONESKIN || spell.SpellType == Spell.Type.DARKNESS_SHIELD ||
+             spell.SpellType == Spell.Type.BURNING_SHIELD)
     {
       CastTargetedSpell(stoneskinPrefab, userCasted ? playerInfo1Pos : playerInfo2Pos, 1.5f, onFinished);
     }
@@ -1080,12 +1087,16 @@ public class GameController : MonoBehaviour
     {
       CastTargetedSpell(doppelgangerPrefab, userCasted ? playerInfo1Pos : playerInfo2Pos, 2.5f, onFinished);
     }
-    else if (spell.SpellType == Spell.Type.METEORITE)
+    else if (spell.SpellType == Spell.Type.SOUL_ABRUPTION)
+    {
+      CastTargetedSpell(doppelgangerPrefab, userCasted ? playerInfo2Pos : playerInfo1Pos, 2.5f, onFinished);
+    }
+    else if (spell.SpellType == Spell.Type.METEORITE || spell.SpellType == Spell.Type.INFERNO)
     {
       CastInstantSpell(meteoritePrefab, userCasted, userCasted ? playerInfo2Pos : playerInfo1Pos,
                        userCasted ? 80.0f : -80.0f, false, 3.5f, onFinished);
     }
-    else if (spell.SpellType == Spell.Type.ICE_RAIN)
+    else if (spell.SpellType == Spell.Type.ICE_RAIN || spell.SpellType == Spell.Type.ICE_FETTERS)
     {
       CastInstantSpell(iceRainPrefab, userCasted, userCasted ? playerInfo2Pos : playerInfo1Pos,
                        userCasted ? 80.0f : -80.0f, false, 3.5f, onFinished);
@@ -1140,7 +1151,13 @@ public class GameController : MonoBehaviour
       Analytics.CustomEvent("Match_Win", p);
 
       if (!rewardDialog.IsOpened())
-        rewardDialog.Open(winner, () => { this.BackToMainMenu(); });
+      {
+        this.audio.Play(CoreGameAudio.Type.Victory);
+        rewardDialog.Open(winner, () =>
+          {
+            this.BackToMainMenu();
+          });
+      }
     }
     else
     {
@@ -1149,7 +1166,11 @@ public class GameController : MonoBehaviour
       Analytics.CustomEvent("Match_Lose", p);
 
       if (!defeatDialog.IsOpened())
-        defeatDialog.Open(LanguageManager.Instance.GetTextValue("Message.Lose"), () => { this.BackToMainMenu(); }, () => { this.Replay(); });
+      {
+        this.audio.Play(CoreGameAudio.Type.Defeat);
+        defeatDialog.Open(LanguageManager.Instance.GetTextValue("Message.Lose"), () =>
+          { this.BackToMainMenu(); }, () => { this.Replay(); });
+      }
     }
   }
 

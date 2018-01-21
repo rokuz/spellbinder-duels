@@ -30,6 +30,17 @@ public class SpellSpritesHolder : MonoBehaviour
   public Sprite bloodSignSprite;
   public Sprite poisoningSprite;
 
+  public Sprite astralProjectionSprite;
+  public Sprite hypnosisSprite;
+  public Sprite infernoSprite;
+  public Sprite iceFettersSprite;
+  public Sprite tornadoSprite;
+  public Sprite burningShieldSprite;
+  public Sprite phantomSprite;
+  public Sprite wildVineSprite;
+  public Sprite vampireSprite;
+  public Sprite soulAbruptionSprite;
+
   public Sprite GetSprite(Magic magic) 
   {
     switch (magic) 
@@ -90,6 +101,26 @@ public class SpellSpritesHolder : MonoBehaviour
         return this.bloodSignSprite;
       case Spell.Type.POISONING:
         return this.poisoningSprite;
+      case Spell.Type.ASTRAL_PROJECTION:
+        return this.astralProjectionSprite;
+      case Spell.Type.HYPNOSIS:
+        return this.hypnosisSprite;
+      case Spell.Type.INFERNO:
+        return this.infernoSprite;
+      case Spell.Type.ICE_FETTERS:
+        return this.iceFettersSprite;
+      case Spell.Type.TORNADO:
+        return this.tornadoSprite;
+      case Spell.Type.BURNING_SHIELD:
+        return this.burningShieldSprite;
+      case Spell.Type.PHANTOM:
+        return this.phantomSprite;
+      case Spell.Type.WILD_VINE:
+        return this.wildVineSprite;
+      case Spell.Type.VAMPIRE:
+        return this.vampireSprite;
+      case Spell.Type.SOUL_ABRUPTION:
+        return this.soulAbruptionSprite;
     }
     return null;
   }

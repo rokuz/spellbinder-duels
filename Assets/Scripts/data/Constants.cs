@@ -47,8 +47,28 @@ public static class Constants
         return 300;
       case Spell.Type.BLOOD_SIGN:
         return 500;
+      case Spell.Type.ASTRAL_PROJECTION:
+        return 500;
+      case Spell.Type.HYPNOSIS:
+        return 500;
       case Spell.Type.POISONING:
         return 600;
+      case Spell.Type.INFERNO:
+        return 800;
+      case Spell.Type.ICE_FETTERS:
+        return 800;
+      case Spell.Type.TORNADO:
+        return 900;
+      case Spell.Type.BURNING_SHIELD:
+        return 900;
+      case Spell.Type.PHANTOM:
+        return 1200;
+      case Spell.Type.WILD_VINE:
+        return 1200;
+      case Spell.Type.VAMPIRE:
+        return 1500;
+      case Spell.Type.SOUL_ABRUPTION:
+        return 1500;
     }
     return 0;
   }

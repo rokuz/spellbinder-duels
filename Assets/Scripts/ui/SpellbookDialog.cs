@@ -158,6 +158,7 @@ public class SpellbookDialog : MonoBehaviour
         buyButtonText.text = LanguageManager.Instance.GetTextValue("Spell.Learn");
         buyButton.gameObject.SetActive(!hasSpell);
         Spell sp = allSpells[i];
+        buyButton.onClick.RemoveAllListeners();
         buyButton.onClick.AddListener(() => { buyButton.GetComponent<AudioSource>().Play(); this.OnBuy(sp); });
       }
     }
