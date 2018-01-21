@@ -233,8 +233,9 @@ public class ShopDialog : MonoBehaviour
         {
           this.profileData.coins -= item.coinsCount;
           this.profileData.LevelUp();
+          Persistence.Save();
           if (this.profileData.level == Constants.MAX_LEVEL)
-            Setup();
+            StartCoroutine(DeferredSetup());
         }
         else if (item.type == ShopItemType.SPELL)
         {
@@ -242,9 +243,9 @@ public class ShopDialog : MonoBehaviour
           var lst = this.profileData.spells.ToList();
           lst.Add(item.spell.Code);
           this.profileData.spells = lst.ToArray();
-          Setup();
+          Persistence.Save();
+          StartCoroutine(DeferredSetup());
         }
-        Persistence.Save();
       }
     }
     UpdateCoins();
@@ -262,10 +263,10 @@ public class ShopDialog : MonoBehaviour
     if (item.type == ShopItemType.REMOVE_ADS)
     {
       Persistence.gameConfig.removedAds = true;
-      Setup();
       Persistence.Save();
       if (onRemovedAds != null)
         onRemovedAds();
+      StartCoroutine(DeferredSetup());
     }
     else if (item.type == ShopItemType.COINS_PACK1 || item.type == ShopItemType.COINS_PACK2 ||
              item.type == ShopItemType.COINS_PACK3)
@@ -311,5 +312,11 @@ public class ShopDialog : MonoBehaviour
   private void UpdateCoins()
   {
     coinsText.text = "" + this.profileData.coins;
+  }
+
+  IEnumerator DeferredSetup()
+  {
+    yield return new WaitForEndOfFrame();
+    Setup();
   }
 }

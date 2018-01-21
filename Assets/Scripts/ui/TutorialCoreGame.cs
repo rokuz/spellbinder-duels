@@ -12,6 +12,7 @@ public class TutorialCoreGame : MonoBehaviour
   public GameObject tutorial2;
   public GameObject[] markers = new GameObject[GameField.CARDS_COUNT];
   public GameObject tutorialCrystalSelector;
+  public CoreGameAudio audio;
 
   private Spell spellToCast;
   private Button nextButton;
@@ -129,6 +130,7 @@ public class TutorialCoreGame : MonoBehaviour
 
   public void OnYesClicked()
   {
+    audio.Play(CoreGameAudio.Type.ButtonDefault);
     ResetCurrent();
 
     Persistence.gameConfig.tutorialCoreGameStep = 1;
@@ -173,6 +175,7 @@ public class TutorialCoreGame : MonoBehaviour
 
   public void OnNoClicked()
   {
+    audio.Play(CoreGameAudio.Type.ButtonNo);
     ResetCurrent();
 
     Persistence.gameConfig.tutorialCoreGameStep = 0;
@@ -184,6 +187,7 @@ public class TutorialCoreGame : MonoBehaviour
 
   public void OnNextClicked()
   {
+    audio.Play(CoreGameAudio.Type.ButtonDefault);
     ResetCurrent();
     Persistence.gameConfig.tutorialCoreGameStep++;
     if (Persistence.gameConfig.tutorialCoreGameStep == 3)

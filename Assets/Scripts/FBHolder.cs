@@ -287,6 +287,9 @@ public class FBHolder : MonoBehaviour
     Login((bool success) => {
       if (success)
       {
+        Persistence.gameConfig.profile.facebookId = this.facebookId;
+        Persistence.Save();
+
         InviteFriends();
       }
       else

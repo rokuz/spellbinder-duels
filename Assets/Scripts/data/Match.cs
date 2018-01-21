@@ -14,10 +14,10 @@ public class Match
     public PlayerData data;
     public bool hasFirstTurn;
 
-    public Player(ProfileData prof)
+    public Player(ProfileData prof, bool isPlayer)
     {
       this.profile = prof;
-      this.data = new PlayerData(prof);
+      this.data = new PlayerData(prof, isPlayer);
       this.hasFirstTurn = false;
     }
   }
@@ -33,8 +33,8 @@ public class Match
 
   public Match(ProfileData profile1, ProfileData profile2)
   {
-    this.user = new Player(profile1);
-    this.opponent = new Player(profile2);
+    this.user = new Player(profile1, true);
+    this.opponent = new Player(profile2, false);
     this.timestamp = Time.time;
     this.matchStatus = MatchStatus.PREPARED;
     this.gameField = new GameField();

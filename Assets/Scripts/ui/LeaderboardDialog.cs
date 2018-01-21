@@ -187,8 +187,7 @@ public class LeaderboardDialog : MonoBehaviour
           Persistence.gameConfig.AddFriends(newFriends, facebookHolder);
           Persistence.gameConfig.profile.coins += (newFriends.Length * Constants.INVITE_PRICE);
           Persistence.Save();
-          Setup();
-          ScrollToPlayer();
+          StartCoroutine(DeferredSetupAndScroll());
         }
         else
         {
@@ -206,6 +205,13 @@ public class LeaderboardDialog : MonoBehaviour
           LanguageManager.Instance.GetTextValue("Leaderboard.InviteError"), null);
       }
     });
+  }
+
+  IEnumerator DeferredSetupAndScroll()
+  {
+    yield return new WaitForEndOfFrame();
+    Setup();
+    ScrollToPlayer();
   }
 
   public void OnDuel(int profileIndex)

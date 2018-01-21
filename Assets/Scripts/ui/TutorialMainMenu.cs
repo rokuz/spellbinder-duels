@@ -54,7 +54,7 @@ public class TutorialMainMenu : MonoBehaviour
 
     Analytics.CustomEvent("Tutorial_MainMenu_Started");
 
-    buttonAudio.Play(ButtonAudio.Type.Yes);
+    buttonAudio.Play(ButtonAudio.Type.Default);
   }
 
   private void SetActive()

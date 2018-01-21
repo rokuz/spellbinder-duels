@@ -624,7 +624,7 @@
 		<value>Cast spells by turns. The toss has decided that you are the first.</value>
 	</data>
 	<data name="Tutorial.Battle.3" xml:space="preserve">
-		<value>On the table are laid out the cards of the magical schools. Try to remember the positions of the cards. The cards will turn over soon, and you will be able to count on your memory.</value>
+		<value>On the table are laid out the cards of the magical schools. Try to remember the position of the cards. The cards will turn over soon.</value>
 	</data>
 	<data name="Tutorial.Battle.4" xml:space="preserve">
 		<value>Look, the first mana crystal activated. You have to spend all crystals on each turn. Turn the highlighted cards over and cast</value>
