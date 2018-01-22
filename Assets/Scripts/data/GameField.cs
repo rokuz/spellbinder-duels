@@ -109,6 +109,12 @@ public class GameField
     return indices;
   }
 
+  public bool IsBasicFightMagic(List<int> indices)
+  {
+    Magic m = cards[indices[0]];
+    return m == Magic.FIRE || m == Magic.AIR || m == Magic.WATER;
+  }
+
   public List<int> GetRandomCards()
   {
     var indices = new List<int>();
@@ -145,5 +151,15 @@ public class GameField
         return null;
     }
     return result;
+  }
+
+  public bool HasSpellWith3Components(Spell[] spells, int[] indices)
+  {
+    foreach (Spell s in spells)
+    {
+      if (s.Combination[0] == cards[indices[0]] && s.Combination[1] == cards[indices[1]])
+        return true;
+    }
+    return false;
   }
 }

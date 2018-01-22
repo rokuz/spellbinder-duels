@@ -119,44 +119,47 @@ public class SpellEstimator
     return rating;
   }
     
-  public static int FindBestDefenseSpell(List<KeyValuePair<Spell, int[]>> spells, Match.Player player, Match.Player opponent)
+  public static KeyValuePair<Spell, int[]>? FindBestDefenseSpell(List<KeyValuePair<Spell, int[]>> spells,
+                                                                 Match.Player player, Match.Player opponent)
   {
     if (player.data.blockedDefenseTurns == 0)
     {
-      int index = SelectMostRatedSpell(spells.FindAll(x => x.Key.defense > 0), player, opponent);
-      if (index >= 0)
-        return index;
+      var s = SelectMostRatedSpell(spells.FindAll(x => x.Key.defense > 0), player, opponent);
+      if (s != null)
+        return s;
     }
     else
     {
-      int index = SelectMostRatedSpell(spells.FindAll(x => x.Key.clearDefenseCurse), player, opponent);
-      if (index >= 0)
-        return index;
+      var s = SelectMostRatedSpell(spells.FindAll(x => x.Key.clearDefenseCurse), player, opponent);
+      if (s != null)
+        return s;
     }
-    return -1;
+    return null;
   }
 
-  public static int FindBestHealSpell(List<KeyValuePair<Spell, int[]>> spells, Match.Player player, Match.Player opponent)
+  public static KeyValuePair<Spell, int[]>? FindBestHealSpell(List<KeyValuePair<Spell, int[]>> spells,
+                                                              Match.Player player, Match.Player opponent)
   {
     if (player.data.blockedHealingTurns == 0)
     {
-      int index = SelectMostRatedSpell(spells.FindAll(x => x.Key.healing > 0), player, opponent);
-      if (index >= 0)
-        return index;
+      var s = SelectMostRatedSpell(spells.FindAll(x => x.Key.healing > 0), player, opponent);
+      if (s != null)
+        return s;
     }
     else
     {
-      int index = SelectMostRatedSpell(spells.FindAll(x => x.Key.clearHealingCurse), player, opponent);
-      if (index >= 0)
-        return index;
+      var s = SelectMostRatedSpell(spells.FindAll(x => x.Key.clearHealingCurse), player, opponent);
+      if (s != null)
+        return s;
     }
-    return -1;
+    return null;
   }
 
-  public static int SelectMostRatedSpell(List<KeyValuePair<Spell, int[]>> spells, Match.Player player, Match.Player opponent)
+  public static KeyValuePair<Spell, int[]>? SelectMostRatedSpell(List<KeyValuePair<Spell, int[]>> spells,
+                                                                 Match.Player player, Match.Player opponent)
   {
     if (spells.Count == 0)
-      return -1;
+      return null;
 
     int index = 0;
     int maxRating = CalculateSpellRating(spells[index].Key, player, opponent);
@@ -166,11 +169,12 @@ public class SpellEstimator
       if (rating > maxRating)
         index = i;
     }
-    return index;
+    return spells[index];
   }
 
-  public static int FindBestDamageSpell(List<KeyValuePair<Spell, int[]>> spells, 
-                                        Match.Player player, Match.Player opponent, out int maxDamage)
+  public static KeyValuePair<Spell, int[]>? FindBestDamageSpell(List<KeyValuePair<Spell, int[]>> spells, 
+                                                                Match.Player player, Match.Player opponent,
+                                                                out int maxDamage)
   {
     maxDamage = 0;
     var indicesList = new List<KeyValuePair<int, int>>();
@@ -206,7 +210,7 @@ public class SpellEstimator
     }
 
     if (indicesList.Count == 0)
-      return -1;
+      return null;
 
     int index = 0;
     for (int i = 1; i < indicesList.Count; i++)
@@ -215,6 +219,6 @@ public class SpellEstimator
         index = i;
     }
 
-    return index;
+    return spells[indicesList[index].Key];
   }
 }

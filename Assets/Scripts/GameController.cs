@@ -135,7 +135,6 @@ public class GameController : MonoBehaviour
   private List<int> tappedCards = new List<int>();
 
   private Spell[] allUserSpells3;
-  private Spell[] allOpponentSpells3;
 
   private bool recommendationEnabled = true;
 
@@ -399,7 +398,7 @@ public class GameController : MonoBehaviour
         }
         else
         {
-          if (!HasSpellWith3Components(allUserSpells3, cards))
+          if (!matchData.Field.HasSpellWith3Components(allUserSpells3, cards))
           {
             cardsOpened = true;
             bot.OnOpponentOpenedCards(cards);
@@ -418,16 +417,6 @@ public class GameController : MonoBehaviour
         StartCoroutine(CastSpellWithDelay(cards, matchData.User, kAnimationTimeSec));
       }
     }
-  }
-
-  private bool HasSpellWith3Components(Spell[] spells, int[] cards)
-  {
-    foreach (Spell s in spells)
-    {
-      if (s.Combination[0] == matchData.Field.Cards[cards[0]] && s.Combination[1] == matchData.Field.Cards[cards[1]])
-        return true;
-    }
-    return false;
   }
 
   private void SwapCard(int index)
@@ -584,9 +573,6 @@ public class GameController : MonoBehaviour
     allUserSpells3 = (from s in Spellbook.Spells 
                       where Array.Exists(matchData.User.profile.spells, x => x == s.Code) && s.Combination.Length == 3
                       select s).ToArray();
-    allOpponentSpells3 = (from s in Spellbook.Spells
-                          where Array.Exists(matchData.Opponent.profile.spells, x => x == s.Code) && s.Combination.Length == 3
-                          select s).ToArray();
     
     StartCoroutine(InitialShowCardsRoutine());
   }
@@ -744,19 +730,9 @@ public class GameController : MonoBehaviour
 
     if (indices != null)
     {
-      bool needToFinish = false;
       for (int i = 0; i < indices.Length; i++)
       {
-        if (needToFinish)
-          break;
-
         SwapCard(indices[i]);
-        if (i == 1 && !HasSpellWith3Components(allOpponentSpells3, indices))
-        {
-          int[] newIndices = new int[2] { indices[0], indices[1] };
-          indices = newIndices;
-          needToFinish = true;
-        }
         yield return new WaitForSeconds(kAnimationTimeSec); 
       }
     }
