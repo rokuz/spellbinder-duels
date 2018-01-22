@@ -317,15 +317,19 @@ public class Bot
     var indices = new List<int>();
     foreach (Magic m in combination)
     {
-      int index = magic.FindIndex(x => x.Key == m && indices.FindIndex(y => y == x.Value) < 0);
-      if (index < 0)
+      var ind = magic.FindAll(x => x.Key == m);
+      var arr = (from i in ind where indices.FindIndex(x => x == i.Value) < 0 select i).ToArray();
+      if (arr.Length == 0)
         return null;
 
-      indices.Add(index);
+      indices.Add(arr[0].Value);
     }
 
+    if (indices[0] == indices[1])
+      throw new UnityException("Bad logic 1");
+
     if (combination.Length != indices.Count)
-      throw new UnityException("Bad logic");
+      throw new UnityException("Bad logic 2");
 
     return indices.ToArray();
   }
