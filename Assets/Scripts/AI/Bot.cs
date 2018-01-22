@@ -65,9 +65,7 @@ public class Bot
   {
     memory = new int[GameField.CARDS_COUNT];
 
-    if (caster.profile.level < 5)
-      initialMemoryIndex = 2;
-    else if (caster.profile.level < 7)
+    if (caster.profile.level < 7)
       initialMemoryIndex = 3;
     else if (caster.profile.level < 9)
       initialMemoryIndex = 4;
@@ -148,12 +146,12 @@ public class Bot
       if (player.profile.level > 1)
       {
         // Increase defense.
-        index = FindDefenseSpell(spells, player, opponent);
+        index = SpellEstimator.FindBestDefenseSpell(spells, player, opponent);
         if (index >= 0)
           return index;
 
         // Heal yourself.
-        index = FindHealSpell(spells, player, opponent);
+        index = SpellEstimator.FindBestHealSpell(spells, player, opponent);
         if (index >= 0 && player.data.health.Value < Constants.HEALTH_POINTS)
           return index;
       }
@@ -171,19 +169,19 @@ public class Bot
 
       {
         // Increase defense.
-        int index = FindDefenseSpell(spells, player, opponent);
+        int index = SpellEstimator.FindBestDefenseSpell(spells, player, opponent);
         if (index >= 0)
           return index;
 
         // Heal yourself.
-        index = FindHealSpell(spells, player, opponent);
+        index = SpellEstimator.FindBestHealSpell(spells, player, opponent);
         if (index >= 0)
           return index;
       }
     }
 
     int maxDamage = 0;
-    int maxDamageSpellIndex = FindSpellWithMaxDamage(spells, player, opponent, out maxDamage);
+    int maxDamageSpellIndex = SpellEstimator.FindBestDamageSpell(spells, player, opponent, out maxDamage);
 
     // Try to do maximum damage.
     if (maxDamageSpellIndex >= 0)
@@ -228,77 +226,27 @@ public class Bot
 
       {
         // Increase defense.
-        int index = FindDefenseSpell(spells, player, opponent);
+        int index = SpellEstimator.FindBestDefenseSpell(spells, player, opponent);
         if (index >= 0)
           return index;
 
         // Heal yourself.
-        index = FindHealSpell(spells, player, opponent);
+        index = SpellEstimator.FindBestHealSpell(spells, player, opponent);
         if (index >= 0 && player.data.health.Value < Constants.HEALTH_POINTS)
           return index;
       }
     }
 
+    {
+      int index = SpellEstimator.SelectMostRatedSpell(FilterUselessSpells(spells, player, opponent), player, opponent);
+      if (index >= 0)
+        return index;
+    }
+      
     // Cast random spell.
     return Random.Range(0, spells.Count);
   }
-
-  private int FindDefenseSpell(List<KeyValuePair<Spell, int[]>> spells, Match.Player player, Match.Player opponent)
-  {
-    if (player.data.blockedDefenseTurns == 0)
-    {
-      int index = spells.FindIndex(x => x.Key.defense > 0);
-      if (index >= 0)
-        return index;
-    }
-    else
-    {
-      int index = spells.FindIndex(x => x.Key.clearDefenseCurse);
-      if (index >= 0)
-        return index;
-    }
-    return -1;
-  }
-
-  private int FindHealSpell(List<KeyValuePair<Spell, int[]>> spells, Match.Player player, Match.Player opponent)
-  {
-    if (player.data.blockedHealingTurns == 0)
-    {
-      int index = spells.FindIndex(x => x.Key.healing > 0);
-      if (index >= 0)
-        return index;
-    }
-    else
-    {
-      int index = spells.FindIndex(x => x.Key.clearHealingCurse);
-      if (index >= 0)
-        return index;
-    }
-    return -1;
-  }
-
-  private int FindSpellWithMaxDamage(List<KeyValuePair<Spell, int[]>> spells, Match.Player player, Match.Player opponent, out int maxDamage)
-  {
-    int index = -1;
-    maxDamage = 0;
-    for (int i = 0; i < spells.Count; i++)
-    {
-      var dmg = spells[i].Key.damage;
-      if (dmg == 0)
-        continue;
-      var elemIndex = spells[i].Key.Index;
-      if (spells[i].Key.Index >= 0)
-        dmg += ((player.profile.bonuses[elemIndex] - opponent.profile.resistance[elemIndex]) / 1000);
-
-      if (dmg > maxDamage && spells[i].Key.manaCost <= player.data.RestMana)
-      {
-        maxDamage = spells[i].Key.damage;
-        index = i;
-      }
-    }
-    return index;
-  }
-
+    
   private List<KeyValuePair<Spell, int[]>> FindSpellsOnField(Spell[] spells, int availableMana, bool forceMemory)
   {
     var availableMagic = new List<KeyValuePair<Magic, int>>();
@@ -346,5 +294,35 @@ public class Bot
       throw new UnityException("Bad logic");
 
     return indices.ToArray();
+  }
+
+  private List<KeyValuePair<Spell, int[]>> FilterUselessSpells(List<KeyValuePair<Spell, int[]>> spells,
+                                                               Match.Player player, Match.Player opponent)
+  {
+    var result = new List<KeyValuePair<Spell, int[]>>();
+    foreach (var s in spells)
+    {
+      if (s.Key.healing > 0 && (player.data.health.Value == Constants.HEALTH_POINTS || player.data.blockedHealingTurns > 0))
+        continue;
+      if (s.Key.defense > 0 && player.data.blockedDefenseTurns > 0)
+        continue;
+      if (s.Key.damage > 0 && player.data.blockedDamageTurns > 0)
+        continue;
+      if (s.Key.clearDamageCurse && player.data.blockedDamageTurns == 0)
+        continue;
+      if (s.Key.clearHealingCurse && player.data.blockedHealingTurns == 0)
+        continue;
+      if (s.Key.clearDefenseCurse && player.data.blockedDefenseTurns == 0)
+        continue;
+      if (s.Key.blockDamageTurns > 0 && opponent.data.blockedDamageTurns > 0)
+        continue;
+      if (s.Key.blockHealingTurns > 0 && opponent.data.blockedHealingTurns > 0)
+        continue;
+      if (s.Key.blockDefenseTurns > 0 && opponent.data.blockedDefenseTurns > 0)
+        continue;
+
+      result.Add(s);
+    }
+    return result;
   }
 }
