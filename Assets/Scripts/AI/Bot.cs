@@ -145,18 +145,21 @@ public class Bot
       if (index >= 0 && (player.data.RestMana - spells[index].Key.manaCost) > 0)
         return index;
 
-      // Increase defense.
-      index = FindDefenseSpell(spells, player, opponent);
-      if (index >= 0)
-        return index;
+      if (player.profile.level > 1)
+      {
+        // Increase defense.
+        index = FindDefenseSpell(spells, player, opponent);
+        if (index >= 0)
+          return index;
 
-      // Heal yourself.
-      index = FindHealSpell(spells, player, opponent);
-      if (index >= 0 && player.data.health.Value < Constants.HEALTH_POINTS)
-        return index;
+        // Heal yourself.
+        index = FindHealSpell(spells, player, opponent);
+        if (index >= 0 && player.data.health.Value < Constants.HEALTH_POINTS)
+          return index;
+      }
     }
 
-    if (player.data.health.Value < 10)
+    if (player.data.health.Value < 10 && player.profile.level > 1)
     {
       // Cast damage curse.
       if (opponent.data.blockedDamageTurns == 0)
@@ -201,36 +204,39 @@ public class Bot
       return maxDamageSpellIndex;
     }
 
-    // Cast curses.
-    if (opponent.data.blockedDamageTurns == 0)
+    if (player.profile.level > 1)
     {
-      int index = spells.FindIndex(x => x.Key.blockDamageTurns > 0);
-      if (index >= 0)
-        return index;
-    }
-    if (opponent.data.blockedHealingTurns == 0)
-    {
-      int index = spells.FindIndex(x => x.Key.blockHealingTurns > 0);
-      if (index >= 0)
-        return index;
-    }
-    if (opponent.data.blockedDefenseTurns == 0)
-    {
-      int index = spells.FindIndex(x => x.Key.blockDefenseTurns > 0);
-      if (index >= 0)
-        return index;
-    }
+      // Cast curses.
+      if (opponent.data.blockedDamageTurns == 0)
+      {
+        int index = spells.FindIndex(x => x.Key.blockDamageTurns > 0);
+        if (index >= 0)
+          return index;
+      }
+      if (opponent.data.blockedHealingTurns == 0)
+      {
+        int index = spells.FindIndex(x => x.Key.blockHealingTurns > 0);
+        if (index >= 0)
+          return index;
+      }
+      if (opponent.data.blockedDefenseTurns == 0)
+      {
+        int index = spells.FindIndex(x => x.Key.blockDefenseTurns > 0);
+        if (index >= 0)
+          return index;
+      }
 
-    {
-      // Increase defense.
-      int index = FindDefenseSpell(spells, player, opponent);
-      if (index >= 0)
-        return index;
+      {
+        // Increase defense.
+        int index = FindDefenseSpell(spells, player, opponent);
+        if (index >= 0)
+          return index;
 
-      // Heal yourself.
-      index = FindHealSpell(spells, player, opponent);
-      if (index >= 0 && player.data.health.Value < Constants.HEALTH_POINTS)
-        return index;
+        // Heal yourself.
+        index = FindHealSpell(spells, player, opponent);
+        if (index >= 0 && player.data.health.Value < Constants.HEALTH_POINTS)
+          return index;
+      }
     }
 
     // Cast random spell.

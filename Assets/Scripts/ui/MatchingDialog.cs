@@ -136,7 +136,9 @@ public class MatchingDialog : MonoBehaviour
   private IEnumerator StartFinding(float delay)
   {
     yield return new WaitForSeconds(delay);
-    var rivals = (from r in Persistence.gameConfig.rivals where Math.Abs(profileData.level - r.level) <= 1 select r).ToArray();
+    int d = (Persistence.gameConfig.profile.matchCounter == 0 ? 0 : 1);
+
+    var rivals = (from r in Persistence.gameConfig.rivals where Math.Abs(profileData.level - r.level) <= d select r).ToArray();
     if (rivals.Length == 0)
     {
       int rivalIndex = UnityEngine.Random.Range(0, Persistence.gameConfig.rivals.Count);
