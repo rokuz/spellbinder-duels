@@ -108,11 +108,17 @@ public class CharacterDialog : MonoBehaviour
 
   private void CloseIfClickedOutside(GameObject panel)
   {
-    if (enableClosing && Input.GetMouseButtonDown(0) && panel.activeSelf && 
+    if (!enableClosing)
+      return;
+
+    if (Input.GetMouseButtonDown(0) && panel.activeSelf && 
         !RectTransformUtility.RectangleContainsScreenPoint(panel.GetComponent<RectTransform>(), Input.mousePosition, null))
     {
       Close();
     }
+
+    if (Input.GetKeyDown(KeyCode.Escape))
+      Close();
   }
 
   private float GetBonusProgress(int bonus)

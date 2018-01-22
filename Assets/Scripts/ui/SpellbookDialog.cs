@@ -139,11 +139,17 @@ public class SpellbookDialog : MonoBehaviour
 
   private void CloseIfClickedOutside(GameObject panel)
   {
-    if (Input.GetMouseButtonDown(0) && panel.activeSelf && !shopDialog.IsOpened() &&
+    if (shopDialog.IsOpened())
+      return;
+
+    if (Input.GetMouseButtonDown(0) && panel.activeSelf &&
         !RectTransformUtility.RectangleContainsScreenPoint(panel.GetComponent<RectTransform>(), Input.mousePosition, null))
     {
       Close();
     }
+
+    if (Input.GetKeyDown(KeyCode.Escape))
+      Close();
   }
 
   private void UpdateUserSpells()

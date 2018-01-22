@@ -234,10 +234,16 @@ public class LeaderboardDialog : MonoBehaviour
 
   private void CloseIfClickedOutside(GameObject panel)
   {
-    if (Input.GetMouseButtonDown(0) && panel.activeSelf && !messageDialog.IsOpened() &&
+    if (messageDialog.IsOpened())
+      return;
+
+    if (Input.GetMouseButtonDown(0) && panel.activeSelf &&
         !RectTransformUtility.RectangleContainsScreenPoint(panel.GetComponent<RectTransform>(), Input.mousePosition, null))
     {
       Close();
     }
+
+    if (Input.GetKeyDown(KeyCode.Escape))
+      Close();
   }
 }

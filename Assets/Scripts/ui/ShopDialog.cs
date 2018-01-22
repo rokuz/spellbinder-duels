@@ -288,11 +288,17 @@ public class ShopDialog : MonoBehaviour
 
   private void CloseIfClickedOutside(GameObject panel)
   {
-    if (Input.GetMouseButtonDown(0) && panel.activeSelf && !messageDialog.IsOpened() && !messageYesNoDialog.IsOpened() &&
+    if (messageDialog.IsOpened() || messageYesNoDialog.IsOpened())
+      return;
+
+    if (Input.GetMouseButtonDown(0) && panel.activeSelf &&
         !RectTransformUtility.RectangleContainsScreenPoint(panel.GetComponent<RectTransform>(), Input.mousePosition, null))
     {
       Close();
     }
+
+    if (Input.GetKeyDown(KeyCode.Escape))
+      Close();
   }
 
   private Sprite GetSprite(ShopItem item)

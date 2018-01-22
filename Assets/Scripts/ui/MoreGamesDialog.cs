@@ -151,6 +151,9 @@ public class MoreGamesDialog : MonoBehaviour
     {
       Close();
     }
+
+    if (Input.GetKeyDown(KeyCode.Escape))
+      Close();
   }
 
   private Sprite GetSprite(GameItem item)

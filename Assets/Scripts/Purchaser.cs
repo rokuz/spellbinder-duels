@@ -47,10 +47,13 @@ public class Purchaser : MonoBehaviour, IStoreListener
   public string GetPrice(string productId)
   {
     if (!IsInitialized())
-      return "";
+      return "Price from store";
 
     Product product = storeController.products.WithID(productId);
-    return product.metadata.localizedPriceString;
+    var p = product.metadata.localizedPriceString;
+    if (p == null || p.Length == 0)
+      return "Price from store";
+    return p;
   }
 
   public void Buy(string productId)

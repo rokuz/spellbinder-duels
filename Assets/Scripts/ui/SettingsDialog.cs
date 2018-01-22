@@ -99,6 +99,9 @@ public class SettingsDialog : MonoBehaviour
     {
       Close();
     }
+
+    if (Input.GetKeyDown(KeyCode.Escape))
+      Close();
   }
 
   public void OnChangeNameClicked()
