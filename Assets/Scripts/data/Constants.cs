@@ -20,6 +20,9 @@ public static class Constants
 
   public static int INVITE_PRICE = 10;
 
+  //                                   Level:   2    3    4    5    6    7    8    9    10   11    12
+  public static int[] LEVEL_PRICE = new int[] { 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1500 };
+
   //                                             Level:   1     2     3     4     5     6     7     8     9     10    11    12
   public static float[] OPEN_RANDOM_CARDS = new float[] { 0.3f, 0.3f, 0.3f, 0.3f, 0.2f, 0.2f, 0.2f, 0.1f, 0.1f, 0.1f, 0.0f, 0.0f };
 

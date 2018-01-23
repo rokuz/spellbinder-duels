@@ -73,7 +73,7 @@ public class GameField
     }
   }
 
-  private void ShuffleIndices(int[] indices)
+  public void ShuffleIndices(int[] indices)
   {
     for (int i = indices.Length - 1; i > 0; i--)
     {

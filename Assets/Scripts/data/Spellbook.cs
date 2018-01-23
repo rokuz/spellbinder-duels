@@ -59,13 +59,13 @@ public static class Spellbook
     spell = new Spell(new Magic[] { Magic.FIRE, Magic.AIR, Magic.FIRE }, Spell.Type.METEORITE);
     spell.manaCost = 1;
     spell.minLevel = 3;
-    spell.damage = 4;
+    spell.damage = 3;
     Spells.Add(spell);
 
     spell = new Spell(new Magic[] { Magic.WATER, Magic.AIR, Magic.WATER }, Spell.Type.ICE_RAIN);
     spell.manaCost = 1;
     spell.minLevel = 3;
-    spell.damage = 4;
+    spell.damage = 3;
     Spells.Add(spell);
 
     spell = new Spell(new Magic[] { Magic.AIR, Magic.NATURE, Magic.AIR }, Spell.Type.STORM);
@@ -83,13 +83,13 @@ public static class Spellbook
     Spells.Add(spell);
 
     spell = new Spell(new Magic[] { Magic.DARKNESS, Magic.EARTH, Magic.DARKNESS }, Spell.Type.DARKNESS_SHIELD);
-    spell.manaCost = 1;
+    spell.manaCost = 2;
     spell.minLevel = 6;
     spell.defense = 3;
     Spells.Add(spell);
 
     spell = new Spell(new Magic[] { Magic.LIGHT, Magic.ILLUSION, Magic.LIGHT }, Spell.Type.ASTRAL_PROJECTION);
-    spell.manaCost = 1;
+    spell.manaCost = 2;
     spell.minLevel = 6;
     spell.healing = 2;
     spell.clearHealingCurse = true;
@@ -97,7 +97,7 @@ public static class Spellbook
     Spells.Add(spell);
 
     spell = new Spell(new Magic[] { Magic.BLOOD, Magic.ILLUSION, Magic.BLOOD }, Spell.Type.BLOOD_SIGN);
-    spell.manaCost = 1;
+    spell.manaCost = 2;
     spell.minLevel = 6;
     spell.blockHealingTurns = 1;
     spell.blockDefenseTurns = 1;
@@ -105,7 +105,7 @@ public static class Spellbook
     Spells.Add(spell);
 
     spell = new Spell(new Magic[] { Magic.NATURE, Magic.DARKNESS, Magic.NATURE }, Spell.Type.POISONING);
-    spell.manaCost = 1;
+    spell.manaCost = 2;
     spell.minLevel = 7;
     spell.damage = 2;
     spell.blockHealingTurns = 2;
@@ -113,7 +113,7 @@ public static class Spellbook
     Spells.Add(spell);
 
     spell = new Spell(new Magic[] { Magic.FIRE, Magic.EARTH, Magic.FIRE }, Spell.Type.INFERNO);
-    spell.manaCost = 2;
+    spell.manaCost = 3;
     spell.minLevel = 8;
     spell.damage = 5;
     spell.considerDefense = false;
@@ -121,7 +121,7 @@ public static class Spellbook
     Spells.Add(spell);
 
     spell = new Spell(new Magic[] { Magic.WATER, Magic.DARKNESS, Magic.WATER }, Spell.Type.ICE_FETTERS);
-    spell.manaCost = 2;
+    spell.manaCost = 3;
     spell.minLevel = 8;
     spell.damage = 4;
     spell.blockDefenseTurns = 2;
@@ -129,7 +129,7 @@ public static class Spellbook
     Spells.Add(spell);
 
     spell = new Spell(new Magic[] { Magic.AIR, Magic.EARTH, Magic.AIR }, Spell.Type.TORNADO);
-    spell.manaCost = 2;
+    spell.manaCost = 3;
     spell.minLevel = 9;
     spell.damage = 5;
     spell.blockHealingTurns = 2;
@@ -137,14 +137,14 @@ public static class Spellbook
     Spells.Add(spell);
 
     spell = new Spell(new Magic[] { Magic.EARTH, Magic.FIRE, Magic.EARTH }, Spell.Type.BURNING_SHIELD);
-    spell.manaCost = 2;
+    spell.manaCost = 3;
     spell.minLevel = 9;
     spell.defense = 4;
     spell.clearDefenseCurse = true;
     Spells.Add(spell);
 
     spell = new Spell(new Magic[] { Magic.NATURE, Magic.BLOOD, Magic.NATURE }, Spell.Type.WILD_VINE);
-    spell.manaCost = 1;
+    spell.manaCost = 3;
     spell.minLevel = 10;
     spell.damage = 4;
     spell.removeDefense = true;
@@ -152,7 +152,7 @@ public static class Spellbook
     Spells.Add(spell);
 
     spell = new Spell(new Magic[] { Magic.ILLUSION, Magic.DARKNESS, Magic.ILLUSION }, Spell.Type.PHANTOM);
-    spell.manaCost = 1;
+    spell.manaCost = 3;
     spell.minLevel = 11;
     spell.damage = 5;
     spell.considerDefense = false;
@@ -160,14 +160,14 @@ public static class Spellbook
     Spells.Add(spell);
 
     spell = new Spell(new Magic[] { Magic.BLOOD, Magic.DARKNESS, Magic.BLOOD }, Spell.Type.VAMPIRE);
-    spell.manaCost = 2;
+    spell.manaCost = 3;
     spell.minLevel = 12;
     spell.damage = 6;
     spell.healing = 4;
     Spells.Add(spell);
 
     spell = new Spell(new Magic[] { Magic.DARKNESS, Magic.ILLUSION, Magic.DARKNESS }, Spell.Type.SOUL_ABRUPTION);
-    spell.manaCost = 2;
+    spell.manaCost = 3;
     spell.minLevel = 12;
     spell.damage = 6;
     spell.blockDamageTurns = 2;

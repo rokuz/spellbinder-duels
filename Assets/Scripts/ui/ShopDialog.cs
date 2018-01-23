@@ -57,7 +57,10 @@ public class ShopDialog : MonoBehaviour
     itemsList.Add(new ShopItem(ShopItemType.COINS_PACK2, i18n("Shop.MediumBag"), i18n("Shop.MediumBag.Desc"), Purchaser.kProductIDCoinsPack2, 500));
     itemsList.Add(new ShopItem(ShopItemType.COINS_PACK3, i18n("Shop.BigBag"), i18n("Shop.BigBag.Desc"), Purchaser.kProductIDCoinsPack3, 1000));
     if (this.profileData.level < Constants.MAX_LEVEL)
-      itemsList.Add(new ShopItem(ShopItemType.LEVEL_UP, i18n("Shop.LevelUp"), i18n("Shop.LevelUp.Desc"), 1, 100));
+    {
+      int levelPrice = Constants.LEVEL_PRICE[this.profileData.level - 1];
+      itemsList.Add(new ShopItem(ShopItemType.LEVEL_UP, i18n("Shop.LevelUp"), i18n("Shop.LevelUp.Desc"), 1, levelPrice));
+    }
 
     var allSpells = (from s in Spellbook.Spells where !Array.Exists(this.profileData.spells, x => x == s.Code) select s)
                      .OrderBy(x => x.minLevel).ThenBy(x => x.Combination[0]).ThenBy(x => x.Combination[1]).ToArray();
@@ -203,11 +206,11 @@ public class ShopDialog : MonoBehaviour
     messageYesNoDialog.Open(i18n("Shop.BuyMessage"), s, (bool yes) =>
     {
       if (yes)
-        this.Buy(items[index]);
+        this.Buy(items[index], index);
     });
   }
 
-  private void Buy(ShopItem item)
+  private void Buy(ShopItem item, int index)
   {
     if (item.storePriceId.Length != 0)
     {
@@ -235,7 +238,17 @@ public class ShopDialog : MonoBehaviour
           this.profileData.LevelUp();
           Persistence.Save();
           if (this.profileData.level == Constants.MAX_LEVEL)
+          {
             StartCoroutine(DeferredSetup());
+          }
+          else
+          {
+            int levelPrice = Constants.LEVEL_PRICE[this.profileData.level - 1];
+            item.coinsCount = levelPrice;
+            Text priceText = (from t in itemInfos[index].GetComponentsInChildren<Text>()
+                              where t.gameObject.name == "Price" select t).Single();
+            priceText.text = "" + levelPrice;
+          }
         }
         else if (item.type == ShopItemType.SPELL)
         {

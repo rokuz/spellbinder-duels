@@ -37,7 +37,10 @@ public class Bot
     int[] indices = ChooseSpell(availableSpells, opponent);
 
     if (!matchData.Field.HasSpellWith3Components(this.allSpells3, indices))
-      return new int[] { indices[0], indices[1] };
+      indices = new int[] { indices[0], indices[1] };
+
+    for (int i = 0; i < indices.Length; i++)
+      memory[indices[i]]++;
 
     return indices;
   }
@@ -46,6 +49,8 @@ public class Bot
   {
     Spell[] availableSpells = (from sp in this.matchData.User.profile.spells select Spellbook.Find(sp)).ToArray();
     var spellsOnField = FindSpellsOnField(availableSpells, this.matchData.User.data.RestMana, true);
+    if (spellsOnField.Count == 0)
+      return null;
     var spellIndex = GetChosenSpellIndex(spellsOnField, this.matchData.User, this.matchData.Opponent);
     return spellsOnField[spellIndex].Value;
   }
@@ -135,29 +140,37 @@ public class Bot
     return UnityEngine.Random.value <= Constants.OPEN_RANDOM_CARDS[levelIndex];
   }
 
+  private List<int> FindForgottenIndices()
+  {
+    List<int> indices = new List<int>();
+    for (int i = 0; i < memory.Length; i++)
+    {
+      if (memory[i] <= 0)
+        indices.Add(i);
+    }
+    return indices;
+  }
+
   private int[] ChooseSpell(Spell[] availableSpells, Match.Player opponent)
   {
-    int[] resultIndices = null;
-
     var spellsOnField = FindSpellsOnField(availableSpells, caster.data.RestMana, false);
     if (CheckOpenRandomCardsProbability(spellsOnField.Count))
     {
       // Open random cards.
-      resultIndices = matchData.Field.GetRandomCards().ToArray();
-      for (int i = 0; i < resultIndices.Length; i++)
-        memory[resultIndices[i]]++;
-      return resultIndices;
+      return matchData.Field.GetRandomCards().ToArray();
+    }
+
+    // Open forgotten cards.
+    var forgottenIndices = FindForgottenIndices().ToArray();
+    if (forgottenIndices.Length > (GameField.CARDS_COUNT / 2) && caster.data.mana == Constants.MAX_MANA &&
+        caster.data.health.Value > 10)
+    {
+      matchData.Field.ShuffleIndices(forgottenIndices);
+      return new int[] { forgottenIndices[0], forgottenIndices[1], forgottenIndices[2] };
     }
 
     var spellIndex = GetChosenSpellIndex(spellsOnField, caster, opponent);
-    resultIndices = spellsOnField[spellIndex].Value;
-
-    if (resultIndices != null)
-    {
-      for (int i = 0; i < resultIndices.Length; i++)
-        memory[resultIndices[i]]++;
-    }
-    return resultIndices;
+    return spellsOnField[spellIndex].Value;
   }
 
   private int GetChosenSpellIndex(List<KeyValuePair<Spell, int[]>> spells, Match.Player player, Match.Player opponent)

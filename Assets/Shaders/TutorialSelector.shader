@@ -64,6 +64,7 @@
 				float r = uv.x * uv.x + uv.y * uv.y;
 				fixed4 c = lerp(fixed4(_RingColor.rgb, 0.0), fixed4(_RingColor.rgb, 1.0), smoothstep(0.15 - k, 0.2 - k, r));
 				c.a *= (1.0 - smoothstep(0.15 - k, 0.25 - k, r));
+				c *= IN.color;
 				return c;
 			}
 		ENDCG

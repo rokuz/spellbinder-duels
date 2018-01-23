@@ -62,6 +62,9 @@ public class TutorialCoreGame : MonoBehaviour
 
     this.markers[index1].SetActive(true);
     this.markers[index2].SetActive(true);
+    this.markers[index1].GetComponent<SpriteRenderer>().color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+    this.markers[index2].GetComponent<SpriteRenderer>().color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+    
     tutorialCrystalSelector.SetActive(true);
   }
 
@@ -158,8 +161,15 @@ public class TutorialCoreGame : MonoBehaviour
   {
     if (indices == null)
       return;
-    foreach (var i in indices)
-      markers[i].SetActive(true);
+    
+    for (int i = 0; i < indices.Length; i++)
+    {
+      markers[indices[i]].SetActive(true);
+      if (i == 1 && indices.Length == 3)
+        markers[indices[i]].GetComponent<SpriteRenderer>().color = new Color(1.0f, 1.0f, 1.0f, 0.5f);
+      else
+        markers[indices[i]].GetComponent<SpriteRenderer>().color = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+    }
   }
 
   public void DeactivateMarker(int index)
