@@ -180,7 +180,7 @@
 		<value>You miscasted</value>
 	</data>
 	<data name="Game.YouMiscasted.NoMana" xml:space="preserve">
-		<value>No enough mana</value>
+		<value>Not enough mana</value>
 	</data>
 	<data name="Game.YouMiscasted.Unknown" xml:space="preserve">
 		<value>You have't known this spell yet</value>
@@ -189,7 +189,7 @@
 		<value>Your turn</value>
 	</data>
 	<data name="Game.YourTurnFirst" xml:space="preserve">
-		<value>You are first</value>
+		<value>You are the first</value>
 	</data>
 	<data name="Leaderboard.Defeats" xml:space="preserve">
 		<value>Defeats</value>
