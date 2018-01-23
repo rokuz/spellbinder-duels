@@ -966,7 +966,7 @@ public class GameController : MonoBehaviour
   }
 
   private void CastInstantSpell(GameObject spellPrefab, bool isPlayer, Vector3 targetPos, float zRotation, bool alignDir,
-                                float duration, OnSpellAnimationFinished onFinished)
+                                float distance, float duration, OnSpellAnimationFinished onFinished)
   {
     GameObject spellObject = Instantiate(spellPrefab);
     if (alignDir)
@@ -979,7 +979,10 @@ public class GameController : MonoBehaviour
     }
     else
     {
-      spellObject.transform.localRotation = Quaternion.AngleAxis(zRotation, Vector3.forward);
+      var q = Quaternion.AngleAxis(zRotation, Vector3.forward);
+      spellObject.transform.localRotation = q;
+      var dir = q * Vector3.left;
+      spellObject.transform.localPosition = targetPos + new Vector3(dir.y, -dir.x, 0.0f) * distance;
     }
 
     StartCoroutine(CastInstantSpellRoutine(spellObject, isPlayer, duration, onFinished));
@@ -1028,7 +1031,7 @@ public class GameController : MonoBehaviour
     else if (spell.SpellType == Spell.Type.LIGHTNING || spell.SpellType == Spell.Type.STORM || spell.SpellType == Spell.Type.TORNADO)
     {
       CastInstantSpell(lightningPrefab, userCasted, userCasted ? playerInfo2Pos : playerInfo1Pos,
-                       90.0f, true, 0.5f, onFinished);
+                       90.0f, true, 0.0f, 0.5f, onFinished);
     }
     else if (spell.SpellType == Spell.Type.NATURE_CALL)
     {
@@ -1070,12 +1073,12 @@ public class GameController : MonoBehaviour
     else if (spell.SpellType == Spell.Type.METEORITE || spell.SpellType == Spell.Type.INFERNO)
     {
       CastInstantSpell(meteoritePrefab, userCasted, userCasted ? playerInfo2Pos : playerInfo1Pos,
-                       userCasted ? 80.0f : -80.0f, false, 3.5f, onFinished);
+                       userCasted ? 80.0f : -80.0f, false, 75.0f, 3.5f, onFinished);
     }
     else if (spell.SpellType == Spell.Type.ICE_RAIN || spell.SpellType == Spell.Type.ICE_FETTERS)
     {
       CastInstantSpell(iceRainPrefab, userCasted, userCasted ? playerInfo2Pos : playerInfo1Pos,
-                       userCasted ? 80.0f : -80.0f, false, 3.5f, onFinished);
+                       userCasted ? 80.0f : -80.0f, false, 75.0f, 3.5f, onFinished);
     }
     else
     {

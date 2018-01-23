@@ -160,7 +160,10 @@ public class TutorialCoreGame : MonoBehaviour
   public void ActivateMarkers(int[] indices)
   {
     if (indices == null)
+    {
+      DeactivateMarkers();
       return;
+    }
     
     for (int i = 0; i < indices.Length; i++)
     {
