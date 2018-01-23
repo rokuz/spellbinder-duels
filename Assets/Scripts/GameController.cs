@@ -976,6 +976,7 @@ public class GameController : MonoBehaviour
       dir.Normalize();
       spellObject.transform.forward = dir;
       spellObject.transform.Rotate(0.0f, 0.0f, zRotation);
+      spellObject.transform.Translate(new Vector3(0.0f, 0.0f, -distance));
     }
     else
     {
@@ -1030,8 +1031,11 @@ public class GameController : MonoBehaviour
     }
     else if (spell.SpellType == Spell.Type.LIGHTNING || spell.SpellType == Spell.Type.STORM || spell.SpellType == Spell.Type.TORNADO)
     {
+      float distance = 0.0f;
+      if (Math.Abs(Camera.main.aspect - 4.0f / 3.0f) <= 0.1f)
+        distance = 20.0f;
       CastInstantSpell(lightningPrefab, userCasted, userCasted ? playerInfo2Pos : playerInfo1Pos,
-                       90.0f, true, 0.0f, 0.5f, onFinished);
+                       90.0f, true, distance, 0.5f, onFinished);
     }
     else if (spell.SpellType == Spell.Type.NATURE_CALL)
     {
