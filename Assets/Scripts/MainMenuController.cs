@@ -40,7 +40,8 @@ public class MainMenuController : MonoBehaviour
     Application.runInBackground = true;
     Persistence.Load();
 
-    InitializeAds();
+    if (Persistence.gameConfig.profile != null)
+      InitializeAds();
 
     GetComponent<AudioSource>().volume = Persistence.gameConfig.musicVolume;
 
@@ -145,9 +146,19 @@ public class MainMenuController : MonoBehaviour
     }
 
     if (Persistence.gameConfig.profile.name.Length == 0)
-      setNameDialog.Open(Persistence.gameConfig.profile, () => { this.UpdatePlayerUI(); });
-    else 
+    {
+      Analytics.CustomEvent("SetName_Started");
+      setNameDialog.Open(Persistence.gameConfig.profile, () =>
+      {
+        Analytics.CustomEvent("SetName_Finished");
+        InitializeAds(); 
+        this.UpdatePlayerUI();
+      });
+    }
+    else
+    {
       this.UpdatePlayerUI();
+    }
   }
 
   private void UpdatePlayerUI()
