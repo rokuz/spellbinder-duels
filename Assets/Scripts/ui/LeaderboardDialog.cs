@@ -122,7 +122,7 @@ public class LeaderboardDialog : MonoBehaviour
 
   public void Open(ProfileData profileData, OnClose onCloseHandler)
   {
-    Analytics.CustomEvent("Leaderboard_Open");
+    MyAnalytics.CustomEvent("Leaderboard_Open");
 
     this.onCloseHandler = onCloseHandler;
 
@@ -168,11 +168,11 @@ public class LeaderboardDialog : MonoBehaviour
 
   public void OnInvite()
   {
-    Analytics.CustomEvent("Leaderboard_Invite");
+    MyAnalytics.CustomEvent("Leaderboard_Invite");
     facebookHolder.Invite((bool success, string[] friends, bool cancelled) => {
       if (cancelled)
       {
-        Analytics.CustomEvent("Leaderboard_Invite_Cancel");
+        MyAnalytics.CustomEvent("Leaderboard_Invite_Cancel");
         return;
       }
       if (success && friends != null)
@@ -182,7 +182,7 @@ public class LeaderboardDialog : MonoBehaviour
         {
           var p = new Dictionary<string, object>();
           p.Add("new_friends", newFriends.Length);
-          Analytics.CustomEvent("Leaderboard_Invite_Success", p);
+          MyAnalytics.CustomEvent("Leaderboard_Invite_Success", p);
 
           Persistence.gameConfig.AddFriends(newFriends, facebookHolder);
           Persistence.gameConfig.profile.coins += (newFriends.Length * Constants.INVITE_PRICE);
@@ -199,7 +199,7 @@ public class LeaderboardDialog : MonoBehaviour
       {
         var p = new Dictionary<string, object>();
         p.Add("no_auth", Persistence.gameConfig.profile.facebookId.Length == 0);
-        Analytics.CustomEvent("Leaderboard_Invite_Failure", p);
+        MyAnalytics.CustomEvent("Leaderboard_Invite_Failure", p);
 
         messageDialog.Open(LanguageManager.Instance.GetTextValue("Message.Error"),
           LanguageManager.Instance.GetTextValue("Leaderboard.InviteError"), null);
@@ -220,7 +220,7 @@ public class LeaderboardDialog : MonoBehaviour
     p.Add("is_friend", profiles[profileIndex].facebookId.Length != 0);
     p.Add("player_level", Persistence.gameConfig.profile.level);
     p.Add("opponent_level", profiles[profileIndex].level);
-    Analytics.CustomEvent("Leaderboard_Duel", p);
+    MyAnalytics.CustomEvent("Leaderboard_Duel", p);
 
     StartCoroutine(StartDuel(profileIndex));
   }

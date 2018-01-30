@@ -344,6 +344,12 @@
 	<data name="Settings.Gamma" xml:space="preserve">
 		<value>Gamma</value>
 	</data>
+	<data name="Settings.Giftcode" xml:space="preserve">
+		<value>Gift code:</value>
+	</data>
+	<data name="Settings.GiftcodePlaceholder" xml:space="preserve">
+		<value>Enter gift code...</value>
+	</data>
 	<data name="Settings.MusicVolume" xml:space="preserve">
 		<value>Music volume</value>
 	</data>
@@ -355,6 +361,9 @@
 	</data>
 	<data name="Settings.SfxVolume" xml:space="preserve">
 		<value>Sound effects volume</value>
+	</data>
+	<data name="Settings.SimplifiedGameplay" xml:space="preserve">
+		<value>Play in the Youth League (simplified gameplay)</value>
 	</data>
 	<data name="Settings.Title" xml:space="preserve">
 		<value>Settings</value>
@@ -629,6 +638,9 @@
 	<data name="Tutorial.Battle.4" xml:space="preserve">
 		<value>Look, the first mana crystal activated. You have to spend all crystals on each turn. Turn the highlighted cards over and cast</value>
 	</data>
+	<data name="Tutorial.Battle.4.1" xml:space="preserve">
+		<value>Look, the first mana crystal activated. You have to spend all crystals on each turn. Tap to the highlighted cards and cast</value>
+	</data>
 	<data name="Tutorial.Battle.5.1" xml:space="preserve">
 		<value>Excellent, well done! I think you will win without my support.</value>
 	</data>
@@ -640,6 +652,9 @@
 	</data>
 	<data name="Tutorial.Battle.6" xml:space="preserve">
 		<value>Ah, I almost forgot. The duel ends when one of the opponents loses consciousness. Watch your own health and do not neglect healing magic.</value>
+	</data>
+	<data name="Tutorial.Battle.Simplified" xml:space="preserve">
+		<value>If it was hard for you to remember, I can offer to play in the Youth League. There the cards are open and never turn over. Do you want to join the Youth League?</value>
 	</data>
 	<data name="Tutorial.MainMenu.1" xml:space="preserve">
 		<value>Greetings, the Spellbinder. Welcome to the Wizards Tournament. You can call me Merlin. I am the champion of the previous 10 years, let me show you the tournament.</value>

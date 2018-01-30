@@ -49,7 +49,7 @@ public class CharacterDialog : MonoBehaviour
 
   public void Open(ProfileData profileData, OnClose onCloseHandler)
   {
-    Analytics.CustomEvent("Character_Open");
+    MyAnalytics.CustomEvent("Character_Open");
 
     this.profileData = profileData;
     if (this.profileData != null)

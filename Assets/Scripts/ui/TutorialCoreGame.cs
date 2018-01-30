@@ -17,6 +17,8 @@ public class TutorialCoreGame : MonoBehaviour
   private Spell spellToCast;
   private Button nextButton;
 
+  private bool checkedSimplifiedGameplay = false;
+
   public void InitTutorial()
   {
     if (Persistence.gameConfig.tutorialCoreGameShown)
@@ -39,7 +41,22 @@ public class TutorialCoreGame : MonoBehaviour
     GetButtonText(tutorial1, "ButtonNo").text = LanguageManager.Instance.GetTextValue("Message.No");
     GetButtonText(tutorial2, "ButtonNext").text = LanguageManager.Instance.GetTextValue("Message.Next");
 
+    UpdateMarkersForSimplifiedGameplay();
+
     SetActive();
+  }
+
+  public void UpdateMarkersForSimplifiedGameplay()
+  {
+    if (!Persistence.preferences.IsSimplifiedGameplay())
+      return;
+    
+    foreach (var m in markers)
+    {
+      var p = m.transform.localPosition;
+      p.z = 0.6f;
+      m.transform.localPosition = p;
+    }
   }
 
   public void OnCrystalActivated(int index1, int index2, Spell spellToCast)
@@ -55,7 +72,11 @@ public class TutorialCoreGame : MonoBehaviour
 
     var tut = GetTutorial(Persistence.gameConfig.tutorialCoreGameStep);
     string spellName = LanguageManager.Instance.GetTextValue("Spell." + spellToCast.SpellType.ToString());
-    GetText(tut).text = GetTutorialText(Persistence.gameConfig.tutorialCoreGameStep) + " \"" + spellName+ "\".";
+
+    if (!Persistence.preferences.IsSimplifiedGameplay())
+      GetText(tut).text = GetTutorialText(Persistence.gameConfig.tutorialCoreGameStep) + " \"" + spellName+ "\".";
+    else
+      GetText(tut).text = LanguageManager.Instance.GetTextValue("Tutorial.Battle.4.1") + " \"" + spellName+ "\".";
 
     nextButton = (from t in tut.GetComponentsInChildren<Button>() where t.gameObject.name == "ButtonNext" select t).Single();
     nextButton.gameObject.SetActive(false);
@@ -120,6 +141,13 @@ public class TutorialCoreGame : MonoBehaviour
     return Persistence.gameConfig.tutorialCoreGameStep >= 3;
   }
 
+  public bool IsCheckedSimplifiedGameplay()
+  {
+    if (Persistence.gameConfig.tutorialCoreGameShown)
+      return true;
+    return this.checkedSimplifiedGameplay;
+  }
+
   private string GetTutorialText(int step)
   {
     int i = step + 1;
@@ -134,14 +162,25 @@ public class TutorialCoreGame : MonoBehaviour
   public void OnYesClicked()
   {
     audio.Play(CoreGameAudio.Type.ButtonDefault);
-    ResetCurrent();
+    if (Persistence.gameConfig.tutorialCoreGameStep == 0)
+    {
+      ResetCurrent();
 
-    Persistence.gameConfig.tutorialCoreGameStep = 1;
-    Persistence.Save();
+      Persistence.gameConfig.tutorialCoreGameStep = 1;
+      Persistence.Save();
 
-    SetActive();
+      SetActive();
 
-    Analytics.CustomEvent("Tutorial_CoreGame_Started");
+      MyAnalytics.CustomEvent("Tutorial_CoreGame_Started");
+    }
+    else if (Persistence.gameConfig.tutorialCoreGameStep == 3)
+    {
+      checkedSimplifiedGameplay = true;
+      tutorial1.SetActive(false);
+      Persistence.preferences.SetSimplifiedGameplay(true);
+      Persistence.Save();
+      UpdateMarkersForSimplifiedGameplay();
+    }
   }
 
   private void SetActive()
@@ -189,13 +228,23 @@ public class TutorialCoreGame : MonoBehaviour
   public void OnNoClicked()
   {
     audio.Play(CoreGameAudio.Type.ButtonNo);
-    ResetCurrent();
+    if (Persistence.gameConfig.tutorialCoreGameStep == 0)
+    {
+      ResetCurrent();
 
-    Persistence.gameConfig.tutorialCoreGameStep = 0;
-    Persistence.gameConfig.tutorialCoreGameShown = true;
-    Persistence.Save();
+      Persistence.gameConfig.tutorialCoreGameStep = 0;
+      Persistence.gameConfig.tutorialCoreGameShown = true;
+      Persistence.Save();
 
-    Analytics.CustomEvent("Tutorial_CoreGame_Discarded");
+      MyAnalytics.CustomEvent("Tutorial_CoreGame_Discarded");
+    }
+    else if (Persistence.gameConfig.tutorialCoreGameStep == 3)
+    {
+      checkedSimplifiedGameplay = true;
+      tutorial1.SetActive(false);
+      Persistence.preferences.SetSimplifiedGameplay(false);
+      Persistence.Save();
+    }
   }
 
   public void OnNextClicked()
@@ -205,6 +254,12 @@ public class TutorialCoreGame : MonoBehaviour
     Persistence.gameConfig.tutorialCoreGameStep++;
     if (Persistence.gameConfig.tutorialCoreGameStep == 3)
     {
+      if (!Persistence.preferences.IsSimplifiedGameplay())
+      {
+        GetText(tutorial1).text = LanguageManager.Instance.GetTextValue("Tutorial.Battle.Simplified");
+        tutorial1.SetActive(true);
+      }
+
       // Wait for OnCrystalActivated to SetActive.
       Persistence.Save();
       return;
@@ -213,7 +268,7 @@ public class TutorialCoreGame : MonoBehaviour
     {
       Persistence.gameConfig.tutorialCoreGameStep = 0;
       Persistence.gameConfig.tutorialCoreGameShown = true;
-      Analytics.CustomEvent("Tutorial_CoreGame_Finished");
+      MyAnalytics.CustomEvent("Tutorial_CoreGame_Finished");
     }
     else if (Persistence.gameConfig.tutorialCoreGameStep == 5)
     {

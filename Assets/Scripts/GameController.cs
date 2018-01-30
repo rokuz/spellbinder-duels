@@ -146,6 +146,8 @@ public class GameController : MonoBehaviour
     if (systemLanguage != null)
       LanguageManager.Instance.ChangeLanguage(systemLanguage);
 
+    MyAnalytics.Init();
+
     matchData = SceneConnector.Instance.GetMatch();
 
     if (matchData != null)
@@ -209,7 +211,9 @@ public class GameController : MonoBehaviour
 
     #if UNITY_EDITOR
     if (matchData == null)
+    {
       matchData = new Match(new ProfileData("Player1", 12, 0), new ProfileData("Player2", 12, 0));
+    }
     #endif
     if (matchData != null)
     {
@@ -421,14 +425,22 @@ public class GameController : MonoBehaviour
 
   private void SwapCard(int index)
   {
-    audio.Play(CoreGameAudio.Type.CardFlip);
-    SwappingInfo info = openedCards[index];
-    if (!info.isSwapping)
+    if (!Persistence.preferences.IsSimplifiedGameplay())
+    {  
+      audio.Play(CoreGameAudio.Type.CardFlip);
+      SwappingInfo info = openedCards[index];
+      if (!info.isSwapping)
+      {
+        info.swapRequestTime = Time.time;
+        info.isBackShowing = !info.isBackShowing;
+        cards[index].transform.rotation = Quaternion.AngleAxis(info.isBackShowing ? 180.0f : 0.0f, Vector3.up);
+        info.isSwapping = true;
+      }
+    }
+    else
     {
-      info.swapRequestTime = Time.time;
-      info.isBackShowing = !info.isBackShowing;
-      cards[index].transform.rotation = Quaternion.AngleAxis(info.isBackShowing ? 180.0f : 0.0f, Vector3.up);
-      info.isSwapping = true;
+      audio.Play(CoreGameAudio.Type.CardFlip);
+      cards[index].GetComponent<CardLineAnimator>().RunAnimation();
     }
   }
 
@@ -452,7 +464,7 @@ public class GameController : MonoBehaviour
         var p = new Dictionary<string, object>();
         p.Add("spell", s.SpellType);
         p.Add("caster_level", caster.profile.level);
-        Analytics.CustomEvent("Spell_Casted", p);
+        MyAnalytics.CustomEvent("Spell_Casted", p);
 
         this.recommendationEnabled = false;
         tutorialCoreGame.DeactivateMarkers();
@@ -473,7 +485,7 @@ public class GameController : MonoBehaviour
       {
         var p = new Dictionary<string, object>();
         p.Add("caster_level", caster.profile.level);
-        Analytics.CustomEvent("Spell_Miscasted", p);
+        MyAnalytics.CustomEvent("Spell_Miscasted", p);
 
         this.recommendationEnabled = true;
       }
@@ -504,6 +516,9 @@ public class GameController : MonoBehaviour
     audio.OnFinishSpell(spell);
     yield return new WaitForSeconds(delay);
 
+    foreach (int index in indices)
+      cards[index].GetComponent<CardLineAnimator>().StopAnimation();
+
     Magic[] substitutes = matchData.ApplySpell(spell, indices, caster);
 
     UpdatePlayersStats();
@@ -521,8 +536,16 @@ public class GameController : MonoBehaviour
   private IEnumerator FinishSpell(Match.Player caster, float delay)
   {
     yield return new WaitForSeconds(delay);
-    CloseAllOpenedCards();
-    yield return new WaitForSeconds(kAnimationTimeSec);
+    if (!Persistence.preferences.IsSimplifiedGameplay())
+    {
+      CloseAllOpenedCards();
+      yield return new WaitForSeconds(kAnimationTimeSec);
+    }
+    else
+    {
+      cardsOpened = false;
+    }
+
     if (caster.data.RestMana == 0)
     {
       this.recommendationEnabled = false;
@@ -566,7 +589,7 @@ public class GameController : MonoBehaviour
 
     var p = new Dictionary<string, object>();
     p.Add("match_counter", matchData.User.profile.matchCounter);
-    Analytics.CustomEvent("Match_Started", p);
+    MyAnalytics.CustomEvent("Match_Started", p);
 
     SetupGameField();
 
@@ -609,12 +632,20 @@ public class GameController : MonoBehaviour
     UpdateManaUI();
 
     SwapAllCards();
-    yield return new WaitForSeconds(Constants.CARDS_SHOW_TIME);
+    if (!Persistence.preferences.IsSimplifiedGameplay())
+    {
+      yield return new WaitForSeconds(Constants.CARDS_SHOW_TIME);
+    }
 
     yield return new WaitUntil(() => { return this.tutorialCoreGame.EnabledTurnOverAll(); });
 
-    SwapAllCards();
-    yield return new WaitForSeconds(kAnimationTimeSec);
+    yield return new WaitUntil(() => { return this.tutorialCoreGame.IsCheckedSimplifiedGameplay(); });
+
+    if (!Persistence.preferences.IsSimplifiedGameplay())
+    {
+      SwapAllCards();
+      yield return new WaitForSeconds(kAnimationTimeSec);
+    }
     matchData.Status = Match.MatchStatus.STARTED;
 
     StartTurn();
@@ -1131,7 +1162,7 @@ public class GameController : MonoBehaviour
     {
       var p = new Dictionary<string, object>();
       p.Add("match_counter", matchData.User.profile.matchCounter);
-      Analytics.CustomEvent("Match_Win", p);
+      MyAnalytics.CustomEvent("Match_Win", p);
 
       if (!rewardDialog.IsOpened())
       {
@@ -1146,7 +1177,7 @@ public class GameController : MonoBehaviour
     {
       var p = new Dictionary<string, object>();
       p.Add("match_counter", matchData.User.profile.matchCounter);
-      Analytics.CustomEvent("Match_Lose", p);
+      MyAnalytics.CustomEvent("Match_Lose", p);
 
       if (!defeatDialog.IsOpened())
       {
@@ -1182,7 +1213,7 @@ public class GameController : MonoBehaviour
 
   private void Replay()
   {
-    Analytics.CustomEvent("Match_Replay");
+    MyAnalytics.CustomEvent("Match_Replay");
 
     SceneConnector.Instance.Replay();
     if (!Persistence.gameConfig.removedAds)
@@ -1243,7 +1274,7 @@ public class GameController : MonoBehaviour
     if (defeatDialog.IsOpened())
       return;
 
-    Analytics.CustomEvent("Match_Surrender");
+    MyAnalytics.CustomEvent("Match_Surrender");
 
     matchData.Surrender();
     defeatDialog.Open(LanguageManager.Instance.GetTextValue("Message.YouSurrender"),

@@ -109,7 +109,7 @@ public class MoreGamesDialog : MonoBehaviour
 
   public void Open(OnClose onCloseHandler)
   {
-    Analytics.CustomEvent("MoreGames_Open");
+    MyAnalytics.CustomEvent("MoreGames_Open");
 
     this.onCloseHandler = onCloseHandler;
 
@@ -135,7 +135,7 @@ public class MoreGamesDialog : MonoBehaviour
 
     var p = new Dictionary<string, object>();
     p.Add("game", games[index].game);
-    Analytics.CustomEvent("MoreGames_ShowInStore", p);
+    MyAnalytics.CustomEvent("MoreGames_ShowInStore", p);
 
     #if UNITY_ANDROID
       Application.OpenURL(games[index].googlePlayLink);

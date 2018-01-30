@@ -31,7 +31,7 @@ public class RewardDialog : MonoBehaviour
       {
         var p = new Dictionary<string, object>();
         p.Add("level", winner.profile.level);
-        Analytics.CustomEvent("Match_Level_Up", p);
+        MyAnalytics.CustomEvent("Match_Level_Up", p);
 
         rewardText.text = LanguageManager.Instance.GetTextValue("Reward.NewLevel");
       }

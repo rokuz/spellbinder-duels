@@ -93,7 +93,7 @@ public class SetNameDialog : MonoBehaviour
     if (!facebookHolder.FacebookInitialized || facebookHolder.FacebookLoggedIn)
       return;
 
-    Analytics.CustomEvent("SetName_FB");
+    MyAnalytics.CustomEvent("SetName_FB");
 
     fbButton.interactable = false;
     facebookHolder.Login((bool success) =>

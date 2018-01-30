@@ -17,6 +17,8 @@ public class Purchaser : MonoBehaviour, IStoreListener
   public delegate void OnButEvent(string productId, bool success);
   public delegate void OnRestorePurchases();
 
+  private static Dictionary<string, string> defaultPrices = new Dictionary<string, string>();
+
   public OnButEvent onBuy;
 
   void Start()
@@ -29,6 +31,11 @@ public class Purchaser : MonoBehaviour, IStoreListener
   {
     if (IsInitialized())
       return;
+
+    defaultPrices.Add(kProductIDRemoveAds, "$0.99");
+    defaultPrices.Add(kProductIDCoinsPack1, "$0.99");
+    defaultPrices.Add(kProductIDCoinsPack2, "$1.99");
+    defaultPrices.Add(kProductIDCoinsPack3, "$2.99");
 
     print("InitializePurchasing()");
     var builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance());
@@ -47,12 +54,12 @@ public class Purchaser : MonoBehaviour, IStoreListener
   public string GetPrice(string productId)
   {
     if (!IsInitialized())
-      return "Price from store";
+      return "";
 
     Product product = storeController.products.WithID(productId);
     var p = product.metadata.localizedPriceString;
     if (p == null || p.Length == 0)
-      return "Price from store";
+      return defaultPrices[productId];
     return p;
   }
 
@@ -110,9 +117,7 @@ public class Purchaser : MonoBehaviour, IStoreListener
 
     if (id.Length > 0)
     {
-      var p = new Dictionary<string, object>();
-      p.Add("product", id);
-      Analytics.CustomEvent("Purchase_Successful", p);
+      MyAnalytics.PaymentEvent(id, args.purchasedProduct);
       Debug.Log("Successful Purchase: " + id);
 
       if (id == kProductIDRemoveAds)
@@ -153,6 +158,6 @@ public class Purchaser : MonoBehaviour, IStoreListener
 
     var p = new Dictionary<string, object>();
     p.Add("product", id);
-    Analytics.CustomEvent("Purchase_Failed", p);
+    MyAnalytics.CustomEvent("Purchase_Failed", p);
   }
 }

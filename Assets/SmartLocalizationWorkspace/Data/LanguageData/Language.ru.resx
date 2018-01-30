@@ -344,6 +344,12 @@
 	<data name="Settings.Gamma" xml:space="preserve">
 		<value>Гамма</value>
 	</data>
+	<data name="Settings.Giftcode" xml:space="preserve">
+		<value>Подарочный код:</value>
+	</data>
+	<data name="Settings.GiftcodePlaceholder" xml:space="preserve">
+		<value>Введите код</value>
+	</data>
 	<data name="Settings.MusicVolume" xml:space="preserve">
 		<value>Громкость музыки</value>
 	</data>
@@ -355,6 +361,9 @@
 	</data>
 	<data name="Settings.SfxVolume" xml:space="preserve">
 		<value>Громкость звуковых эффектов</value>
+	</data>
+	<data name="Settings.SimplifiedGameplay" xml:space="preserve">
+		<value>Играть в Молодежной лиге (упрощенная игра)</value>
 	</data>
 	<data name="Settings.Title" xml:space="preserve">
 		<value>Настройки</value>
@@ -624,10 +633,13 @@
 		<value>Колдуете по очереди. Жребий решил, что первым начнешь ты.</value>
 	</data>
 	<data name="Tutorial.Battle.3" xml:space="preserve">
-		<value>На столе выложены карты магических школ. Постарайся запомнить расположение карт. Скоро карты перевернутся.</value>
+		<value>На столе разложены карты магических школ. Постарайся запомнить расположение карт. Скоро карты перевернутся.</value>
 	</data>
 	<data name="Tutorial.Battle.4" xml:space="preserve">
 		<value>Смотри, активировался первый кристалл маны. За ход ты должен потратить все кристаллы маны. Переверни выделенные карты и сотвори</value>
+	</data>
+	<data name="Tutorial.Battle.4.1" xml:space="preserve">
+		<value>Смотри, активировался первый кристалл маны. За ход ты должен потратить все кристаллы маны. Коснись выделенных карт и сотвори</value>
 	</data>
 	<data name="Tutorial.Battle.5.1" xml:space="preserve">
 		<value>Отлично, молодец, то что надо. Дальше, думаю, сам прекрасно справишься!</value>
@@ -640,6 +652,9 @@
 	</data>
 	<data name="Tutorial.Battle.6" xml:space="preserve">
 		<value>А, чуть не забыл. Дуэль заканчивается, когда один из противников теряет сознание. Следи за самочувствием и не пренебрегай целебной магией.</value>
+	</data>
+	<data name="Tutorial.Battle.Simplified" xml:space="preserve">
+		<value>Если тебе было сложно запомнить, то могу предложить сначала поиграть в Молодежной лиге. Там играют в открытую, и карты никогда не переворачиваются. Хочешь вступить в Молодежную лигу?</value>
 	</data>
 	<data name="Tutorial.MainMenu.1" xml:space="preserve">
 		<value>Приветствую тебя, Чародей! Добро пожаловать на турнир волшебников. Меня зовут Мерлин. На правах чемпиона 10 предыдущих лет разреши показать тебе турнир.</value>

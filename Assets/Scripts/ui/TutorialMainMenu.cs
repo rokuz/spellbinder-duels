@@ -52,7 +52,7 @@ public class TutorialMainMenu : MonoBehaviour
 
     SetActive();
 
-    Analytics.CustomEvent("Tutorial_MainMenu_Started");
+    MyAnalytics.CustomEvent("Tutorial_MainMenu_Started");
 
     buttonAudio.Play(ButtonAudio.Type.Default);
   }
@@ -86,7 +86,7 @@ public class TutorialMainMenu : MonoBehaviour
     Persistence.gameConfig.tutorialMainMenuShown = true;
     Persistence.Save();
 
-    Analytics.CustomEvent("Tutorial_MainMenu_Discarded");
+    MyAnalytics.CustomEvent("Tutorial_MainMenu_Discarded");
 
     buttonAudio.Play(ButtonAudio.Type.No);
   }
@@ -100,7 +100,7 @@ public class TutorialMainMenu : MonoBehaviour
     {
       Persistence.gameConfig.tutorialMainMenuStep = 0;
       Persistence.gameConfig.tutorialMainMenuShown = true;
-      Analytics.CustomEvent("Tutorial_MainMenu_Finished");
+      MyAnalytics.CustomEvent("Tutorial_MainMenu_Finished");
     }
     else if (Persistence.gameConfig.tutorialMainMenuStep == 5)
     {

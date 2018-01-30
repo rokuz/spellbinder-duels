@@ -37,6 +37,8 @@ public class MainMenuController : MonoBehaviour
     if (systemLanguage != null)
       LanguageManager.Instance.ChangeLanguage(systemLanguage);
 
+    MyAnalytics.Init();
+
     Application.runInBackground = true;
     Persistence.Load();
 
@@ -76,7 +78,7 @@ public class MainMenuController : MonoBehaviour
 	   
   public void OnPlayButtonClicked()
   {
-    Analytics.CustomEvent("Play_Clicked");
+    MyAnalytics.CustomEvent("Play_Clicked");
 
     this.playButton.interactable = false;
     matchingDialog.Open(Persistence.gameConfig.profile, () => { this.playButton.interactable = true; });
@@ -147,10 +149,10 @@ public class MainMenuController : MonoBehaviour
 
     if (Persistence.gameConfig.profile.name.Length == 0)
     {
-      Analytics.CustomEvent("SetName_Started");
+      MyAnalytics.CustomEvent("SetName_Started");
       setNameDialog.Open(Persistence.gameConfig.profile, () =>
       {
-        Analytics.CustomEvent("SetName_Finished");
+        MyAnalytics.CustomEvent("SetName_Finished");
         InitializeAds(); 
         this.UpdatePlayerUI();
       });

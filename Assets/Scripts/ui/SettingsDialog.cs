@@ -21,6 +21,11 @@ public class SettingsDialog : MonoBehaviour
   public Button restorePurchases;
   public Button otherGames;
   public MoreGamesDialog moreGamesDialog;
+  public Text giftcodeText;
+  public Text giftcodePlaceholderText;
+  public Text simplifiedGameplayText;
+  public Toggle simplifiedGameplayToggle;
+  public Text giftcodeInputText;
 
   public AudioSource musicSource;
 
@@ -48,6 +53,12 @@ public class SettingsDialog : MonoBehaviour
 
     volumeSlider.value = Persistence.gameConfig.musicVolume;
     sfxSlider.value = Persistence.gameConfig.sfxVolume;
+
+    simplifiedGameplayToggle.isOn = Persistence.preferences.IsSimplifiedGameplay();
+
+    giftcodeText.text = LanguageManager.Instance.GetTextValue("Settings.Giftcode");
+    giftcodePlaceholderText.text = LanguageManager.Instance.GetTextValue("Settings.GiftcodePlaceholder");
+    simplifiedGameplayText.text = LanguageManager.Instance.GetTextValue("Settings.SimplifiedGameplay");
 
     moreGamesDialog.Setup();
   }
@@ -141,5 +152,14 @@ public class SettingsDialog : MonoBehaviour
   {
     this.otherGames.interactable = false;
     moreGamesDialog.Open(() => { this.otherGames.interactable = true; });
+  }
+
+  public void OnGiftCodeEnter()
+  {
+  }
+
+  public void OnSimplifiedGameplay()
+  {
+    Persistence.preferences.SetSimplifiedGameplay(simplifiedGameplayToggle.isOn);
   }
 }

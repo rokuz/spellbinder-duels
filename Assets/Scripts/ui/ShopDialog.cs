@@ -138,7 +138,7 @@ public class ShopDialog : MonoBehaviour
 
   public void Open(ProfileData profileData, Spell selectedSpell, OnClose onCloseHandler)
   {
-    Analytics.CustomEvent("Shop_Open");
+    MyAnalytics.CustomEvent("Shop_Open");
 
     this.profileData = profileData;
     this.onCloseHandler = onCloseHandler;
@@ -216,7 +216,7 @@ public class ShopDialog : MonoBehaviour
     {
       var p = new Dictionary<string, object>();
       p.Add("product", item.type);
-      Analytics.CustomEvent("Shop_Buy_For_Cash", p);
+      MyAnalytics.CustomEvent("Shop_Buy_For_Cash", p);
 
       purchaser.Buy(item.storePriceId);
     }
@@ -230,7 +230,7 @@ public class ShopDialog : MonoBehaviour
       {
         var p = new Dictionary<string, object>();
         p.Add("product", item.type);
-        Analytics.CustomEvent("Shop_Buy_For_Coins", p);
+        MyAnalytics.CustomEvent("Shop_Buy_For_Coins", p);
 
         if (item.type == ShopItemType.LEVEL_UP && this.profileData.level < Constants.MAX_LEVEL)
         {

@@ -112,7 +112,7 @@ public class SpellbookDialog : MonoBehaviour
 
   public void Open(ProfileData profileData, OnClose onCloseHandler)
   {
-    Analytics.CustomEvent("Spellbook_Open");
+    MyAnalytics.CustomEvent("Spellbook_Open");
 
     this.profileData = profileData;
     this.onCloseHandler = onCloseHandler;
@@ -174,7 +174,7 @@ public class SpellbookDialog : MonoBehaviour
   {
     var p = new Dictionary<string, object>();
     p.Add("spell", spell.SpellType);
-    Analytics.CustomEvent("Spellbook_Learn", p);
+    MyAnalytics.CustomEvent("Spellbook_Learn", p);
 
     shopDialog.Open(Persistence.gameConfig.profile, spell, () => { UpdateUserSpells(); });
   }
