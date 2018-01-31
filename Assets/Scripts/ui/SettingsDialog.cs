@@ -38,7 +38,10 @@ public class SettingsDialog : MonoBehaviour
   private OnClose onCloseHandler;
 
   public delegate void OnRemovedAds();
-  public OnRemovedAds onRemovedAds;
+  private OnRemovedAds onRemovedAds;
+
+  public delegate void OnUpdateCoinsAndLevel();
+  private OnUpdateCoinsAndLevel onUpdateCoinsAndLevel;
 
   private ProfileData profileData;
 
@@ -78,12 +81,14 @@ public class SettingsDialog : MonoBehaviour
     CloseIfClickedOutside(this.gameObject);
   }
 
-  public void Open(ProfileData profileData, OnClose onCloseHandler, OnRemovedAds onRemovedAds)
+  public void Open(ProfileData profileData, OnClose onCloseHandler, OnRemovedAds onRemovedAds,
+                   OnUpdateCoinsAndLevel onUpdateCoinsAndLevel)
   {
     this.profileData = profileData;
     changeNameButton.interactable = (this.profileData != null);
     this.onCloseHandler = onCloseHandler;
     this.onRemovedAds = onRemovedAds;
+    this.onUpdateCoinsAndLevel = onUpdateCoinsAndLevel;
 
     simplifiedGameplayToggle.isOn = Persistence.preferences.IsSimplifiedGameplay();
     giftcodeInputField.text = "";
@@ -167,7 +172,13 @@ public class SettingsDialog : MonoBehaviour
     var gift = GiftCode.ApplyCode(giftcodeInputField.text);
     if (gift != null && !messageDialog.IsOpened())
     {
-      if (gift.removeAds && this.onRemovedAds != null && !Persistence.gameConfig.removedAds)
+      if (gift.expired)
+      {
+        buttonAudio.Play(ButtonAudio.Type.No);
+        messageDialog.Open(LanguageManager.Instance.GetTextValue("Message.Gift"),
+          LanguageManager.Instance.GetTextValue("Giftcode.Expired"), null);
+      }
+      else if (gift.removeAds && this.onRemovedAds != null && !Persistence.gameConfig.removedAds)
       {
         Persistence.gameConfig.removedAds = true;
         Persistence.Save();
@@ -182,6 +193,9 @@ public class SettingsDialog : MonoBehaviour
       {
         Persistence.gameConfig.profile.coins += gift.coins;
         Persistence.Save();
+
+        if (this.onUpdateCoinsAndLevel != null)
+          this.onUpdateCoinsAndLevel();
 
         buttonAudio.Play(ButtonAudio.Type.Yes);
         giftcodeInputField.text = "";

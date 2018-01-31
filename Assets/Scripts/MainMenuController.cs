@@ -68,6 +68,10 @@ public class MainMenuController : MonoBehaviour
       DestroyBanner();
     };
 
+    shopDialog.onUpdateCoinsAndLevel = () => {
+      UpdateCoinsAndLevel();
+    };
+
     InitProfile();
 	}
 
@@ -106,7 +110,7 @@ public class MainMenuController : MonoBehaviour
 
     this.settingsButton.interactable = false;
     settingsDialog.Open(Persistence.gameConfig.profile, () => { UpdatePlayerUI(); this.settingsButton.interactable = true; },
-      () => { UpdatePlayerUI(); DestroyBanner(); });
+      () => { UpdatePlayerUI(); DestroyBanner(); }, () => { UpdateCoinsAndLevel(); });
 
     tutorialMainMenu.OnSettingsClicked();
   }
@@ -166,8 +170,7 @@ public class MainMenuController : MonoBehaviour
   private void UpdatePlayerUI()
   {
     this.playerLogo.transform.Find("NameBox/NameText").GetComponent<Text>().text = Persistence.gameConfig.profile.name;
-    this.playerLogo.transform.Find("NameBox/Coin/CoinText").GetComponent<Text>().text = "" + Persistence.gameConfig.profile.coins;
-    this.playerLogo.transform.Find("LevelBox/LevelText").GetComponent<Text>().text = "" + Persistence.gameConfig.profile.level;
+    UpdateCoinsAndLevel();
     this.playerLogo.gameObject.SetActive(true);
 
     if (Persistence.gameConfig.profile != null)
@@ -179,6 +182,12 @@ public class MainMenuController : MonoBehaviour
     this.shopButton.interactable = true;
 
     tutorialMainMenu.InitTutorial();
+  }
+
+  private void UpdateCoinsAndLevel()
+  {
+    this.playerLogo.transform.Find("NameBox/Coin/CoinText").GetComponent<Text>().text = "" + Persistence.gameConfig.profile.coins;
+    this.playerLogo.transform.Find("LevelBox/LevelText").GetComponent<Text>().text = "" + Persistence.gameConfig.profile.level;
   }
 
   private void InitializeAds()

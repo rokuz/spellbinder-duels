@@ -41,6 +41,9 @@ public class ShopDialog : MonoBehaviour
   public delegate void OnRemovedAds();
   public OnRemovedAds onRemovedAds;
 
+  public delegate void OnUpdateCoinsAndLevel();
+  public OnUpdateCoinsAndLevel onUpdateCoinsAndLevel;
+
   private static string i18n(string s)
   {
     return LanguageManager.Instance.GetTextValue(s);
@@ -249,6 +252,9 @@ public class ShopDialog : MonoBehaviour
                               where t.gameObject.name == "Price" select t).Single();
             priceText.text = "" + levelPrice;
           }
+
+          if (this.onUpdateCoinsAndLevel != null)
+            this.onUpdateCoinsAndLevel();
         }
         else if (item.type == ShopItemType.SPELL)
         {
@@ -258,6 +264,9 @@ public class ShopDialog : MonoBehaviour
           this.profileData.spells = lst.ToArray();
           Persistence.Save();
           StartCoroutine(DeferredSetup());
+
+          if (this.onUpdateCoinsAndLevel != null)
+            this.onUpdateCoinsAndLevel();
         }
       }
     }
@@ -286,6 +295,9 @@ public class ShopDialog : MonoBehaviour
     {
       this.profileData.coins += item.coinsCount;
       Persistence.Save();
+
+      if (this.onUpdateCoinsAndLevel != null)
+        this.onUpdateCoinsAndLevel();
     }
   }
 

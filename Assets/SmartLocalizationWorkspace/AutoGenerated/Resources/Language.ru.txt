@@ -191,6 +191,9 @@
 	<data name="Game.YourTurnFirst" xml:space="preserve">
 		<value>Вы ходите первым</value>
 	</data>
+	<data name="Giftcode.Expired" xml:space="preserve">
+		<value>Срок действия кода закончился.</value>
+	</data>
 	<data name="Leaderboard.Defeats" xml:space="preserve">
 		<value>Поражения</value>
 	</data>

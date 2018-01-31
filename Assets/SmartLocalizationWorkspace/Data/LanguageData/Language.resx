@@ -239,6 +239,9 @@
 	<data name="Message.Finish" xml:space="preserve">
 		<value />
 	</data>
+	<data name="Message.Gift" xml:space="preserve">
+		<value />
+	</data>
 	<data name="Message.Lose" xml:space="preserve">
 		<value />
 	</data>
@@ -680,7 +683,7 @@
 	<data name="Victory.Finish" xml:space="preserve">
 		<value />
 	</data>
-	<data name="Message.Gift" xml:space="preserve">
+	<data name="Giftcode.Expired" xml:space="preserve">
 		<value />
 	</data>
 </root>
