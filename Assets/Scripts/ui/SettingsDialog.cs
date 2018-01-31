@@ -27,8 +27,8 @@ public class SettingsDialog : MonoBehaviour
   public Text giftcodePlaceholderText;
   public Text simplifiedGameplayText;
   public Toggle simplifiedGameplayToggle;
-  public Text giftcodeInputText;
   public MessageDialog messageDialog;
+  public InputField giftcodeInputField;
 
   public AudioSource musicSource;
 
@@ -86,7 +86,7 @@ public class SettingsDialog : MonoBehaviour
     this.onRemovedAds = onRemovedAds;
 
     simplifiedGameplayToggle.isOn = Persistence.preferences.IsSimplifiedGameplay();
-    giftcodeInputText.text = "";
+    giftcodeInputField.text = "";
 
     this.gameObject.SetActive(true);
     if (splash != null && !splash.IsActive())
@@ -164,7 +164,7 @@ public class SettingsDialog : MonoBehaviour
 
   public void OnGiftCodeEnter()
   {
-    var gift = GiftCode.ApplyCode(giftcodeInputText.text);
+    var gift = GiftCode.ApplyCode(giftcodeInputField.text);
     if (gift != null && !messageDialog.IsOpened())
     {
       if (gift.removeAds && this.onRemovedAds != null && !Persistence.gameConfig.removedAds)
@@ -174,7 +174,7 @@ public class SettingsDialog : MonoBehaviour
         this.onRemovedAds();
 
         buttonAudio.Play(ButtonAudio.Type.Yes);
-        giftcodeInputText.text = "";
+        giftcodeInputField.text = "";
         messageDialog.Open(LanguageManager.Instance.GetTextValue("Message.Gift"),
           LanguageManager.Instance.GetTextValue("Shop.RemoveAds"), null);
       }
@@ -184,7 +184,7 @@ public class SettingsDialog : MonoBehaviour
         Persistence.Save();
 
         buttonAudio.Play(ButtonAudio.Type.Yes);
-        giftcodeInputText.text = "";
+        giftcodeInputField.text = "";
         messageDialog.Open(LanguageManager.Instance.GetTextValue("Message.Gift"),
           "" + gift.coins + " " + LanguageManager.Instance.GetTextValue("Reward.CoinsUni"), null);
       }

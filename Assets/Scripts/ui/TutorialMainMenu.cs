@@ -19,13 +19,18 @@ public class TutorialMainMenu : MonoBehaviour
   {
     if (Persistence.gameConfig.tutorialMainMenuShown)
     {
-      if (!Persistence.preferences.IsWhatsNew103Shown())
+      if (!Persistence.preferences.IsWhatsNew103Shown() && !Persistence.preferences.IsSimplifiedGameplay())
       {
         whatsNewMode = true;
         GetButtonText(tutorial1, "ButtonYes").text = LanguageManager.Instance.GetTextValue("Message.Yes");
         GetButtonText(tutorial1, "ButtonNo").text = LanguageManager.Instance.GetTextValue("Message.No");
         tutorial1.SetActive(true);
         GetText(tutorial1).text = LanguageManager.Instance.GetTextValue("Tutorial.MainMenu.SimplifiedGameplay");
+      }
+      else
+      {
+        Persistence.preferences.SetIsWhatsNew103Shown(true);
+        Persistence.Save();
       }
       return;
     }
