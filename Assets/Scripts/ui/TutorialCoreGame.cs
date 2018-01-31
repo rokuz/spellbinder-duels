@@ -269,6 +269,10 @@ public class TutorialCoreGame : MonoBehaviour
         GetText(tutorial1).text = LanguageManager.Instance.GetTextValue("Tutorial.Battle.Simplified");
         tutorial1.SetActive(true);
       }
+      else
+      {
+        this.checkedSimplifiedGameplay = true;
+      }
 
       // Wait for OnCrystalActivated to SetActive.
       Persistence.Save();
