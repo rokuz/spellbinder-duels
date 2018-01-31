@@ -39,8 +39,11 @@ public class Bot
     if (!matchData.Field.HasSpellWith3Components(this.allSpells3, indices))
       indices = new int[] { indices[0], indices[1] };
 
-    for (int i = 0; i < indices.Length; i++)
-      memory[indices[i]]++;
+    if (!Persistence.preferences.IsSimplifiedGameplay())
+    {
+      for (int i = 0; i < indices.Length; i++)
+        memory[indices[i]]++;
+    }
 
     return indices;
   }
@@ -60,6 +63,9 @@ public class Bot
     if (memory == null)
       InitMemory();
 
+    if (Persistence.preferences.IsSimplifiedGameplay())
+      return;
+
     for (int i = 0; i < indices.Length; i++)
       memory[indices[i]]++;
   }
@@ -68,6 +74,9 @@ public class Bot
   {
     if (memory == null)
       InitMemory();
+
+    if (Persistence.preferences.IsSimplifiedGameplay())
+      return;
 
     for (int i = 0; i < GameField.CARDS_COUNT; i++)
     {
@@ -91,6 +100,9 @@ public class Bot
 
     for (int i = 0; i < GameField.CARDS_COUNT; i++)
       memory[i] = initialMemoryIndex;
+
+    if (Persistence.preferences.IsSimplifiedGameplay())
+      return;
 
     // Forget some.
     int forgetPairsCount = GameField.CARDS_COUNT / 2 - initialMemoryIndex;

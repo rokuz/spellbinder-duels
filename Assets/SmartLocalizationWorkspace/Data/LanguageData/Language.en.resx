@@ -657,7 +657,7 @@
 		<value>Ah, I almost forgot. The duel ends when one of the opponents loses consciousness. Watch your own health and do not neglect healing magic.</value>
 	</data>
 	<data name="Tutorial.Battle.Simplified" xml:space="preserve">
-		<value>If it was hard for you to remember, I can offer to play in the Youth League. There the cards are open and never turn over. Do you want to join the Youth League?</value>
+		<value>If you’d like a simple game, we have opened the Youth League. There the cards are always opened, all other rules are the same. Do you want to join the Youth League?</value>
 	</data>
 	<data name="Tutorial.MainMenu.1" xml:space="preserve">
 		<value>Greetings, the Spellbinder. Welcome to the Wizards Tournament. You can call me Merlin. I am the champion of the previous 10 years, let me show you the tournament.</value>

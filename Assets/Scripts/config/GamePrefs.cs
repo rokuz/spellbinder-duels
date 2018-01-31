@@ -35,6 +35,16 @@ public class GamePrefs
     SetBoolKey(WHATS_NEW_103_SHOWN, enabled);
   }
 
+  public bool IsUsedGiftcode(string code)
+  {
+    return HasBoolKey(code);
+  }
+
+  public void SetUsedGiftcode(string code)
+  {
+    SetBoolKey(code, true);
+  }
+
   private bool HasBoolKey(string keyName)
   {
     if (!preferences.ContainsKey(keyName))

@@ -32,6 +32,8 @@ public class SettingsDialog : MonoBehaviour
 
   public AudioSource musicSource;
 
+  public ButtonAudio buttonAudio;
+
   public delegate void OnClose();
   private OnClose onCloseHandler;
 
@@ -162,11 +164,30 @@ public class SettingsDialog : MonoBehaviour
 
   public void OnGiftCodeEnter()
   {
-    //TODO
-    if (giftcodeInputText.text == "111" && !messageDialog.IsOpened())
+    var gift = GiftCode.ApplyCode(giftcodeInputText.text);
+    if (gift != null && !messageDialog.IsOpened())
     {
-      giftcodeInputText.text = "";
-      messageDialog.Open(LanguageManager.Instance.GetTextValue("Message.Gift"), "You received smth", null);
+      if (gift.removeAds && this.onRemovedAds != null && !Persistence.gameConfig.removedAds)
+      {
+        Persistence.gameConfig.removedAds = true;
+        Persistence.Save();
+        this.onRemovedAds();
+
+        buttonAudio.Play(ButtonAudio.Type.Yes);
+        giftcodeInputText.text = "";
+        messageDialog.Open(LanguageManager.Instance.GetTextValue("Message.Gift"),
+          LanguageManager.Instance.GetTextValue("Shop.RemoveAds"), null);
+      }
+      else if (gift.coins != 0)
+      {
+        Persistence.gameConfig.profile.coins += gift.coins;
+        Persistence.Save();
+
+        buttonAudio.Play(ButtonAudio.Type.Yes);
+        giftcodeInputText.text = "";
+        messageDialog.Open(LanguageManager.Instance.GetTextValue("Message.Gift"),
+          "" + gift.coins + " " + LanguageManager.Instance.GetTextValue("Reward.CoinsUni"), null);
+      }
     }
   }
 

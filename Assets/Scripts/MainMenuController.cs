@@ -105,7 +105,7 @@ public class MainMenuController : MonoBehaviour
       return;
 
     this.settingsButton.interactable = false;
-    settingsDialog.Open(Persistence.gameConfig.profile, () => { this.settingsButton.interactable = true; },
+    settingsDialog.Open(Persistence.gameConfig.profile, () => { UpdatePlayerUI(); this.settingsButton.interactable = true; },
       () => { UpdatePlayerUI(); DestroyBanner(); });
 
     tutorialMainMenu.OnSettingsClicked();
