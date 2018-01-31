@@ -43,7 +43,7 @@ public class MainMenuController : MonoBehaviour
     Persistence.Load();
 
     if (Persistence.gameConfig.profile != null)
-      InitializeAds();
+      this.InitializeAds();
 
     GetComponent<AudioSource>().volume = Persistence.gameConfig.musicVolume;
 
@@ -153,7 +153,7 @@ public class MainMenuController : MonoBehaviour
       setNameDialog.Open(Persistence.gameConfig.profile, () =>
       {
         MyAnalytics.CustomEvent("SetName_Finished");
-        InitializeAds(); 
+        this.InitializeAds(); 
         this.UpdatePlayerUI();
       });
     }
@@ -183,6 +183,9 @@ public class MainMenuController : MonoBehaviour
 
   private void InitializeAds()
   {
+    if (Persistence.gameConfig.removedAds)
+      return;
+
     #if UNITY_ANDROID
       string adUnitId = "ca-app-pub-8904882368983998/8500008022";
       string appId = "ca-app-pub-8904882368983998~7590428642";
@@ -202,7 +205,8 @@ public class MainMenuController : MonoBehaviour
     if (Advertisement.isSupported)
       Advertisement.Initialize(gameId, false);
 
-    if (!Persistence.gameConfig.removedAds && bannerView == null)
+    int sz = Mathf.Max(Camera.main.pixelWidth, Camera.main.pixelHeight);
+    if (bannerView == null && sz >= 1280)
     {
       bannerView = new BannerView(adUnitId, AdSize.Banner, AdPosition.Top);
       AdRequest request = new AdRequest.Builder().Build();

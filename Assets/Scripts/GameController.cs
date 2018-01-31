@@ -155,7 +155,8 @@ public class GameController : MonoBehaviour
     else
       Persistence.Load();
 
-    if (!Persistence.gameConfig.removedAds && Camera.main.pixelWidth >= 1280)
+    int sz = Mathf.Max(Camera.main.pixelWidth, Camera.main.pixelHeight);
+    if (!Persistence.gameConfig.removedAds && sz >= 1280)
     {
     #if UNITY_ANDROID
       string adUnitId = "ca-app-pub-8904882368983998/5568213619";

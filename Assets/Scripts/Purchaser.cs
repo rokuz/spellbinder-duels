@@ -32,10 +32,13 @@ public class Purchaser : MonoBehaviour, IStoreListener
     if (IsInitialized())
       return;
 
-    defaultPrices.Add(kProductIDRemoveAds, "$0.99");
-    defaultPrices.Add(kProductIDCoinsPack1, "$0.99");
-    defaultPrices.Add(kProductIDCoinsPack2, "$1.99");
-    defaultPrices.Add(kProductIDCoinsPack3, "$2.99");
+    if (defaultPrices.Count == 0)
+    {
+      defaultPrices.Add(kProductIDRemoveAds, "$0.99");
+      defaultPrices.Add(kProductIDCoinsPack1, "$0.99");
+      defaultPrices.Add(kProductIDCoinsPack2, "$1.99");
+      defaultPrices.Add(kProductIDCoinsPack3, "$2.99");
+    }
 
     print("InitializePurchasing()");
     var builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance());
