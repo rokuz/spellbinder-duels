@@ -259,6 +259,8 @@ public class GameController : MonoBehaviour
 
     tutorialCoreGame.InitTutorial();
 
+    this.recommendationEnabled = !Persistence.preferences.IsSimplifiedGameplay();
+
     StartMatch();
   }
 
@@ -487,7 +489,8 @@ public class GameController : MonoBehaviour
         p.Add("caster_level", caster.profile.level);
         MyAnalytics.CustomEvent("Spell_Miscasted", p);
 
-        this.recommendationEnabled = true;
+        if (!Persistence.preferences.IsSimplifiedGameplay())
+          this.recommendationEnabled = true;
       }
       else
       {
@@ -589,6 +592,7 @@ public class GameController : MonoBehaviour
 
     var p = new Dictionary<string, object>();
     p.Add("match_counter", matchData.User.profile.matchCounter);
+    p.Add("simplified", Persistence.preferences.IsSimplifiedGameplay());
     MyAnalytics.CustomEvent("Match_Started", p);
 
     SetupGameField();
@@ -640,6 +644,9 @@ public class GameController : MonoBehaviour
     yield return new WaitUntil(() => { return this.tutorialCoreGame.EnabledTurnOverAll(); });
 
     yield return new WaitUntil(() => { return this.tutorialCoreGame.IsCheckedSimplifiedGameplay(); });
+
+    if (Persistence.preferences.IsSimplifiedGameplay())
+      recommendationEnabled = false;
 
     if (!Persistence.preferences.IsSimplifiedGameplay())
     {

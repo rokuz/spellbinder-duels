@@ -239,6 +239,9 @@
 	<data name="Message.Finish" xml:space="preserve">
 		<value>Закончить</value>
 	</data>
+	<data name="Message.Gift" xml:space="preserve">
+		<value>Подарок</value>
+	</data>
 	<data name="Message.Lose" xml:space="preserve">
 		<value>Вы проиграли</value>
 	</data>
@@ -673,6 +676,9 @@
 	</data>
 	<data name="Tutorial.MainMenu.6" xml:space="preserve">
 		<value>Если захочешь зарегистрироваться под другим именем и со всеми прочими вопросами, вернись к регистрационному столу. А сейчас мне пора, увидимся на твоей первой дуэли. Удачи!</value>
+	</data>
+	<data name="Tutorial.MainMenu.SimplifiedGameplay" xml:space="preserve">
+		<value>И снова здравствуй! Мы недавно организовали Молодежную лигу. Там играют в открытую, и карты никогда не переворачиваются. Хочешь вступить в Молодежную лигу?</value>
 	</data>
 	<data name="Victory.Finish" xml:space="preserve">
 		<value>Выйти</value>

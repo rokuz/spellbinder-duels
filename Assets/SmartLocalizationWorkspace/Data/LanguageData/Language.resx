@@ -344,6 +344,12 @@
 	<data name="Settings.Gamma" xml:space="preserve">
 		<value />
 	</data>
+	<data name="Settings.Giftcode" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Settings.GiftcodePlaceholder" xml:space="preserve">
+		<value />
+	</data>
 	<data name="Settings.MusicVolume" xml:space="preserve">
 		<value />
 	</data>
@@ -354,6 +360,9 @@
 		<value />
 	</data>
 	<data name="Settings.SfxVolume" xml:space="preserve">
+		<value />
+	</data>
+	<data name="Settings.SimplifiedGameplay" xml:space="preserve">
 		<value />
 	</data>
 	<data name="Settings.Title" xml:space="preserve">
@@ -665,16 +674,13 @@
 	<data name="Tutorial.MainMenu.6" xml:space="preserve">
 		<value />
 	</data>
+	<data name="Tutorial.MainMenu.SimplifiedGameplay" xml:space="preserve">
+		<value />
+	</data>
 	<data name="Victory.Finish" xml:space="preserve">
 		<value />
 	</data>
-	<data name="Settings.SimplifiedGameplay" xml:space="preserve">
-		<value />
-	</data>
-	<data name="Settings.Giftcode" xml:space="preserve">
-		<value />
-	</data>
-	<data name="Settings.GiftcodePlaceholder" xml:space="preserve">
+	<data name="Message.Gift" xml:space="preserve">
 		<value />
 	</data>
 </root>

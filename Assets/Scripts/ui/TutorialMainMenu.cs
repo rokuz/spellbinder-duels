@@ -13,10 +13,22 @@ public class TutorialMainMenu : MonoBehaviour
   public GameObject markers;
   public ButtonAudio buttonAudio;
 
+  private bool whatsNewMode = false;
+
   public void InitTutorial()
   {
     if (Persistence.gameConfig.tutorialMainMenuShown)
+    {
+      if (!Persistence.preferences.IsWhatsNew103Shown())
+      {
+        whatsNewMode = true;
+        GetButtonText(tutorial1, "ButtonYes").text = LanguageManager.Instance.GetTextValue("Message.Yes");
+        GetButtonText(tutorial1, "ButtonNo").text = LanguageManager.Instance.GetTextValue("Message.No");
+        tutorial1.SetActive(true);
+        GetText(tutorial1).text = LanguageManager.Instance.GetTextValue("Tutorial.MainMenu.SimplifiedGameplay");
+      }
       return;
+    }
 
     if (Persistence.gameConfig.tutorialMainMenuStep < 0 || Persistence.gameConfig.tutorialMainMenuStep > 5)
     {
@@ -45,16 +57,29 @@ public class TutorialMainMenu : MonoBehaviour
 
   public void OnYesClicked()
   {
-    ResetCurrent();
-
-    Persistence.gameConfig.tutorialMainMenuStep = 1;
-    Persistence.Save();
-
-    SetActive();
-
-    MyAnalytics.CustomEvent("Tutorial_MainMenu_Started");
-
     buttonAudio.Play(ButtonAudio.Type.Default);
+    if (!whatsNewMode)
+    {
+      ResetCurrent();
+
+      Persistence.gameConfig.tutorialMainMenuStep = 1;
+      Persistence.Save();
+
+      SetActive();
+
+      MyAnalytics.CustomEvent("Tutorial_MainMenu_Started");
+    }
+    else
+    {
+      tutorial1.SetActive(false);
+      Persistence.preferences.SetSimplifiedGameplay(true);
+      Persistence.preferences.SetIsWhatsNew103Shown(true);
+      Persistence.Save();
+
+      var p = new Dictionary<string, object>();
+      p.Add("on", true);
+      MyAnalytics.CustomEvent("Tut_Menu_SimplifiedGameplay", p);
+    }
   }
 
   private void SetActive()
@@ -80,15 +105,27 @@ public class TutorialMainMenu : MonoBehaviour
 
   public void OnNoClicked()
   {
-    ResetCurrent();
-
-    Persistence.gameConfig.tutorialMainMenuStep = 0;
-    Persistence.gameConfig.tutorialMainMenuShown = true;
-    Persistence.Save();
-
-    MyAnalytics.CustomEvent("Tutorial_MainMenu_Discarded");
-
     buttonAudio.Play(ButtonAudio.Type.No);
+    if (!whatsNewMode)
+    {
+      ResetCurrent();
+      Persistence.gameConfig.tutorialMainMenuStep = 0;
+      Persistence.gameConfig.tutorialMainMenuShown = true;
+      Persistence.Save();
+
+      MyAnalytics.CustomEvent("Tutorial_MainMenu_Discarded");
+    }
+    else
+    {
+      tutorial1.SetActive(false);
+      Persistence.preferences.SetSimplifiedGameplay(false);
+      Persistence.preferences.SetIsWhatsNew103Shown(true);
+      Persistence.Save();
+
+      var p = new Dictionary<string, object>();
+      p.Add("on", false);
+      MyAnalytics.CustomEvent("Tut_Menu_SimplifiedGameplay", p);
+    }
   }
 
   public void OnNextClicked()

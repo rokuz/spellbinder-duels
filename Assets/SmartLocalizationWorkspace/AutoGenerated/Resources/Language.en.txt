@@ -239,6 +239,9 @@
 	<data name="Message.Finish" xml:space="preserve">
 		<value>Finish</value>
 	</data>
+	<data name="Message.Gift" xml:space="preserve">
+		<value>Gift</value>
+	</data>
 	<data name="Message.Lose" xml:space="preserve">
 		<value>Opponent wins</value>
 	</data>
@@ -673,6 +676,9 @@
 	</data>
 	<data name="Tutorial.MainMenu.6" xml:space="preserve">
 		<value>If you would like to register under another nickname or by other questions, go back to the registration desk. Now I have to leave you. See you on your first duel. Good luck!</value>
+	</data>
+	<data name="Tutorial.MainMenu.SimplifiedGameplay" xml:space="preserve">
+		<value>Hello again! Recently we organized the Youth League. There the cards are open and never turn over. Do you want to join the Youth League?</value>
 	</data>
 	<data name="Victory.Finish" xml:space="preserve">
 		<value>Finish</value>

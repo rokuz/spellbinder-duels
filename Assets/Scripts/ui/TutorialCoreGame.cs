@@ -178,8 +178,13 @@ public class TutorialCoreGame : MonoBehaviour
       checkedSimplifiedGameplay = true;
       tutorial1.SetActive(false);
       Persistence.preferences.SetSimplifiedGameplay(true);
+      Persistence.preferences.SetIsWhatsNew103Shown(true);
       Persistence.Save();
       UpdateMarkersForSimplifiedGameplay();
+
+      var p = new Dictionary<string, object>();
+      p.Add("on", true);
+      MyAnalytics.CustomEvent("Tut_Game_SimplifiedGameplay", p);
     }
   }
 
@@ -243,7 +248,12 @@ public class TutorialCoreGame : MonoBehaviour
       checkedSimplifiedGameplay = true;
       tutorial1.SetActive(false);
       Persistence.preferences.SetSimplifiedGameplay(false);
+      Persistence.preferences.SetIsWhatsNew103Shown(true);
       Persistence.Save();
+
+      var p = new Dictionary<string, object>();
+      p.Add("on", false);
+      MyAnalytics.CustomEvent("Tut_Game_SimplifiedGameplay", p);
     }
   }
 

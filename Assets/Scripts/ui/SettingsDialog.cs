@@ -1,6 +1,8 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections;
+using UnityEngine;
+using UnityEngine.UI;
 using System.Linq;
 using SmartLocalization;
 
@@ -26,6 +28,7 @@ public class SettingsDialog : MonoBehaviour
   public Text simplifiedGameplayText;
   public Toggle simplifiedGameplayToggle;
   public Text giftcodeInputText;
+  public MessageDialog messageDialog;
 
   public AudioSource musicSource;
 
@@ -80,6 +83,9 @@ public class SettingsDialog : MonoBehaviour
     this.onCloseHandler = onCloseHandler;
     this.onRemovedAds = onRemovedAds;
 
+    simplifiedGameplayToggle.isOn = Persistence.preferences.IsSimplifiedGameplay();
+    giftcodeInputText.text = "";
+
     this.gameObject.SetActive(true);
     if (splash != null && !splash.IsActive())
       splash.gameObject.SetActive(true);
@@ -102,7 +108,7 @@ public class SettingsDialog : MonoBehaviour
 
   private void CloseIfClickedOutside(GameObject panel)
   {
-    if (setNameDialog.IsOpened() || moreGamesDialog.IsOpened() || facebookHolder.FacebookLoginInProgress)
+    if (setNameDialog.IsOpened() || moreGamesDialog.IsOpened() || facebookHolder.FacebookLoginInProgress || messageDialog.IsOpened())
       return;
 
     if (Input.GetMouseButtonDown(0) && panel.activeSelf && 
@@ -156,10 +162,20 @@ public class SettingsDialog : MonoBehaviour
 
   public void OnGiftCodeEnter()
   {
+    //TODO
+    if (giftcodeInputText.text == "111" && !messageDialog.IsOpened())
+    {
+      giftcodeInputText.text = "";
+      messageDialog.Open(LanguageManager.Instance.GetTextValue("Message.Gift"), "You received smth", null);
+    }
   }
 
   public void OnSimplifiedGameplay()
   {
     Persistence.preferences.SetSimplifiedGameplay(simplifiedGameplayToggle.isOn);
+
+    var p = new Dictionary<string, object>();
+    p.Add("on", simplifiedGameplayToggle.isOn);
+    MyAnalytics.CustomEvent("Settings_SimplifiedGameplay", p);
   }
 }

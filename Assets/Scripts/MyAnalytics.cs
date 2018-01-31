@@ -67,10 +67,10 @@ public class MyAnalytics
         (double)product.metadata.localizedPrice, product.metadata.isoCurrencyCode,
         product.transactionID, null);
       #else
-      var p = new Dictionary<string, string>();
-      foreach (var pp in parameters)
-      p.Add(pp.Key, pp.Value.ToString());
-      FlurryAnalytics.Instance.LogEventWithParameters(eventName, p);
+      var prm = new Dictionary<string, string>();
+      foreach (var pp in p)
+        prm.Add(pp.Key, pp.Value.ToString());
+      FlurryAnalytics.Instance.LogEventWithParameters("Purchase_Successful", prm);
       #endif
     }
   }
