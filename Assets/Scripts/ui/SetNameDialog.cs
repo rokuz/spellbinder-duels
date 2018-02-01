@@ -101,11 +101,16 @@ public class SetNameDialog : MonoBehaviour
       fbButton.interactable = !success;
       if (success)
       {
+        MyAnalytics.CustomEvent("FB_auth_success");
         if (nameEditbox.text.Length == 0)
           nameEditbox.text = facebookHolder.FacebookName;
         profileData.facebookId = facebookHolder.FacebookID;
         fbButton.GetComponentInChildren<Text>().text = LanguageManager.Instance.GetTextValue("SetName.LoginFinished");
         Persistence.Save();
+      }
+      else
+      {
+        MyAnalytics.CustomEvent("FB_auth_failure");
       }
     });
   }

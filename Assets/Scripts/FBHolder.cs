@@ -154,7 +154,13 @@ public class FBHolder : MonoBehaviour
     if (!FB.IsLoggedIn)
     {
       if (result.Error != null && result.Error.Length != 0)
+      {
         Debug.Log(result.Error);
+
+        var p = new Dictionary<string, object>();
+        p.Add("error", result.Error);
+        MyAnalytics.CustomEvent("FB_auth_error", p);
+      }
       Debug.Log("User didn't log into Facebook");
       if (loginCallback != null)
         loginCallback(false);
