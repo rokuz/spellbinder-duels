@@ -62,6 +62,9 @@ public class GameController : MonoBehaviour
 
   public CoreGameAudio audio;
 
+  public Sprite maleImage;
+  public Sprite femaleImage;
+
   class PlayerInfo
   {
     public Text name;
@@ -158,16 +161,19 @@ public class GameController : MonoBehaviour
     int sz = Mathf.Max(Camera.main.pixelWidth, Camera.main.pixelHeight);
     if (!Persistence.gameConfig.removedAds && sz >= 1280)
     {
-    #if UNITY_ANDROID
+      #if UNITY_ANDROID
       string adUnitId = "ca-app-pub-8904882368983998/5568213619";
-    #elif UNITY_IPHONE
+      #elif UNITY_IPHONE
       string adUnitId = "ca-app-pub-8904882368983998/9567168370";
-    #else
-      string adUnitId = "unexpected_platform";
-    #endif
-      bannerView = new BannerView(adUnitId, AdSize.Banner, AdPosition.Top);
-      AdRequest request = new AdRequest.Builder().Build();
-      bannerView.LoadAd(request);
+      #else
+      string adUnitId = "";
+      #endif
+      if (adUnitId.Length != 0)
+      {
+        bannerView = new BannerView(adUnitId, AdSize.Banner, AdPosition.Top);
+        AdRequest request = new AdRequest.Builder().Build();
+        bannerView.LoadAd(request);
+      }
     }
 
     GetComponent<AudioSource>().volume = Persistence.gameConfig.musicVolume;
@@ -233,7 +239,11 @@ public class GameController : MonoBehaviour
 
       Image logo1 = (from r in player1Info.GetComponentsInChildren<Image>() where r.gameObject.name == "Logo" select r).Single();
       Image logo2 = (from r in player2Info.GetComponentsInChildren<Image>() where r.gameObject.name == "Logo" select r).Single();
+      #if !UNITY_STANDALONE
       facebookHolder.GetPicture(logo1, matchData.User.profile.facebookId);
+      #else
+      logo1.sprite = Persistence.preferences.IsMale() ? maleImage : femaleImage;
+      #endif
 
       if (matchData.Opponent.profile.facebookId.Length != 0)
       {
@@ -1207,6 +1217,7 @@ public class GameController : MonoBehaviour
     yield return new WaitForSeconds(0.5f);
     SceneConnector.Instance.PopMatch();
 
+    #if !UNITY_STANDALONE
     if (!Persistence.gameConfig.removedAds)
     {
       ShowOptions options = new ShowOptions();
@@ -1217,6 +1228,9 @@ public class GameController : MonoBehaviour
     {
       SceneManager.LoadScene("MainMenu");
     }
+    #else
+    SceneManager.LoadScene("MainMenu");
+    #endif
   }
 
   private void Replay()
@@ -1224,6 +1238,8 @@ public class GameController : MonoBehaviour
     MyAnalytics.CustomEvent("Match_Replay");
 
     SceneConnector.Instance.Replay();
+
+    #if !UNITY_STANDALONE
     if (!Persistence.gameConfig.removedAds)
     {
       ShowOptions options = new ShowOptions();
@@ -1234,6 +1250,9 @@ public class GameController : MonoBehaviour
     {
       SceneManager.LoadScene("CoreGame");
     }
+    #else
+    SceneManager.LoadScene("CoreGame");
+    #endif
   }
 
   private void HandleShowResultCore(ShowResult result)

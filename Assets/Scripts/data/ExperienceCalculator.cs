@@ -47,7 +47,12 @@ public class ExperienceCalculator
     int exp = (100 * (initialLevel + 1) / 2 + (oppopentLevel > initialLevel ? 100 * (oppopentLevel - initialLevel) : 0));
     float e = exp * modifier;
     AddExperience((int)e);
+
+    #if !UNITY_STANDALONE
     coins = UnityEngine.Random.Range(Constants.COINS_MIN, Constants.COINS_MAX + 1);
+    #else
+    coins = UnityEngine.Random.Range(3, 16) * 10;
+    #endif
   }
 
   public void OnLose()

@@ -221,6 +221,12 @@
 	<data name="MainMenu.Play" xml:space="preserve">
 		<value>Играть</value>
 	</data>
+	<data name="MainMenu.Quit" xml:space="preserve">
+		<value>Выйти из игры</value>
+	</data>
+	<data name="MainMenu.QuitApprove" xml:space="preserve">
+		<value>Вы уверены, что хотите выйти?</value>
+	</data>
 	<data name="MainMenu.Shop" xml:space="preserve">
 		<value>Магазин</value>
 	</data>
@@ -317,6 +323,15 @@
 	<data name="Reward.NewLevel" xml:space="preserve">
 		<value>Новый уровень!</value>
 	</data>
+	<data name="SelectCharacter.Female" xml:space="preserve">
+		<value>Женщина</value>
+	</data>
+	<data name="SelectCharacter.Male" xml:space="preserve">
+		<value>Мужчина</value>
+	</data>
+	<data name="SelectCharacter.Title" xml:space="preserve">
+		<value>Выберите персонажа</value>
+	</data>
 	<data name="SetName.EnterName" xml:space="preserve">
 		<value>Введите имя...</value>
 	</data>
@@ -337,6 +352,9 @@
 	</data>
 	<data name="SetName.SetupName" xml:space="preserve">
 		<value>Выберите себе имя</value>
+	</data>
+	<data name="Settings.ChangeCharacter" xml:space="preserve">
+		<value>Сменить персонажа</value>
 	</data>
 	<data name="Settings.ChangeName" xml:space="preserve">
 		<value>Изменить ваше имя:</value>

@@ -221,6 +221,12 @@
 	<data name="MainMenu.Play" xml:space="preserve">
 		<value>Play</value>
 	</data>
+	<data name="MainMenu.Quit" xml:space="preserve">
+		<value>Exit</value>
+	</data>
+	<data name="MainMenu.QuitApprove" xml:space="preserve">
+		<value>Do you want to exit the game?</value>
+	</data>
 	<data name="MainMenu.Shop" xml:space="preserve">
 		<value>Shop</value>
 	</data>
@@ -317,6 +323,15 @@
 	<data name="Reward.NewLevel" xml:space="preserve">
 		<value>Level up!</value>
 	</data>
+	<data name="SelectCharacter.Female" xml:space="preserve">
+		<value>Female</value>
+	</data>
+	<data name="SelectCharacter.Male" xml:space="preserve">
+		<value>Male</value>
+	</data>
+	<data name="SelectCharacter.Title" xml:space="preserve">
+		<value>Select character</value>
+	</data>
 	<data name="SetName.EnterName" xml:space="preserve">
 		<value>Enter your name...</value>
 	</data>
@@ -337,6 +352,9 @@
 	</data>
 	<data name="SetName.SetupName" xml:space="preserve">
 		<value>Set up your name</value>
+	</data>
+	<data name="Settings.ChangeCharacter" xml:space="preserve">
+		<value>Change character</value>
 	</data>
 	<data name="Settings.ChangeName" xml:space="preserve">
 		<value>Change your name:</value>

@@ -7,6 +7,7 @@ public class GamePrefs
 {
   private static string SIMPLIFIED_GAMEPLAY_KEY = "simplifiedGameplay";
   private static string WHATS_NEW_103_SHOWN = "whatsNew103";
+  private static string MALE_KEY = "male";
 
   private Dictionary<string, string> preferences;
 
@@ -33,6 +34,21 @@ public class GamePrefs
   public void SetIsWhatsNew103Shown(bool enabled)
   {
     SetBoolKey(WHATS_NEW_103_SHOWN, enabled);
+  }
+
+  public bool IsMaleKeyExists()
+  {
+    return preferences.ContainsKey(MALE_KEY);
+  }
+
+  public bool IsMale()
+  {
+    return HasBoolKey(MALE_KEY);
+  }
+
+  public void SetMale(bool male)
+  {
+    SetBoolKey(MALE_KEY, male);
   }
 
   public bool IsUsedGiftcode(string code)

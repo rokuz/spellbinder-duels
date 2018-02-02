@@ -191,6 +191,9 @@
 	<data name="Game.YourTurnFirst" xml:space="preserve">
 		<value />
 	</data>
+	<data name="Giftcode.Expired" xml:space="preserve">
+		<value />
+	</data>
 	<data name="Leaderboard.Defeats" xml:space="preserve">
 		<value />
 	</data>
@@ -216,6 +219,12 @@
 		<value />
 	</data>
 	<data name="MainMenu.Play" xml:space="preserve">
+		<value />
+	</data>
+	<data name="MainMenu.Quit" xml:space="preserve">
+		<value />
+	</data>
+	<data name="MainMenu.QuitApprove" xml:space="preserve">
 		<value />
 	</data>
 	<data name="MainMenu.Shop" xml:space="preserve">
@@ -312,6 +321,15 @@
 		<value />
 	</data>
 	<data name="Reward.NewLevel" xml:space="preserve">
+		<value />
+	</data>
+	<data name="SelectCharacter.Female" xml:space="preserve">
+		<value />
+	</data>
+	<data name="SelectCharacter.Male" xml:space="preserve">
+		<value />
+	</data>
+	<data name="SelectCharacter.Title" xml:space="preserve">
 		<value />
 	</data>
 	<data name="SetName.EnterName" xml:space="preserve">
@@ -683,7 +701,7 @@
 	<data name="Victory.Finish" xml:space="preserve">
 		<value />
 	</data>
-	<data name="Giftcode.Expired" xml:space="preserve">
+	<data name="Settings.ChangeCharacter" xml:space="preserve">
 		<value />
 	</data>
 </root>

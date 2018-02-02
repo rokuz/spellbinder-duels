@@ -54,11 +54,13 @@ public class ShopDialog : MonoBehaviour
     purchaser.onBuy = OnBuyInStore;
 
     var itemsList = new List<ShopItem>();
+    #if !UNITY_STANDALONE
     if (!Persistence.gameConfig.removedAds)
       itemsList.Add(new ShopItem(ShopItemType.REMOVE_ADS, i18n("Shop.RemoveAds"), i18n("Shop.RemoveAds.Desc"), Purchaser.kProductIDRemoveAds));
     itemsList.Add(new ShopItem(ShopItemType.COINS_PACK1, i18n("Shop.SmallBag"), i18n("Shop.SmallBag.Desc"), Purchaser.kProductIDCoinsPack1, 200));
     itemsList.Add(new ShopItem(ShopItemType.COINS_PACK2, i18n("Shop.MediumBag"), i18n("Shop.MediumBag.Desc"), Purchaser.kProductIDCoinsPack2, 500));
     itemsList.Add(new ShopItem(ShopItemType.COINS_PACK3, i18n("Shop.BigBag"), i18n("Shop.BigBag.Desc"), Purchaser.kProductIDCoinsPack3, 1000));
+    #endif
     if (this.profileData.level < Constants.MAX_LEVEL)
     {
       int levelPrice = Constants.LEVEL_PRICE[this.profileData.level - 1];

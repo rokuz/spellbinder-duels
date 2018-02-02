@@ -13,7 +13,10 @@ public class LeaderboardDialog : MonoBehaviour
   public GameObject content;
   public AvatarHolder avatarHolder;
   public FBHolder facebookHolder;
+  public Button inviteButton;
   public Text inviteButtonText;
+  public Sprite maleImage;
+  public Sprite femaleImage;
   public MessageDialog messageDialog;
   public MatchingDialog matchingDialog;
 
@@ -69,6 +72,10 @@ public class LeaderboardDialog : MonoBehaviour
         var avatarSprite = avatarHolder.GetAvatar(profiles[i]);
         if (avatarSprite != null)
           spellIcon.sprite = avatarSprite;
+        #if UNITY_STANDALONE
+        if (avatarSprite == null)
+          spellIcon.sprite = Persistence.preferences.IsMale() ? maleImage : femaleImage;
+        #endif
       }
 
       Text title = (from t in profileInfo.GetComponentsInChildren<Text>()
@@ -125,6 +132,12 @@ public class LeaderboardDialog : MonoBehaviour
     MyAnalytics.CustomEvent("Leaderboard_Open");
 
     this.onCloseHandler = onCloseHandler;
+
+    #if UNITY_STANDALONE
+    inviteButton.gameObject.SetActive(false);
+    var rt = this.gameObject.transform.Find("Scroll View").GetComponent<RectTransform>();
+    rt.anchoredPosition = new Vector2(rt.anchoredPosition.x, -30.0f);
+    #endif
 
     ScrollToPlayer();
 

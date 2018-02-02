@@ -71,11 +71,13 @@ public class FBHolder : MonoBehaviour
 
 	public void Awake()
   {
+    #if !UNITY_STANDALONE
     if (!facebookInitializeCalled)
     {
       FB.Init(OnInitComplete);
       facebookInitializeCalled = true;
     }
+    #endif
   }
 
   public void Login(OnLoginFinished callback)

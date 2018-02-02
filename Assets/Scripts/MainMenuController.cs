@@ -19,6 +19,7 @@ public class MainMenuController : MonoBehaviour
   public SettingsDialog settingsDialog;
   public CharacterDialog characterDialog;
   public LeaderboardDialog leaderboardDialog;
+  public SelectCharacterDialog selectCharacterDialog;
   public ShopDialog shopDialog;
   public GameObject playerLogo;
   public Button playButton;
@@ -28,6 +29,11 @@ public class MainMenuController : MonoBehaviour
   public Button leaderboardButton;
   public Text subtitleText;
   public TutorialMainMenu tutorialMainMenu;
+  public Sprite maleImage;
+  public Sprite femaleImage;
+  public Button playButtonDesktop;
+  public Button quitButtonDesktop;
+  public MessageYesNoDialog messageYesNoDialog;
 
   private BannerView bannerView;
 
@@ -51,8 +57,21 @@ public class MainMenuController : MonoBehaviour
 
     this.playerLogo.gameObject.SetActive(false);
 
+    #if !UNITY_STANDALONE
     this.playButton.interactable = true;
     this.playButton.GetComponentInChildren<Text>().text = LanguageManager.Instance.GetTextValue("MainMenu.Play");
+    #else
+    this.playButton.gameObject.SetActive(false);
+
+    this.playButtonDesktop.gameObject.SetActive(true);
+    this.playButtonDesktop.interactable = true;
+    this.playButtonDesktop.GetComponentInChildren<Text>().text = LanguageManager.Instance.GetTextValue("MainMenu.Play");
+
+    this.quitButtonDesktop.gameObject.SetActive(true);
+    this.quitButtonDesktop.interactable = true;
+    this.quitButtonDesktop.GetComponentInChildren<Text>().text = LanguageManager.Instance.GetTextValue("MainMenu.Quit");
+    #endif
+
     subtitleText.text = LanguageManager.Instance.GetTextValue("MainMenu.Duels");
 
     this.spellbookButton.interactable = true;
@@ -84,9 +103,23 @@ public class MainMenuController : MonoBehaviour
   {
     MyAnalytics.CustomEvent("Play_Clicked");
 
+    #if !UNITY_STANDALONE
     this.playButton.interactable = false;
     matchingDialog.Open(Persistence.gameConfig.profile, () => { this.playButton.interactable = true; });
+    #else
+    this.playButtonDesktop.interactable = false;
+    matchingDialog.Open(Persistence.gameConfig.profile, () => { this.playButtonDesktop.interactable = true; });
+    #endif
     tutorialMainMenu.OnPlayClicked();
+  }
+
+  public void OnQuitButtonClicked()
+  {
+    messageYesNoDialog.Open(LanguageManager.Instance.GetTextValue("MainMenu.Quit"),
+                            LanguageManager.Instance.GetTextValue("MainMenu.QuitApprove"), (bool yes) => {
+      if (yes)
+        Application.Quit();
+    });
   }
 
   public void OnSpellbookButtonClicked()
@@ -130,7 +163,7 @@ public class MainMenuController : MonoBehaviour
   public void OnPlayerInfoClicked()
   {
     if (characterDialog.IsOpened() || matchingDialog.IsOpened() || messageDialog.IsOpened() || settingsDialog.IsOpened() ||
-        spellbookDialog.IsOpened() || leaderboardDialog.IsOpened())
+        spellbookDialog.IsOpened() || leaderboardDialog.IsOpened() || selectCharacterDialog.IsOpened())
       return;
 
     this.playerLogo.gameObject.GetComponentInChildren<Button>().interactable = false;
@@ -151,6 +184,29 @@ public class MainMenuController : MonoBehaviour
       Persistence.Save();
     }
 
+    #if UNITY_STANDALONE
+    if (!Persistence.preferences.IsMaleKeyExists())
+    {
+      MyAnalytics.CustomEvent("SelectCharacter_Started");
+      selectCharacterDialog.Open(() =>
+      {
+        var p = new Dictionary<string, object>();
+        p.Add("gender", Persistence.preferences.IsMale() ? "male" : "female");
+        MyAnalytics.CustomEvent("SelectCharacter_Finished", p);
+        InitName();
+      });
+    }
+    else
+    {
+      InitName();
+    }
+    #else
+    InitName();
+    #endif
+  }
+
+  private void InitName()
+  {
     if (Persistence.gameConfig.profile.name.Length == 0)
     {
       MyAnalytics.CustomEvent("SetName_Started");
@@ -173,8 +229,12 @@ public class MainMenuController : MonoBehaviour
     UpdateCoinsAndLevel();
     this.playerLogo.gameObject.SetActive(true);
 
+    #if !UNITY_STANDALONE
     if (Persistence.gameConfig.profile != null)
       facebookHolder.GetPicture(playerLogo.transform.Find("Logo").GetComponentInChildren<Image>(), Persistence.gameConfig.profile.facebookId);
+    #else
+      playerLogo.transform.Find("Logo").GetComponentInChildren<Image>().sprite = Persistence.preferences.IsMale() ? maleImage : femaleImage;
+    #endif
 
     this.leaderboardButton.interactable = true;
     leaderboardDialog.Setup();
@@ -188,6 +248,9 @@ public class MainMenuController : MonoBehaviour
   {
     this.playerLogo.transform.Find("NameBox/Coin/CoinText").GetComponent<Text>().text = "" + Persistence.gameConfig.profile.coins;
     this.playerLogo.transform.Find("LevelBox/LevelText").GetComponent<Text>().text = "" + Persistence.gameConfig.profile.level;
+    #if UNITY_STANDALONE
+      playerLogo.transform.Find("Logo").GetComponentInChildren<Image>().sprite = Persistence.preferences.IsMale() ? maleImage : femaleImage;
+    #endif
   }
 
   private void InitializeAds()
@@ -204,18 +267,20 @@ public class MainMenuController : MonoBehaviour
       string appId = "ca-app-pub-8904882368983998~2864537965";
       string gameId = "1590384";
     #else
-      string adUnitId = "unexpected_platform";
-      string appId = "unexpected_platform";
-      string gameId = "unexpected_platform";
+      string adUnitId = "";
+      string appId = "";
+      string gameId = "";
     #endif
 
+    #if !UNITY_STANDALONE
     MobileAds.Initialize(appId);
 
     if (Advertisement.isSupported)
       Advertisement.Initialize(gameId, false);
+    #endif
 
     int sz = Mathf.Max(Camera.main.pixelWidth, Camera.main.pixelHeight);
-    if (bannerView == null && sz >= 1280)
+    if (adUnitId.Length != 0 && bannerView == null && sz >= 1280)
     {
       bannerView = new BannerView(adUnitId, AdSize.Banner, AdPosition.Top);
       AdRequest request = new AdRequest.Builder().Build();

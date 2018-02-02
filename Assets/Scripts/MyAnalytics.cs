@@ -10,7 +10,7 @@ public class MyAnalytics
 {
   private static string version = "1.0.3";
 
-#if UNITY_EDITOR
+#if UNITY_EDITOR || UNITY_STANDALONE
   private static bool flurryEnabled = false;
 #else
   private static bool flurryEnabled = true;

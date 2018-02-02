@@ -16,6 +16,8 @@ public class MatchingDialog : MonoBehaviour
   public GameObject player;
   public GameObject opponent;
   public Text versusText;
+  public Sprite maleImage;
+  public Sprite femaleImage;
 
   public AudioSource backgroundMusic;
 
@@ -75,7 +77,11 @@ public class MatchingDialog : MonoBehaviour
     isAnimating = true;
     animationStartTime = Time.time;
 
+    #if !UNITY_STANDALONE
     facebookHolder.GetPicture(player.GetComponent<Image>(), profileData.facebookId);
+    #else
+    player.GetComponent<Image>().sprite = Persistence.preferences.IsMale() ? maleImage : femaleImage;
+    #endif
 
     StartCoroutine(StartFinding(2.0f));
   }

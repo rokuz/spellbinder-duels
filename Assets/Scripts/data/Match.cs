@@ -232,6 +232,9 @@ public class Match
   public delegate void OnMatchFinished(Player winner);
   public bool CheckMatchStatus(OnMatchFinished onFinishedHandler)
   {
+    if (this.matchStatus == MatchStatus.FINISHED)
+      return true;
+
     if (opponent.data.health.Value <= 0)
     {
       this.matchStatus = MatchStatus.FINISHED;

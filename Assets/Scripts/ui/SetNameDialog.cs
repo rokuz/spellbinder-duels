@@ -45,6 +45,12 @@ public class SetNameDialog : MonoBehaviour
 
     this.nameEditbox.text = profileData.name;
 
+    #if UNITY_STANDALONE
+    fbButton.gameObject.SetActive(false);
+    RectTransform t = okButton.GetComponent<RectTransform>();
+    t.anchoredPosition = new Vector2(0.0f, t.anchoredPosition.y);
+    #endif
+
     gameObject.SetActive(true);
     if (!splash.gameObject.activeSelf)
       splash.gameObject.SetActive(true);

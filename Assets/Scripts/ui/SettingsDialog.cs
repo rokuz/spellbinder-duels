@@ -29,6 +29,8 @@ public class SettingsDialog : MonoBehaviour
   public Toggle simplifiedGameplayToggle;
   public MessageDialog messageDialog;
   public InputField giftcodeInputField;
+  public Button changeCharacterButton;
+  public SelectCharacterDialog selectCharacterDialog;
 
   public AudioSource musicSource;
 
@@ -67,6 +69,13 @@ public class SettingsDialog : MonoBehaviour
     giftcodeText.text = LanguageManager.Instance.GetTextValue("Settings.Giftcode");
     giftcodePlaceholderText.text = LanguageManager.Instance.GetTextValue("Settings.GiftcodePlaceholder");
     simplifiedGameplayText.text = LanguageManager.Instance.GetTextValue("Settings.SimplifiedGameplay");
+
+    #if UNITY_STANDALONE
+    restorePurchases.gameObject.SetActive(false);
+    otherGames.gameObject.SetActive(false);
+    changeCharacterButton.gameObject.SetActive(true);
+    changeCharacterButton.transform.Find("Text").GetComponent<Text>().text = LanguageManager.Instance.GetTextValue("Settings.ChangeCharacter");
+    #endif
 
     moreGamesDialog.Setup();
   }
@@ -115,7 +124,8 @@ public class SettingsDialog : MonoBehaviour
 
   private void CloseIfClickedOutside(GameObject panel)
   {
-    if (setNameDialog.IsOpened() || moreGamesDialog.IsOpened() || facebookHolder.FacebookLoginInProgress || messageDialog.IsOpened())
+    if (setNameDialog.IsOpened() || moreGamesDialog.IsOpened() || facebookHolder.FacebookLoginInProgress ||
+        messageDialog.IsOpened() || selectCharacterDialog.IsOpened())
       return;
 
     if (Input.GetMouseButtonDown(0) && panel.activeSelf && 
@@ -133,12 +143,26 @@ public class SettingsDialog : MonoBehaviour
     splash.gameObject.SetActive(false);
     changeNameButton.interactable = false;
     volumeSlider.interactable = false;
+    sfxSlider.interactable = false;
+    #if !UNITY_STANDALONE
+    restorePurchases.interactable = false;
+    otherGames.interactable = false;
+    #else
+    changeCharacterButton.interactable = false;
+    #endif
     setNameDialog.Open(this.profileData, () =>
     {
       this.playerName.text = this.profileData.name;
 
       changeNameButton.interactable = true;
       volumeSlider.interactable = true;
+      sfxSlider.interactable = true;
+      #if !UNITY_STANDALONE
+      restorePurchases.interactable = true;
+      otherGames.interactable = true;
+      #else
+      changeCharacterButton.interactable = true;
+      #endif
       splash.gameObject.SetActive(true);
     });
   }
@@ -158,6 +182,39 @@ public class SettingsDialog : MonoBehaviour
     purchaser.RestorePurchases(() => {
       if (this.onRemovedAds != null && Persistence.gameConfig.removedAds)
         this.onRemovedAds();
+    });
+  }
+
+  public void OnChangeCharacter()
+  {
+    splash.gameObject.SetActive(false);
+    changeNameButton.interactable = false;
+    volumeSlider.interactable = false;
+    sfxSlider.interactable = false;
+    #if !UNITY_STANDALONE
+    restorePurchases.interactable = false;
+    otherGames.interactable = false;
+    #else
+    changeCharacterButton.interactable = false;
+    #endif
+    selectCharacterDialog.Open(() =>
+    {
+      var p = new Dictionary<string, object>();
+      p.Add("gender", Persistence.preferences.IsMale() ? "male" : "female");
+      MyAnalytics.CustomEvent("Settings_ChangeCharacter", p);
+      if (this.onUpdateCoinsAndLevel != null)
+        this.onUpdateCoinsAndLevel();
+
+      changeNameButton.interactable = true;
+      volumeSlider.interactable = true;
+      sfxSlider.interactable = true;
+      #if !UNITY_STANDALONE
+      restorePurchases.interactable = true;
+      otherGames.interactable = true;
+      #else
+      changeCharacterButton.interactable = true;
+      #endif
+      splash.gameObject.SetActive(true);
     });
   }
 

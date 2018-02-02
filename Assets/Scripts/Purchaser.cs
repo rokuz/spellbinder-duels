@@ -23,8 +23,10 @@ public class Purchaser : MonoBehaviour, IStoreListener
 
   void Start()
   {
+    #if !UNITY_STANDALONE
     if (storeController == null)
       InitializePurchasing();
+    #endif
   }
 
   public void InitializePurchasing() 
