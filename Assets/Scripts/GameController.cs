@@ -391,6 +391,9 @@ public class GameController : MonoBehaviour
 
     if (matchData.Status == Match.MatchStatus.STARTED && yourTurn && matchData.User.data.RestMana != 0 && !cardsOpened)
     {
+      if (tappedCards.FindIndex(x => x == cardIndex) >= 0)
+        return;
+
       if (openedCards[cardIndex].isBackShowing && !openedCards[cardIndex].isSwapping)
       {
         SwapCard(cardIndex);
@@ -874,6 +877,9 @@ public class GameController : MonoBehaviour
       this.lastCastTime = Time.time;
       StartCoroutine(ShowGameInfo(LanguageManager.Instance.GetTextValue("Game.YouHaveMana"), 3.0f));
     }
+
+    if (Input.GetKeyDown(KeyCode.Escape))
+      OnSettingsClicked();
   }
 
   private void UpdateShiver(GameObject playerInfo, Vector3 playerInfoPos, float startShiverTime)
@@ -1255,6 +1261,7 @@ public class GameController : MonoBehaviour
     #endif
   }
 
+  #if !UNITY_STANDALONE
   private void HandleShowResultCore(ShowResult result)
   {
     SceneManager.LoadScene("CoreGame");
@@ -1264,6 +1271,7 @@ public class GameController : MonoBehaviour
   {
     SceneManager.LoadScene("MainMenu");
   }
+  #endif
 
   public void OnSettingsClicked()
   {
