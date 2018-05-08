@@ -1,13 +1,10 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Analytics;
-using UnityEngine.Advertisements;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using SmartLocalization;
-using GoogleMobileAds;
-using GoogleMobileAds.Api;
 
 public class MainMenuController : MonoBehaviour
 {
@@ -35,21 +32,14 @@ public class MainMenuController : MonoBehaviour
   public Button quitButtonDesktop;
   public MessageYesNoDialog messageYesNoDialog;
 
-  private BannerView bannerView;
-
 	public void Start()
   {
     SmartCultureInfo systemLanguage = LanguageManager.Instance.GetDeviceCultureIfSupported();
     if (systemLanguage != null)
       LanguageManager.Instance.ChangeLanguage(systemLanguage);
 
-    MyAnalytics.Init();
-
     Application.runInBackground = true;
     Persistence.Load();
-
-    if (Persistence.gameConfig.profile != null)
-      this.InitializeAds();
 
     GetComponent<AudioSource>().volume = Persistence.gameConfig.musicVolume;
 
@@ -82,10 +72,6 @@ public class MainMenuController : MonoBehaviour
     settingsDialog.Setup();
     characterDialog.Setup();
     spellbookDialog.Setup();
-
-    shopDialog.onRemovedAds = () => {
-      DestroyBanner();
-    };
 
     shopDialog.onUpdateCoinsAndLevel = () => {
       UpdateCoinsAndLevel();
@@ -143,7 +129,7 @@ public class MainMenuController : MonoBehaviour
 
     this.settingsButton.interactable = false;
     settingsDialog.Open(Persistence.gameConfig.profile, () => { UpdatePlayerUI(); this.settingsButton.interactable = true; },
-      () => { UpdatePlayerUI(); DestroyBanner(); }, () => { UpdateCoinsAndLevel(); });
+      () => { UpdateCoinsAndLevel(); });
 
     tutorialMainMenu.OnSettingsClicked();
   }
@@ -191,7 +177,7 @@ public class MainMenuController : MonoBehaviour
       selectCharacterDialog.Open(() =>
       {
         var p = new Dictionary<string, object>();
-        p.Add("gender", Persistence.preferences.IsMale() ? "male" : "female");
+        p.Add("character", Persistence.preferences.IsMale() ? "male" : "female");
         MyAnalytics.CustomEvent("SelectCharacter_Finished", p);
         InitName();
       });
@@ -212,8 +198,7 @@ public class MainMenuController : MonoBehaviour
       MyAnalytics.CustomEvent("SetName_Started");
       setNameDialog.Open(Persistence.gameConfig.profile, () =>
       {
-        MyAnalytics.CustomEvent("SetName_Finished");
-        this.InitializeAds(); 
+        MyAnalytics.CustomEvent("SetName_Finished"); 
         this.UpdatePlayerUI();
       });
     }
@@ -251,46 +236,5 @@ public class MainMenuController : MonoBehaviour
     #if UNITY_STANDALONE
       playerLogo.transform.Find("Logo").GetComponentInChildren<Image>().sprite = Persistence.preferences.IsMale() ? maleImage : femaleImage;
     #endif
-  }
-
-  private void InitializeAds()
-  {
-    if (Persistence.gameConfig.removedAds)
-      return;
-
-    #if UNITY_ANDROID
-      string adUnitId = "ca-app-pub-8904882368983998/8500008022";
-      string appId = "ca-app-pub-8904882368983998~7590428642";
-      string gameId = "1590383";
-    #elif UNITY_IPHONE
-      string adUnitId = "ca-app-pub-8904882368983998/3926338199";
-      string appId = "ca-app-pub-8904882368983998~2864537965";
-      string gameId = "1590384";
-    #else
-      string adUnitId = "";
-      string appId = "";
-      string gameId = "";
-    #endif
-
-    #if !UNITY_STANDALONE
-    MobileAds.Initialize(appId);
-
-    if (Advertisement.isSupported)
-      Advertisement.Initialize(gameId, false);
-    #endif
-
-    int sz = Mathf.Max(Camera.main.pixelWidth, Camera.main.pixelHeight);
-    if (adUnitId.Length != 0 && bannerView == null && sz >= 1280)
-    {
-      bannerView = new BannerView(adUnitId, AdSize.Banner, AdPosition.Top);
-      AdRequest request = new AdRequest.Builder().Build();
-      bannerView.LoadAd(request);
-    }
-  }
-
-  private void DestroyBanner()
-  {
-    if (bannerView != null)
-      bannerView.Destroy();
   }
 }

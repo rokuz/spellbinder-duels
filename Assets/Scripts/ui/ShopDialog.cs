@@ -20,7 +20,6 @@ public class ShopDialog : MonoBehaviour
 
   public Text coinsText;
 
-  public Sprite spriteRemoveAds;
   public Sprite spriteCoinsSmall;
   public Sprite spriteCoinsMedium;
   public Sprite spriteCoinsBig;
@@ -38,9 +37,6 @@ public class ShopDialog : MonoBehaviour
   public delegate void OnClose();
   private OnClose onCloseHandler;
 
-  public delegate void OnRemovedAds();
-  public OnRemovedAds onRemovedAds;
-
   public delegate void OnUpdateCoinsAndLevel();
   public OnUpdateCoinsAndLevel onUpdateCoinsAndLevel;
 
@@ -55,8 +51,6 @@ public class ShopDialog : MonoBehaviour
 
     var itemsList = new List<ShopItem>();
     #if !UNITY_STANDALONE
-    if (!Persistence.gameConfig.removedAds)
-      itemsList.Add(new ShopItem(ShopItemType.REMOVE_ADS, i18n("Shop.RemoveAds"), i18n("Shop.RemoveAds.Desc"), Purchaser.kProductIDRemoveAds));
     itemsList.Add(new ShopItem(ShopItemType.COINS_PACK1, i18n("Shop.SmallBag"), i18n("Shop.SmallBag.Desc"), Purchaser.kProductIDCoinsPack1, 200));
     itemsList.Add(new ShopItem(ShopItemType.COINS_PACK2, i18n("Shop.MediumBag"), i18n("Shop.MediumBag.Desc"), Purchaser.kProductIDCoinsPack2, 500));
     itemsList.Add(new ShopItem(ShopItemType.COINS_PACK3, i18n("Shop.BigBag"), i18n("Shop.BigBag.Desc"), Purchaser.kProductIDCoinsPack3, 1000));
@@ -284,16 +278,8 @@ public class ShopDialog : MonoBehaviour
       return;
     }
 
-    if (item.type == ShopItemType.REMOVE_ADS)
-    {
-      Persistence.gameConfig.removedAds = true;
-      Persistence.Save();
-      if (onRemovedAds != null)
-        onRemovedAds();
-      StartCoroutine(DeferredSetup());
-    }
-    else if (item.type == ShopItemType.COINS_PACK1 || item.type == ShopItemType.COINS_PACK2 ||
-             item.type == ShopItemType.COINS_PACK3)
+    if (item.type == ShopItemType.COINS_PACK1 || item.type == ShopItemType.COINS_PACK2 ||
+        item.type == ShopItemType.COINS_PACK3)
     {
       this.profileData.coins += item.coinsCount;
       Persistence.Save();
@@ -332,7 +318,6 @@ public class ShopDialog : MonoBehaviour
   {
     switch (item.type)
     {
-      case ShopItemType.REMOVE_ADS: return spriteRemoveAds;
       case ShopItemType.COINS_PACK1: return spriteCoinsSmall;
       case ShopItemType.COINS_PACK2: return spriteCoinsMedium;
       case ShopItemType.COINS_PACK3: return spriteCoinsBig;

@@ -22,11 +22,7 @@ public class GameConfig
     this.musicVolume = 0.25f;
     this.sfxVolume = 0.5f;
     this.showSpellbookWidget = true;
-    #if !UNITY_STANDALONE
-    this.removedAds = false;
-    #else
     this.removedAds = true;
-    #endif
     this.tutorialMainMenuShown = false;
     this.tutorialCoreGameShown = false;
     this.tutorialMainMenuStep = 0;

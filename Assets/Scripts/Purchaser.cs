@@ -9,7 +9,6 @@ public class Purchaser : MonoBehaviour, IStoreListener
   private static IStoreController storeController;
   private static IExtensionProvider storeExtensionProvider;
 
-  public static string kProductIDRemoveAds = "com.rokuz.spellbinder.removeads";
   public static string kProductIDCoinsPack1 = "com.rokuz.spellbinder.coinspack1";
   public static string kProductIDCoinsPack2 = "com.rokuz.spellbinder.coinspack2";
   public static string kProductIDCoinsPack3 = "com.rokuz.spellbinder.coinspack3";
@@ -36,7 +35,6 @@ public class Purchaser : MonoBehaviour, IStoreListener
 
     if (defaultPrices.Count == 0)
     {
-      defaultPrices.Add(kProductIDRemoveAds, "$0.99");
       defaultPrices.Add(kProductIDCoinsPack1, "$0.99");
       defaultPrices.Add(kProductIDCoinsPack2, "$1.99");
       defaultPrices.Add(kProductIDCoinsPack3, "$2.99");
@@ -44,7 +42,6 @@ public class Purchaser : MonoBehaviour, IStoreListener
 
     print("InitializePurchasing()");
     var builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance());
-    builder.AddProduct(kProductIDRemoveAds, ProductType.NonConsumable);
     builder.AddProduct(kProductIDCoinsPack1, ProductType.Consumable);
     builder.AddProduct(kProductIDCoinsPack2, ProductType.Consumable);
     builder.AddProduct(kProductIDCoinsPack3, ProductType.Consumable);
@@ -111,9 +108,7 @@ public class Purchaser : MonoBehaviour, IStoreListener
   public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs args)
   {
     string id = "";
-    if (String.Equals(args.purchasedProduct.definition.id, kProductIDRemoveAds, StringComparison.Ordinal))
-      id = kProductIDRemoveAds;
-    else if (String.Equals(args.purchasedProduct.definition.id, kProductIDCoinsPack1, StringComparison.Ordinal))
+    if (String.Equals(args.purchasedProduct.definition.id, kProductIDCoinsPack1, StringComparison.Ordinal))
       id = kProductIDCoinsPack1;
     else if (String.Equals(args.purchasedProduct.definition.id, kProductIDCoinsPack2, StringComparison.Ordinal))
       id = kProductIDCoinsPack2;
@@ -125,12 +120,6 @@ public class Purchaser : MonoBehaviour, IStoreListener
       MyAnalytics.PaymentEvent(id, args.purchasedProduct);
       Debug.Log("Successful Purchase: " + id);
 
-      if (id == kProductIDRemoveAds)
-      {
-        Persistence.gameConfig.removedAds = true;
-        Persistence.Save();
-      }
-
       if (this.onBuy != null)
         this.onBuy(id, true);
     }
@@ -140,22 +129,12 @@ public class Purchaser : MonoBehaviour, IStoreListener
   public void OnPurchaseFailed(Product product, PurchaseFailureReason failureReason)
   {
     string id = "";
-    if (String.Equals(product.definition.id, kProductIDRemoveAds, StringComparison.Ordinal))
-      id = kProductIDRemoveAds;
-    else if (String.Equals(product.definition.id, kProductIDCoinsPack1, StringComparison.Ordinal))
+    if (String.Equals(product.definition.id, kProductIDCoinsPack1, StringComparison.Ordinal))
       id = kProductIDCoinsPack1;
     else if (String.Equals(product.definition.id, kProductIDCoinsPack2, StringComparison.Ordinal))
       id = kProductIDCoinsPack2;
     else if (String.Equals(product.definition.id, kProductIDCoinsPack3, StringComparison.Ordinal))
       id = kProductIDCoinsPack3;
-
-    if (failureReason == PurchaseFailureReason.DuplicateTransaction && id == kProductIDRemoveAds)
-    {
-      Debug.Log("Duplicate Purchase");
-      if (this.onBuy != null)
-        this.onBuy(kProductIDRemoveAds, true);
-      return;
-    }
 
     Debug.Log(string.Format("OnPurchaseFailed: FAIL. Product: '{0}', PurchaseFailureReason: {1}", id, failureReason));
     if (this.onBuy != null)

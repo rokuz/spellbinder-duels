@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using UnityEngine.Advertisements;
 using UnityEngine.Analytics;
 using System;
 using System.Collections;
@@ -9,8 +8,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SmartLocalization;
-using GoogleMobileAds;
-using GoogleMobileAds.Api;
 
 public class GameController : MonoBehaviour
 {
@@ -133,8 +130,6 @@ public class GameController : MonoBehaviour
 
   private Bot bot;
 
-  private BannerView bannerView;
-
   private List<int> tappedCards = new List<int>();
 
   private Spell[] allUserSpells3;
@@ -149,32 +144,12 @@ public class GameController : MonoBehaviour
     if (systemLanguage != null)
       LanguageManager.Instance.ChangeLanguage(systemLanguage);
 
-    MyAnalytics.Init();
-
     matchData = SceneConnector.Instance.GetMatch();
 
     if (matchData != null)
       Persistence.LoadWithProfilesData(matchData.User.profile, matchData.Opponent.profile);
     else
       Persistence.Load();
-
-    int sz = Mathf.Max(Camera.main.pixelWidth, Camera.main.pixelHeight);
-    if (!Persistence.gameConfig.removedAds && sz >= 1280)
-    {
-      #if UNITY_ANDROID
-      string adUnitId = "ca-app-pub-8904882368983998/5568213619";
-      #elif UNITY_IPHONE
-      string adUnitId = "ca-app-pub-8904882368983998/9567168370";
-      #else
-      string adUnitId = "";
-      #endif
-      if (adUnitId.Length != 0)
-      {
-        bannerView = new BannerView(adUnitId, AdSize.Banner, AdPosition.Top);
-        AdRequest request = new AdRequest.Builder().Build();
-        bannerView.LoadAd(request);
-      }
-    }
 
     GetComponent<AudioSource>().volume = Persistence.gameConfig.musicVolume;
 
@@ -620,13 +595,9 @@ public class GameController : MonoBehaviour
 
   private Text GetGameInfo()
   {
-    if (Persistence.gameConfig.removedAds)
-    {
-      if (gameInfo2.gameObject.activeSelf)
-        gameInfo2.gameObject.SetActive(false);
-      return gameInfo;
-    }
-    return gameInfo2;
+    if (gameInfo2.gameObject.activeSelf)
+      gameInfo2.gameObject.SetActive(false);
+    return gameInfo;
   }
 
   private IEnumerator InitialShowCardsRoutine()
@@ -1223,20 +1194,7 @@ public class GameController : MonoBehaviour
     yield return new WaitForSeconds(0.5f);
     SceneConnector.Instance.PopMatch();
 
-    #if !UNITY_STANDALONE
-    if (!Persistence.gameConfig.removedAds)
-    {
-      ShowOptions options = new ShowOptions();
-      options.resultCallback = HandleShowResultMainMenu;
-      Advertisement.Show("video", options);
-    }
-    else
-    {
-      SceneManager.LoadScene("MainMenu");
-    }
-    #else
     SceneManager.LoadScene("MainMenu");
-    #endif
   }
 
   private void Replay()
@@ -1245,33 +1203,8 @@ public class GameController : MonoBehaviour
 
     SceneConnector.Instance.Replay();
 
-    #if !UNITY_STANDALONE
-    if (!Persistence.gameConfig.removedAds)
-    {
-      ShowOptions options = new ShowOptions();
-      options.resultCallback = HandleShowResultCore;
-      Advertisement.Show("video", options);
-    }
-    else
-    {
-      SceneManager.LoadScene("CoreGame");
-    }
-    #else
-    SceneManager.LoadScene("CoreGame");
-    #endif
-  }
-
-  #if !UNITY_STANDALONE
-  private void HandleShowResultCore(ShowResult result)
-  {
     SceneManager.LoadScene("CoreGame");
   }
-
-  private void HandleShowResultMainMenu(ShowResult result)
-  {
-    SceneManager.LoadScene("MainMenu");
-  }
-  #endif
 
   public void OnSettingsClicked()
   {

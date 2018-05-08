@@ -5,7 +5,6 @@ public enum ShopItemType
   COINS_PACK1,
   COINS_PACK2,
   COINS_PACK3,
-  REMOVE_ADS,
 
   LEVEL_UP,
   SPELL

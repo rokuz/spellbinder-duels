@@ -39,9 +39,6 @@ public class SettingsDialog : MonoBehaviour
   public delegate void OnClose();
   private OnClose onCloseHandler;
 
-  public delegate void OnRemovedAds();
-  private OnRemovedAds onRemovedAds;
-
   public delegate void OnUpdateCoinsAndLevel();
   private OnUpdateCoinsAndLevel onUpdateCoinsAndLevel;
 
@@ -90,13 +87,12 @@ public class SettingsDialog : MonoBehaviour
     CloseIfClickedOutside(this.gameObject);
   }
 
-  public void Open(ProfileData profileData, OnClose onCloseHandler, OnRemovedAds onRemovedAds,
+  public void Open(ProfileData profileData, OnClose onCloseHandler,
                    OnUpdateCoinsAndLevel onUpdateCoinsAndLevel)
   {
     this.profileData = profileData;
     changeNameButton.interactable = (this.profileData != null);
     this.onCloseHandler = onCloseHandler;
-    this.onRemovedAds = onRemovedAds;
     this.onUpdateCoinsAndLevel = onUpdateCoinsAndLevel;
 
     simplifiedGameplayToggle.isOn = Persistence.preferences.IsSimplifiedGameplay();
@@ -180,8 +176,6 @@ public class SettingsDialog : MonoBehaviour
   public void OnRestorePurchases()
   {
     purchaser.RestorePurchases(() => {
-      if (this.onRemovedAds != null && Persistence.gameConfig.removedAds)
-        this.onRemovedAds();
     });
   }
 
@@ -200,7 +194,7 @@ public class SettingsDialog : MonoBehaviour
     selectCharacterDialog.Open(() =>
     {
       var p = new Dictionary<string, object>();
-      p.Add("gender", Persistence.preferences.IsMale() ? "male" : "female");
+      p.Add("character", Persistence.preferences.IsMale() ? "male" : "female");
       MyAnalytics.CustomEvent("Settings_ChangeCharacter", p);
       if (this.onUpdateCoinsAndLevel != null)
         this.onUpdateCoinsAndLevel();
@@ -234,17 +228,6 @@ public class SettingsDialog : MonoBehaviour
         buttonAudio.Play(ButtonAudio.Type.No);
         messageDialog.Open(LanguageManager.Instance.GetTextValue("Message.Gift"),
           LanguageManager.Instance.GetTextValue("Giftcode.Expired"), null);
-      }
-      else if (gift.removeAds && this.onRemovedAds != null && !Persistence.gameConfig.removedAds)
-      {
-        Persistence.gameConfig.removedAds = true;
-        Persistence.Save();
-        this.onRemovedAds();
-
-        buttonAudio.Play(ButtonAudio.Type.Yes);
-        giftcodeInputField.text = "";
-        messageDialog.Open(LanguageManager.Instance.GetTextValue("Message.Gift"),
-          LanguageManager.Instance.GetTextValue("Shop.RemoveAds"), null);
       }
       else if (gift.coins != 0)
       {
