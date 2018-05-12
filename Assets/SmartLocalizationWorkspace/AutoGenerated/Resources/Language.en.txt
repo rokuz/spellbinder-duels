@@ -305,6 +305,18 @@
 	<data name="Player.SmthBlocked" xml:space="preserve">
 		<value>blocked</value>
 	</data>
+	<data name="PP.Accept" xml:space="preserve">
+		<value>I accept the Privacy Policy</value>
+	</data>
+	<data name="PP.Message" xml:space="preserve">
+		<value>We do not require you to provide any personally identifiable information, but you have to accept our Privacy Policy to play.</value>
+	</data>
+	<data name="PP.Title" xml:space="preserve">
+		<value>Privacy Policy</value>
+	</data>
+	<data name="PP.Website" xml:space="preserve">
+		<value>Show Privacy Policy at website</value>
+	</data>
 	<data name="Reward.CoinsForm1" xml:space="preserve">
 		<value>coins</value>
 	</data>

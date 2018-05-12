@@ -31,6 +31,7 @@ public class MainMenuController : MonoBehaviour
   public Button playButtonDesktop;
   public Button quitButtonDesktop;
   public MessageYesNoDialog messageYesNoDialog;
+  public PrivacyPolicyDialog privacyPolicyDialog;
 
 	public void Start()
   {
@@ -77,7 +78,17 @@ public class MainMenuController : MonoBehaviour
       UpdateCoinsAndLevel();
     };
 
-    InitProfile();
+    if (Persistence.preferences.IsPrivacyPolicyAccepted())
+    {
+      InitProfile();
+    }
+    else
+    {
+      privacyPolicyDialog.Open(() =>
+      {
+        InitProfile();
+      });
+    }
 	}
 
   public void OnDestroy()

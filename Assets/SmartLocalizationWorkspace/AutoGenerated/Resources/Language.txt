@@ -353,6 +353,9 @@
 	<data name="SetName.SetupName" xml:space="preserve">
 		<value />
 	</data>
+	<data name="Settings.ChangeCharacter" xml:space="preserve">
+		<value />
+	</data>
 	<data name="Settings.ChangeName" xml:space="preserve">
 		<value />
 	</data>
@@ -701,7 +704,16 @@
 	<data name="Victory.Finish" xml:space="preserve">
 		<value />
 	</data>
-	<data name="Settings.ChangeCharacter" xml:space="preserve">
+	<data name="PP.Title" xml:space="preserve">
+		<value />
+	</data>
+	<data name="PP.Message" xml:space="preserve">
+		<value />
+	</data>
+	<data name="PP.Website" xml:space="preserve">
+		<value />
+	</data>
+	<data name="PP.Accept" xml:space="preserve">
 		<value />
 	</data>
 </root>

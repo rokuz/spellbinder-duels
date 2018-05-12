@@ -8,6 +8,7 @@ public class GamePrefs
   private static string SIMPLIFIED_GAMEPLAY_KEY = "simplifiedGameplay";
   private static string WHATS_NEW_103_SHOWN = "whatsNew103";
   private static string MALE_KEY = "male";
+  private static string PRIVACY_POLICY_KEY = "privacyPolicy";
 
   private Dictionary<string, string> preferences;
 
@@ -59,6 +60,16 @@ public class GamePrefs
   public void SetUsedGiftcode(string code)
   {
     SetBoolKey(code, true);
+  }
+
+  public bool IsPrivacyPolicyAccepted()
+  {
+    return HasBoolKey(PRIVACY_POLICY_KEY);
+  }
+
+  public void SetPrivacyPolicyAccepted(bool accepted)
+  {
+    SetBoolKey(PRIVACY_POLICY_KEY, accepted);
   }
 
   private bool HasBoolKey(string keyName)
