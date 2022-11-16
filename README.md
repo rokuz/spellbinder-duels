@@ -6,4 +6,6 @@ Fantasy card game written in Unity
 ![s3](https://user-images.githubusercontent.com/5437220/202310362-e8ffe807-887e-4b3e-ad7f-5310fc794152.png)
 ![s4](https://user-images.githubusercontent.com/5437220/202310375-f513d3bd-57fc-45e0-92f4-992681e8b809.png)
 
-[![Video](http://img.youtube.com/vi/VfBa8xC6ykQ/0.jpg)](http://www.youtube.com/watch?v=VfBa8xC6ykQ)
+[![Video](https://img.youtube.com/vi/VfBa8xC6ykQ/0.jpg)](https://www.youtube.com/watch?v=VfBa8xC6ykQ)
+
+https://www.youtube.com/watch?v=VfBa8xC6ykQ
